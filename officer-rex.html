@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Officer Rex">
+<meta name="theme-color" content="#1a56db">
+<title>Officer Rex 👮</title>
+<style>
+  :root {
+    --blue: #1a56db;
+    --blue-dark: #1245b8;
+    --blue-light: #dbeafe;
+    --yellow: #fbbf24;
+    --yellow-light: #fef3c7;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --bg: #eff6ff;
+    --white: #ffffff;
+    --text: #1e3a5f;
+    --gray: #94a3b8;
+    --shadow: 0 4px 16px rgba(26,86,219,0.15);
+    --shadow-big: 0 8px 32px rgba(26,86,219,0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    font-family: -apple-system, 'Rounded Mplus 1c', 'Nunito', Arial, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+    padding: 20px 20px 16px;
+    text-align: center;
+    box-shadow: var(--shadow-big);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .badge-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .police-lights {
+    display: flex;
+    gap: 6px;
+  }
+
+  .light {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+  }
+
+  .light.red { background: #ef4444; box-shadow: 0 0 8px #ef4444; animation: blink-red 1s infinite; }
+  .light.blue-l { background: #60a5fa; box-shadow: 0 0 8px #60a5fa; animation: blink-blue 1s infinite 0.5s; }
+
+  @keyframes blink-red {
+    0%, 100% { opacity: 1; } 50% { opacity: 0.2; }
+  }
+  @keyframes blink-blue {
+    0%, 100% { opacity: 0.2; } 50% { opacity: 1; }
+  }
+
+  .badge-num {
+    background: var(--yellow);
+    color: #92400e;
+    font-size: 11px;
+    font-weight: 900;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+  }
+
+  .rex-face { font-size: 72px; line-height: 1; }
+
+  .rex-name {
+    font-size: 28px;
+    font-weight: 900;
+    color: white;
+    letter-spacing: 1px;
+    margin-top: 6px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  .rex-title {
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 2px;
+    margin-top: 2px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .timer-bar {
+    margin-top: 14px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .timer-label { font-size: 12px; color: rgba(255,255,255,0.8); font-weight: 600; }
+  .timer-val { font-size: 18px; color: white; font-weight: 900; letter-spacing: 1px; }
+
+  .timer-progress-wrap {
+    flex: 1;
+    height: 8px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+    margin: 0 10px;
+    overflow: hidden;
+  }
+
+  .timer-progress {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s linear, background 0.5s;
+    background: var(--green);
+  }
+
+  /* REX SPEECH BUBBLE */
+  .speech-section {
+    padding: 16px 16px 0;
+  }
+
+  .speech-card {
+    background: white;
+    border-radius: 20px;
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+    position: relative;
+    border-left: 5px solid var(--blue);
+  }
+
+  .speech-card::before {
+    content: '👮';
+    position: absolute;
+    top: -10px;
+    left: 14px;
+    font-size: 20px;
+  }
+
+  .speech-text {
+    font-size: 16px;
+    color: var(--text);
+    font-weight: 700;
+    line-height: 1.5;
+    padding-top: 4px;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    padding: 14px 16px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
+    background: white;
+    color: var(--gray);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.2s;
+  }
+
+  .tab-btn.active {
+    background: var(--blue);
+    color: white;
+    border-color: var(--blue-dark);
+    box-shadow: var(--shadow);
+  }
+
+  /* PANELS */
+  .panel { display: none; padding: 14px 16px 80px; }
+  .panel.active { display: block; }
+
+  /* CHANNEL GRID */
+  .section-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--gray);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    margin-top: 6px;
+  }
+
+  .channel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .channel-card {
+    background: white;
+    border-radius: 20px;
+    padding: 18px 14px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+    border: 3px solid transparent;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .channel-card:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .channel-card.approved { border-color: var(--green); }
+  .channel-card.ask { border-color: var(--yellow); }
+
+  .ch-icon { font-size: 42px; margin-bottom: 8px; line-height: 1; }
+  .ch-name { font-size: 15px; font-weight: 900; color: var(--text); }
+  .ch-sub { font-size: 11px; color: var(--gray); margin-top: 3px; font-weight: 600; }
+
+  .ch-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  .ch-badge.ok { background: var(--green-light); color: var(--green); }
+  .ch-badge.ask { background: var(--yellow-light); color: #92400e; }
+
+  /* ASK UNCLE */
+  .ask-dad-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--yellow), #f59e0b);
+    border: none;
+    border-radius: 20px;
+    font-size: 18px;
+    font-weight: 900;
+    color: #92400e;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(251,191,36,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    transition: all 0.2s;
+  }
+
+  .ask-dad-btn:active { transform: scale(0.97); }
+
+  /* RULES CARDS */
+  .rule-card {
+    background: white;
+    border-radius: 16px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: var(--shadow);
+    margin-bottom: 10px;
+  }
+
+  .rule-num {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+
+  .rule-body { flex: 1; }
+  .rule-title { font-size: 15px; font-weight: 900; color: var(--text); }
+  .rule-desc { font-size: 12px; color: var(--gray); margin-top: 3px; line-height: 1.5; font-weight: 600; }
+
+  /* LOG */
+  .log-card {
+    background: white;
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .log-icon { font-size: 28px; flex-shrink: 0; }
+  .log-info { flex: 1; }
+  .log-time { font-size: 13px; font-weight: 900; color: var(--text); }
+  .log-detail { font-size: 11px; color: var(--gray); margin-top: 2px; font-weight: 600; }
+
+  /* OVERLAY (Ask Uncle modal) */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 500;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .overlay.open { display: flex; }
+
+  .overlay-card {
+    background: white;
+    border-radius: 24px 24px 24px 24px;
+    padding: 28px 24px;
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    animation: slide-up 0.3s ease;
+  }
+
+  @keyframes slide-up {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .overlay-icon { font-size: 64px; margin-bottom: 12px; }
+  .overlay-title { font-size: 22px; font-weight: 900; color: var(--text); margin-bottom: 8px; }
+  .overlay-body { font-size: 15px; color: var(--gray); font-weight: 600; line-height: 1.6; margin-bottom: 20px; }
+
+  .overlay-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 16px;
+    border: none;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+
+  .overlay-btn.close-btn { background: var(--blue-light); color: var(--blue); }
+  .overlay-btn.close-btn:active { background: var(--blue); color: white; }
+
+  /* TIMER CONTROLS */
+  .timer-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .timer-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 16px;
+    border: 2px solid;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .timer-btn.start { background: var(--green-light); border-color: var(--green); color: var(--green); }
+  .timer-btn.stop { background: var(--red-light); border-color: var(--red); color: var(--red); }
+  .timer-btn.reset { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+  .timer-btn:active { opacity: 0.75; }
+
+  .time-presets {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .preset-btn {
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 2px solid var(--blue);
+    background: white;
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .preset-btn.active-preset {
+    background: var(--blue);
+    color: white;
+  }
+
+  /* TIME UP ALERT */
+  .time-up-alert {
+    background: linear-gradient(135deg, var(--red), #b91c1c);
+    color: white;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    display: none;
+    margin-bottom: 14px;
+    animation: shake 0.5s ease;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  .time-up-alert.show { display: block; }
+  .time-up-title { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
+  .time-up-sub { font-size: 14px; opacity: 0.9; font-weight: 600; }
+
+  /* BIG TIME DISPLAY */
+  .big-timer {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+  }
+
+  .big-timer-val { font-size: 64px; font-weight: 900; color: var(--blue); letter-spacing: 2px; line-height: 1; }
+  .big-timer-label { font-size: 13px; color: var(--gray); font-weight: 700; margin-top: 8px; letter-spacing: 1px; }
+  .big-timer-max { font-size: 11px; color: var(--gray); margin-top: 4px; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="badge-strip">
+    <div class="police-lights">
+      <div class="light red"></div>
+      <div class="light blue-l"></div>
+      <div class="light red"></div>
+    </div>
+    <div class="badge-num">BADGE #001</div>
+    <div class="police-lights">
+      <div class="light blue-l"></div>
+      <div class="light red"></div>
+      <div class="light blue-l"></div>
+    </div>
+  </div>
+  <div class="rex-face">👮</div>
+  <div class="rex-name">OFFICER REX</div>
+  <div class="rex-title">Lucas's Screen Guardian</div>
+  <div class="timer-bar">
+    <span class="timer-label">⏱️ SCREEN TIME</span>
+    <div class="timer-progress-wrap">
+      <div class="timer-progress" id="header-timer-bar" style="width:0%"></div>
+    </div>
+    <span class="timer-val" id="header-timer-val">00:00</span>
+  </div>
+</div>
+
+<!-- SPEECH BUBBLE -->
+<div class="speech-section">
+  <div class="speech-card">
+    <div class="speech-text" id="rex-speech">Hey Lucas! 👋 Ready to watch some great videos? Make sure you ask Uncle first if you want something new!</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab(this,'tab-watch')">📺 WATCH</button>
+  <button class="tab-btn" onclick="switchTab(this,'tab-timer')">⏱️ TIMER</button>
+  <button class="tab-btn" onclick="switchTab(this,'tab-rules')">📋 RULES</button>
+  <button class="tab-btn" onclick="switchTab(this,'tab-log')">📖 LOG</button>
+</div>
+
+<!-- WATCH TAB -->
+<div class="panel active" id="tab-watch">
+
+  <button class="ask-dad-btn" onclick="openAskDad()">
+    📞 Want something different? ASK UNCLE FIRST!
+  </button>
+
+  <div class="section-title">✅ REX APPROVED CHANNELS</div>
+  <div class="channel-grid">
+    <a class="channel-card approved" href="https://www.youtube.com/channel/UCnUYZLuoy1rq1aVMwx4aTzw" target="_blank" onclick="logWatch('YouTube Kids')">
+      <div class="ch-icon">📺</div>
+      <div class="ch-name">YouTube Kids</div>
+      <div class="ch-sub">Safe videos</div>
+      <div class="ch-badge ok">✅ REX OK</div>
+    </a>
+    <a class="channel-card approved" href="https://www.youtube.com/@cocomelon" target="_blank" onclick="logWatch('Cocomelon')">
+      <div class="ch-icon">🎵</div>
+      <div class="ch-name">Cocomelon</div>
+      <div class="ch-sub">Songs & learning</div>
+      <div class="ch-badge ok">✅ REX OK</div>
+    </a>
+    <a class="channel-card approved" href="https://www.youtube.com/@BlippiOfficial" target="_blank" onclick="logWatch('Blippi')">
+      <div class="ch-icon">🚜</div>
+      <div class="ch-name">Blippi</div>
+      <div class="ch-sub">Learning & fun</div>
+      <div class="ch-badge ok">✅ REX OK</div>
+    </a>
+    <a class="channel-card approved" href="https://www.youtube.com/@SuperSimpleSongs" target="_blank" onclick="logWatch('Super Simple Songs')">
+      <div class="ch-icon">🎶</div>
+      <div class="ch-name">Super Simple</div>
+      <div class="ch-sub">Kids songs</div>
+      <div class="ch-badge ok">✅ REX OK</div>
+    </a>
+    <a class="channel-card approved" href="https://www.youtube.com/@PinwheelTV" target="_blank" onclick="logWatch('Pinwheel')">
+      <div class="ch-icon">🌀</div>
+      <div class="ch-name">Pinwheel</div>
+      <div class="ch-sub">Creative & arts</div>
+      <div class="ch-badge ok">✅ REX OK</div>
+    </a>
+    <a class="channel-card approved" href="https://www.youtube.com/@NickJr" target="_blank" onclick="logWatch('Nick Jr')">
+      <div class="ch-icon">🐾</div>
+      <div class="ch-name">Nick Jr</div>
+      <div class="ch-sub">PAW Patrol etc</div>
+      <div class="ch-badge ok">✅ REX OK</div>
+    </a>
+    <a class="channel-card approved" href="https://www.youtube.com/@HaloOfficialChannel" target="_blank" onclick="logWatch('Halo Channel')">
+      <div class="ch-icon">🪖</div>
+      <div class="ch-name">Halo Channel</div>
+      <div class="ch-sub">Lucas's fave!</div>
+      <div class="ch-badge ok">✅ REX OK</div>
+    </a>
+    <div class="channel-card ask" onclick="openAskDad()">
+      <div class="ch-icon">❓</div>
+      <div class="ch-name">Something Else?</div>
+      <div class="ch-sub">Ask first!</div>
+      <div class="ch-badge ask">⚠️ ASK UNCLE</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TIMER TAB -->
+<div class="panel" id="tab-timer">
+
+  <div class="time-up-alert" id="time-up-alert">
+    <div class="time-up-title">🚨 TIME'S UP, LUCAS! 🚨</div>
+    <div class="time-up-sub">Officer Rex says: Time to take a break!<br>Go play, have a snack, or ask Uncle what's next. 🌟</div>
+  </div>
+
+  <div class="big-timer">
+    <div class="big-timer-val" id="big-timer-val">00:00</div>
+    <div class="big-timer-label">TIME WATCHED</div>
+    <div class="big-timer-max" id="big-timer-max-label">No limit set</div>
+  </div>
+
+  <div class="section-title">SET TIME LIMIT</div>
+  <div class="time-presets">
+    <button class="preset-btn" onclick="setLimit(15)">15 min</button>
+    <button class="preset-btn" onclick="setLimit(20)">20 min</button>
+    <button class="preset-btn" onclick="setLimit(30)">30 min</button>
+    <button class="preset-btn" onclick="setLimit(45)">45 min</button>
+    <button class="preset-btn" onclick="setLimit(60)">1 hour</button>
+    <button class="preset-btn" onclick="setLimit(0)">No limit</button>
+  </div>
+
+  <div class="timer-controls">
+    <button class="timer-btn start" onclick="startTimer()">▶ START</button>
+    <button class="timer-btn stop" onclick="stopTimer()">⏸ PAUSE</button>
+    <button class="timer-btn reset" onclick="resetTimer()">↺ RESET</button>
+  </div>
+
+  <div class="rule-card" style="border-left: 4px solid var(--blue);">
+    <div class="rule-num">💡</div>
+    <div class="rule-body">
+      <div class="rule-title">Uncle sets the limit, Rex enforces it</div>
+      <div class="rule-desc">Start the timer when Lucas starts watching. When it hits the limit, Rex will let Lucas know it's time to stop. Always ask Uncle to reset.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- RULES TAB -->
+<div class="panel" id="tab-rules">
+
+  <div class="speech-card" style="margin-bottom:16px; border-left-color: var(--yellow);">
+    <div class="speech-text" style="color: #92400e;">📜 Officer Rex's rules keep Lucas safe online. These rules come from Uncle!</div>
+  </div>
+
+  <div class="section-title">THE 5 SCREEN RULES</div>
+
+  <div class="rule-card">
+    <div class="rule-num">1</div>
+    <div class="rule-body">
+      <div class="rule-title">Only approved channels 📺</div>
+      <div class="rule-desc">Stick to the green channels Officer Rex has checked. They're safe and fun!</div>
+    </div>
+  </div>
+
+  <div class="rule-card">
+    <div class="rule-num">2</div>
+    <div class="rule-body">
+      <div class="rule-title">Ask Uncle for anything new 📞</div>
+      <div class="rule-desc">If you want to watch something that's not in the list — always ask Uncle first. Uncle will check it out!</div>
+    </div>
+  </div>
+
+  <div class="rule-card">
+    <div class="rule-num">3</div>
+    <div class="rule-body">
+      <div class="rule-title">Screen time has a limit ⏱️</div>
+      <div class="rule-desc">Uncle sets the timer. When Officer Rex says time's up — it's time to stop, even if the video isn't finished.</div>
+    </div>
+  </div>
+
+  <div class="rule-card">
+    <div class="rule-num">4</div>
+    <div class="rule-body">
+      <div class="rule-title">No buying anything 💳</div>
+      <div class="rule-desc">If something says "buy" or "subscribe" — don't tap it. Ask Uncle and Uncle will sort it out.</div>
+    </div>
+  </div>
+
+  <div class="rule-card">
+    <div class="rule-num">5</div>
+    <div class="rule-body">
+      <div class="rule-title">Tell Uncle if something feels wrong 🚨</div>
+      <div class="rule-desc">If you see something scary, weird, or confusing — stop watching and tell Uncle straight away. You won't be in trouble for telling! Uncle will always listen.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- LOG TAB -->
+<div class="panel" id="tab-log">
+
+  <div class="section-title">TODAY'S WATCH LOG</div>
+  <div id="log-list-el"></div>
+
+  <div style="margin-top:10px;">
+    <button class="timer-btn reset" style="width:100%;padding:14px;border-radius:16px;" onclick="clearLog()">🗑️ Clear Today's Log</button>
+  </div>
+
+</div>
+
+<!-- ASK UNCLE OVERLAY -->
+<div class="overlay" id="ask-dad-overlay" onclick="closeAskDad(event)">
+  <div class="overlay-card">
+    <div class="overlay-icon">📞</div>
+    <div class="overlay-title">Ask Uncle First!</div>
+    <div class="overlay-body">
+      You want to watch something new? That's awesome! 🌟<br><br>
+      <strong>Go find Uncle</strong> and show Uncle what you want to watch.<br>
+      Uncle will add it to the approved list if it's a good one!<br><br>
+      Uncle's number: <strong id="dads-number">Saved in Uncle's app</strong>
+    </div>
+    <button class="overlay-btn close-btn" onclick="closeAskDad()">👍 OK, I'll Ask Uncle!</button>
+  </div>
+</div>
+
+<script>
+// ─── STATE ──────────────────────────────────────────────────────────────────
+let timerInterval = null;
+let timerSeconds = 0;
+let timerLimit = 0; // 0 = no limit
+let timerRunning = false;
+
+// Load state
+let watchLog = JSON.parse(localStorage.getItem('rex-log') || '[]');
+// Clear yesterday's log on a new day
+const today = new Date().toDateString();
+const logDay = localStorage.getItem('rex-log-day');
+if (logDay !== today) {
+  watchLog = [];
+  localStorage.setItem('rex-log-day', today);
+  localStorage.setItem('rex-log', '[]');
+}
+
+// Timer state persistence
+timerSeconds = parseInt(localStorage.getItem('rex-seconds') || '0');
+timerLimit = parseInt(localStorage.getItem('rex-limit') || '0');
+
+const REX_SPEECHES = [
+  "Hey Lucas! 👋 Ready to watch some great videos? Make sure you ask Uncle first if you want something new!",
+  "Hi there, Lucas! 🌟 I'm Officer Rex, and I'm here to keep you safe. Pick an approved channel and have fun!",
+  "Remember Lucas — if the timer goes off, it's time for a break! Officer Rex's orders! 🪖",
+  "You're doing great, Lucas! 🎉 Stick to the green channels and you're all good!",
+  "Psst, Lucas... 🤫 Officer Rex knows ALL the good shows. The green ones are the best!",
+];
+
+// ─── SPEECHES ───────────────────────────────────────────────────────────────
+function randomSpeech() {
+  const s = REX_SPEECHES[Math.floor(Math.random() * REX_SPEECHES.length)];
+  document.getElementById('rex-speech').textContent = s;
+}
+setInterval(randomSpeech, 30000);
+
+// ─── TIMER ──────────────────────────────────────────────────────────────────
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+}
+
+function updateTimerDisplay() {
+  const valEls = [document.getElementById('header-timer-val'), document.getElementById('big-timer-val')];
+  valEls.forEach(el => { if (el) el.textContent = formatTime(timerSeconds); });
+
+  const headerBar = document.getElementById('header-timer-bar');
+  const maxLabel = document.getElementById('big-timer-max-label');
+
+  if (timerLimit > 0) {
+    const pct = Math.min(100, (timerSeconds / (timerLimit * 60)) * 100);
+    if (headerBar) {
+      headerBar.style.width = pct + '%';
+      headerBar.style.background = pct > 80 ? '#ef4444' : pct > 60 ? '#f59e0b' : '#16a34a';
+    }
+    if (maxLabel) maxLabel.textContent = 'Limit: ' + timerLimit + ' min · ' + Math.max(0, timerLimit - Math.floor(timerSeconds/60)) + ' min remaining';
+  } else {
+    if (headerBar) { headerBar.style.width = '0%'; }
+    if (maxLabel) maxLabel.textContent = 'No limit set — tap a time preset above';
+  }
+
+  localStorage.setItem('rex-seconds', timerSeconds);
+}
+
+function startTimer() {
+  if (timerRunning) return;
+  timerRunning = true;
+  timerInterval = setInterval(() => {
+    timerSeconds++;
+    updateTimerDisplay();
+
+    if (timerLimit > 0 && timerSeconds >= timerLimit * 60) {
+      stopTimer();
+      showTimeUp();
+    }
+  }, 1000);
+  document.getElementById('rex-speech').textContent = "⏱️ Timer started! I'm watching the clock for you, Lucas!";
+}
+
+function stopTimer() {
+  timerRunning = false;
+  clearInterval(timerInterval);
+}
+
+function resetTimer() {
+  stopTimer();
+  timerSeconds = 0;
+  document.getElementById('time-up-alert').classList.remove('show');
+  updateTimerDisplay();
+  document.getElementById('rex-speech').textContent = "⏱️ Timer reset! Ready for a fresh start!";
+}
+
+function setLimit(mins) {
+  timerLimit = mins;
+  localStorage.setItem('rex-limit', timerLimit);
+
+  // Update active state
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active-preset'));
+  event.target.classList.add('active-preset');
+
+  document.getElementById('rex-speech').textContent = mins > 0
+    ? `Uncle set ${mins} minutes of screen time today. Have fun! 🌟`
+    : "No time limit set today. Enjoy! 🎉";
+  updateTimerDisplay();
+}
+
+function showTimeUp() {
+  document.getElementById('time-up-alert').classList.add('show');
+  document.getElementById('rex-speech').textContent = "🚨 TIME'S UP LUCAS! Officer Rex says it's break time. Go find Uncle!";
+  // Vibrate if supported
+  if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300]);
+}
+
+// ─── WATCH LOG ──────────────────────────────────────────────────────────────
+function logWatch(channel) {
+  const now = new Date();
+  const time = now.toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit' });
+  watchLog.unshift({ channel, time, date: today });
+  localStorage.setItem('rex-log', JSON.stringify(watchLog));
+  renderLog();
+  startTimer();
+}
+
+function renderLog() {
+  const el = document.getElementById('log-list-el');
+  if (!el) return;
+  if (!watchLog.length) {
+    el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--gray);font-weight:700;">No watches logged yet today 📺</div>';
+    return;
+  }
+  const icons = { 'YouTube Kids':'📺', 'Cocomelon':'🎵', 'Blippi':'🚜', 'Super Simple Songs':'🎶', 'Pinwheel':'🌀', 'Nick Jr':'🐾', 'Halo Channel':'🪖' };
+  el.innerHTML = watchLog.map(l => `
+    <div class="log-card">
+      <div class="log-icon">${icons[l.channel] || '📺'}</div>
+      <div class="log-info">
+        <div class="log-time">${l.channel}</div>
+        <div class="log-detail">Started at ${l.time}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function clearLog() {
+  if (confirm('Clear today\'s log?')) {
+    watchLog = [];
+    localStorage.setItem('rex-log', '[]');
+    renderLog();
+  }
+}
+
+// ─── TABS ───────────────────────────────────────────────────────────────────
+function switchTab(btn, panelId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+  if (panelId === 'tab-log') renderLog();
+}
+
+// ─── ASK UNCLE ─────────────────────────────────────────────────────────────────
+function openAskDad() {
+  document.getElementById('ask-dad-overlay').classList.add('open');
+}
+
+function closeAskDad(e) {
+  if (!e || e.target === document.getElementById('ask-dad-overlay')) {
+    document.getElementById('ask-dad-overlay').classList.remove('open');
+  }
+}
+
+// ─── INIT ───────────────────────────────────────────────────────────────────
+updateTimerDisplay();
+renderLog();
+
+// Resume timer if it was running (not stored — always start fresh on page load)
+</script>
+</body>
+</html>

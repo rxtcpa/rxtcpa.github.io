@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucas Warrior Playlist 🏆</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0a;
+    color: #fff;
+    font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #1a0a00, #2d1500);
+    border-bottom: 3px solid #FFD700;
+    padding: 28px 20px 20px;
+    text-align: center;
+  }
+  header h1 {
+    font-size: 2.4em;
+    color: #FFD700;
+    text-shadow: 0 0 20px rgba(255,215,0,0.4);
+    letter-spacing: 2px;
+  }
+  header p {
+    color: #FFA500;
+    font-size: 1.1em;
+    margin-top: 6px;
+  }
+  .badges {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    background: rgba(255,215,0,0.12);
+    border: 1px solid #FFD700;
+    color: #FFD700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: bold;
+  }
+
+  .section {
+    max-width: 1100px;
+    margin: 40px auto 0;
+    padding: 0 20px;
+  }
+  .section-title {
+    font-size: 1.5em;
+    color: #FFD700;
+    border-left: 4px solid #FFD700;
+    padding-left: 14px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-desc {
+    color: #aaa;
+    font-size: 0.9em;
+    margin-left: 18px;
+    margin-bottom: 22px;
+    margin-top: -12px;
+  }
+
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 22px;
+    margin-bottom: 50px;
+  }
+
+  .video-card {
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .video-card:hover {
+    transform: translateY(-4px);
+    border-color: #FFD700;
+    box-shadow: 0 8px 30px rgba(255,215,0,0.15);
+  }
+  .video-card.priority {
+    border-color: #FFD700;
+    box-shadow: 0 0 20px rgba(255,215,0,0.1);
+  }
+  .video-card.priority .card-header {
+    background: linear-gradient(135deg, #2d1500, #1a0a00);
+  }
+
+  .card-header {
+    background: #1a1a1a;
+    padding: 10px 14px 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .card-header .num {
+    background: #FFD700;
+    color: #000;
+    font-size: 0.75em;
+    font-weight: bold;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .priority .card-header .num {
+    background: #FFD700;
+  }
+  .card-label {
+    font-size: 0.78em;
+    color: #FFA500;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  .card-label.start { color: #00ff88; }
+
+  .embed-wrap {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    background: #000;
+  }
+  .embed-wrap iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: none;
+  }
+
+  .card-body {
+    padding: 14px;
+  }
+  .card-title {
+    font-size: 0.95em;
+    color: #fff;
+    font-weight: bold;
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .card-meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .meta-tag {
+    font-size: 0.75em;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.07);
+    color: #aaa;
+  }
+  .meta-tag.views { color: #4dd; }
+  .meta-tag.channel { color: #FFA500; }
+  .meta-tag.duration { color: #aaa; }
+  .card-note {
+    margin-top: 10px;
+    font-size: 0.82em;
+    color: #888;
+    line-height: 1.5;
+    border-top: 1px solid #222;
+    padding-top: 10px;
+  }
+  .card-note strong { color: #FFD700; }
+
+  .highlight-bar {
+    background: linear-gradient(90deg, rgba(255,215,0,0.08), transparent);
+    border: 1px solid rgba(255,215,0,0.2);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 30px;
+    margin-top: -8px;
+    font-size: 0.9em;
+    color: #FFA500;
+    line-height: 1.6;
+  }
+  .highlight-bar strong { color: #FFD700; }
+
+  .warrior-footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: #555;
+    font-size: 0.9em;
+    border-top: 1px solid #1a1a1a;
+    margin-top: 20px;
+  }
+  .warrior-footer span { color: #FFD700; font-size: 1.4em; }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.7em; }
+    .video-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏆 LUCAS WARRIOR PLAYLIST 🏆</h1>
+  <p>Lucas & Uncle's Training Library — Watch Before You Train</p>
+  <div class="badges">
+    <span class="badge">🥊 Boxing</span>
+    <span class="badge">🦵 Kicks</span>
+    <span class="badge">💪 Strength</span>
+    <span class="badge">⚡ Agility</span>
+    <span class="badge">🔥 Daily Training</span>
+  </div>
+</header>
+
+<!-- SECTION 1: START HERE -->
+<div class="section">
+  <div class="section-title">⭐ START HERE — Watch These First</div>
+  <div class="section-desc">409K views doesn't lie. These are the ones.</div>
+
+  <div class="highlight-bar">
+    <strong>How to use this page:</strong> Watch a video with Lucas before training. Pick ONE drill to practise that day. After a week, you'll have 7 drills. After a month — he's a different kid.
+  </div>
+
+  <div class="video-grid">
+
+    <div class="video-card priority">
+      <div class="card-header">
+        <div class="num">1</div>
+        <span class="card-label start">▶ START HERE</span>
+      </div>
+      <div class="embed-wrap">
+        <iframe src="https://www.youtube.com/embed/C0sahZHUrWI" allowfullscreen loading="lazy" title="How To Teach Boxing To Any Child Age 2-7"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="card-title">How To Teach Boxing To Any Child Age 2–7 Years — Stance, Jab & Defence</div>
+        <div class="card-meta">
+          <span class="meta-tag views">👀 409K views</span>
+          <span class="meta-tag channel">📺 Eliteboxingoviedo</span>
+          <span class="meta-tag duration">⏱ 5:06</span>
+        </div>
+        <div class="card-note"><strong>Why first:</strong> 409K views. Your exact age group. Stance → jab → how to not get hit. The foundation of everything else.</div>
+      </div>
+    </div>
+
+    <div class="video-card priority">
+      <div class="card-header">
+        <div class="num">2</div>
+        <span class="card-label start">👨‍👦 UNCLE + LUCAS</span>
+      </div>
+      <div class="embed-wrap">
+        <iframe src="https://www.youtube.com/embed/66d-cx6XObM" allowfullscreen loading="lazy" title="Boxing Workout for Kids and Parents"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Boxing Workout for Kids & Parents</div>
+        <div class="card-meta">
+          <span class="meta-tag views">👀 28K views</span>
+          <span class="meta-tag channel">📺 BOXWAVE</span>
+          <span class="meta-tag duration">⏱ 4:46</span>
+        </div>
+        <div class="card-note"><strong>This is your daily session.</strong> Literally designed for a kid and adult to do together. Put this on. Press play. Do it side by side.</div>
+      </div>
+    </div>
+
+    <div class="video-card priority">
+      <div class="card-header">
+        <div class="num">3</div>
+        <span class="card-label">🥇 OLYMPIC COACH</span>
+      </div>
+      <div class="embed-wrap">
+        <iframe src="https://www.youtube.com/embed/uFsPkG--ZL4" allowfullscreen loading="lazy" title="How to Teach Boxing to Children - Tony Jeffries"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="card-title">How to Teach Boxing to Children</div>
+        <div class="card-meta">
+          <span class="meta-tag views">👀 111K views</span>
+          <span class="meta-tag channel">📺 Tony Jeffries</span>
+          <span class="meta-tag duration">⏱ 8:41</span>
+        </div>
+        <div class="card-note"><strong>Tony Jeffries:</strong> 2008 Olympic bronze medallist. This is how the pros teach kids. Watch this as Uncle — it tells you exactly how to coach Lucas.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 2: KICKS -->
+<div class="section">
+  <div class="section-title">🦵 THE KICKS — Lucas's Superpower</div>
+  <div class="section-desc">The front kick (teep) creates distance instantly. This is the move.</div>
+
+  <div class="highlight-bar">
+    <strong>The one drill that matters most:</strong> Bully pushes from behind → Lucas plants feet → spins → hands up → <strong>TEEP STRAIGHT TO THE CHEST</strong> → creates space → walks away tall. Drill this until it's automatic.
+  </div>
+
+  <div class="video-grid">
+
+    <div class="video-card priority">
+      <div class="card-header">
+        <div class="num">4</div>
+        <span class="card-label start">🦵 THE SUPERPOWER KICK</span>
+      </div>
+      <div class="embed-wrap">
+        <iframe src="https://www.youtube.com/embed/B1OOTNaPN7I" allowfullscreen loading="lazy" title="TEEP PUSH KICK Muay Thai for Kids at Home"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="card-title">TEEP PUSH KICK — Muay Thai Drills For Kids at Home</div>
+        <div class="card-meta">
+          <span class="meta-tag channel">📺 Crazy 88 MMA</span>
+          <span class="meta-tag">🏠 HOME WORKOUT</span>
+        </div>
+        <div class="card-note"><strong>This is THE move.</strong> Foot flat, push straight out. Creates instant distance. Perfect for "get off me." Kids. Home. Exact kick. Watch and copy.</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="card-header">
+        <div class="num">5</div>
+        <span class="card-label">🥋 MUAY THAI DRILLS</span>
+      </div>
+      <div class="embed-wrap">
+        <iframe src="https://www.youtube.com/embed/-4lWTo_-DOw" allowfullscreen loading="lazy" title="Kids Muay Thai Drills"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Kids Muay Thai Drills</div>
+        <div class="card-meta">
+          <span class="meta-tag channel">📺 The Nak Muay Ninja</span>
+        </div>
+        <div class="card-note">Full kids Muay Thai drill session — kicks, knees, movement. Once Lucas has the teep down, add these.</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="card-header">
+        <div class="num">6</div>
+        <span class="card-label">🏋️ STRUCTURED CLASS</span>
+      </div>
+      <div class="embed-wrap">
+        <iframe src="https://www.youtube.com/embed/-NREYEYidFE" allowfullscreen loading="lazy" title="WMAC Kids Muay Thai Training"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="card-title">WMAC Kids Muay Thai Training — Full Class Week 2</div>
+        <div class="card-meta">
+          <span class="meta-tag channel">📺 Wickhams Martial Arts</span>
+        </div>
+        <div class="card-note">A real structured kids martial arts class. Watch to see how a proper kids session flows — good for when you want to run a full session like a coach.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 3: FULL BOXING SESSIONS -->
+<div class="section">
+  <div class="section-title">🥊 MORE BOXING — Build the Library</div>
+  <div class="section-desc">More sessions to rotate through. Never gets boring.</div>
+
+  <div class="video-grid">
+
+    <div class="video-card">
+      <div class="card-header">
+        <div class="num">7</div>
+        <span class="card-label">🤸 BOXING + GYMNASTICS</span>
+      </div>
+      <div class="embed-wrap">
+        <iframe src="https://www.youtube.com/embed/o6Cpr9fG4BA" allowfullscreen loading="lazy" title="Boxing class for kids with gymnastics warm up"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Boxing Class for Kids (with Gymnastics Warm Up)</div>
+        <div class="card-meta">
+          <span class="meta-tag channel">📺 Thomas Diagne</span>
+        </div>
+        <div class="card-note">Gymnastics warm-up builds exactly the balance and stability Lucas needs. Bonus: gymnastics training makes you harder to knock over. Good alternate session.</div>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="card-header">
+        <div class="num">8</div>
+        <span class="card-label">👦 DEDICATED KIDS BOXING</span>
+      </div>
+      <div class="embed-wrap">
+        <iframe src="https://www.youtube.com/embed/OjA_RFRS7M0" allowfullscreen loading="lazy" title="Boxing for Kids - BfitKIDS"></iframe>
+      </div>
+      <div class="card-body">
+        <div class="card-title">Boxing for Kids</div>
+        <div class="card-meta">
+          <span class="meta-tag channel">📺 BfitKIDS</span>
+        </div>
+        <div class="card-note">BfitKIDS is a dedicated youth fitness channel. Use this on days when you want a shorter, lighter session — keeps the habit going without burning him out.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- THE WARRIOR SPIN REMINDER -->
+<div class="section">
+  <div class="highlight-bar" style="border-color: #ff4444; background: linear-gradient(90deg, rgba(255,68,68,0.06), transparent); font-size:1em;">
+    <strong style="color:#ff6666;">🎯 THE WARRIOR SPIN — Drill This Every Single Day</strong><br><br>
+    Someone runs from behind → <strong style="color:#FFD700;">STOMP feet wide</strong> → <strong style="color:#FFD700;">SPIN fast</strong> → <strong style="color:#FFD700;">hands up</strong> → big voice <strong style="color:#FFD700;">"STOP!"</strong> → <strong style="color:#FFD700;">TEEP</strong> straight to chest → walk away tall.<br><br>
+    Uncle sneaks up and pushes gently. Lucas reacts. Repeat until it's muscle memory. <strong style="color:#FFA500;">By the time the bully tries again, Lucas's body reacts before his brain catches up.</strong>
+  </div>
+</div>
+
+<div class="warrior-footer">
+  <span>🏆</span><br><br>
+  Lucas & Uncle — Unbeatable Team<br>
+  <span style="color:#555; font-size:0.85em;">Daily training builds daily confidence. He won't fall next time.</span>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Warrior Training">
+<meta name="theme-color" content="#05080f">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Black+Han+Sans&display=swap" rel="stylesheet">
+<title>LUCAS — WARRIOR TRAINING</title>
+<style>
+:root {
+  --gold: #f5c518;
+  --gold-dark: #c49a10;
+  --blue: #4499ff;
+  --blue-dark: #1a6abf;
+  --bg: #05080f;
+  --card: #0a0f1a;
+  --border: #152035;
+  --red: #e63946;
+  --green: #2ec96e;
+  --glow-blue: 0 0 14px rgba(68,153,255,0.4);
+  --glow-gold: 0 0 14px rgba(245,197,24,0.4);
+  --glow-red: 0 0 14px rgba(230,57,70,0.5);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--bg);
+  font-family: 'Nunito', Arial, sans-serif;
+  min-height: 100vh;
+  color: #ccc;
+  overflow-x: hidden;
+}
+
+/* SCANLINES */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px);
+  pointer-events: none; z-index: 9999;
+}
+
+/* HEADER */
+.header {
+  background: linear-gradient(180deg, #0c1a2e 0%, var(--bg) 100%);
+  border-bottom: 2px solid var(--gold);
+  box-shadow: var(--glow-gold);
+  padding: 16px 20px 12px;
+  text-align: center;
+  position: sticky; top: 0; z-index: 100;
+}
+
+.header-row {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+}
+
+.badge { font-size: 10px; color: var(--gold-dark); letter-spacing: 2px; font-weight: 800; }
+
+.header h1 {
+  font-size: 24px; font-weight: 900; color: var(--gold);
+  text-shadow: var(--glow-gold); letter-spacing: 2px;
+}
+
+.header-sub { font-size: 11px; color: #4a6a9f; letter-spacing: 3px; font-weight: 700; margin-top: 2px; }
+
+.xp-wrap { margin-top: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 4px; height: 8px; overflow: hidden; }
+.xp-fill { height: 100%; background: linear-gradient(90deg, var(--blue-dark), var(--gold)); box-shadow: 0 0 8px var(--gold); transition: width 0.8s; }
+.xp-label { font-size: 12px; color: var(--gold-dark); margin-top: 4px; font-weight: 800; }
+
+/* RANK */
+.rank-card {
+  margin: 12px 16px;
+  background: var(--card); border: 1px solid var(--gold);
+  border-radius: 12px; padding: 12px 16px;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: var(--glow-gold);
+}
+.rank-icon { font-size: 36px; }
+.rank-name { font-size: 20px; font-weight: 900; color: var(--gold); }
+.rank-sub { font-size: 13px; color: #4a6a9f; font-weight: 700; margin-top: 3px; }
+.rank-stars { font-size: 20px; margin-left: auto; }
+
+/* TABS */
+.tabs {
+  display: flex; border-bottom: 1px solid var(--border);
+  background: var(--card); overflow-x: auto;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex: 1; min-width: 75px; padding: 12px 8px;
+  background: none; border: none; border-bottom: 2px solid transparent;
+  color: #444; font-family: 'Nunito', Arial, sans-serif;
+  font-size: 13px; font-weight: 800;
+  cursor: pointer; white-space: nowrap; text-transform: uppercase;
+  transition: all 0.2s;
+}
+.tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+.panel { display: none; padding: 16px 16px 80px; }
+.panel.active { display: block; }
+
+/* SECTION TITLE */
+.sec { font-size: 11px; font-weight: 900; color: #3a5a8f; letter-spacing: 3px; text-transform: uppercase; margin: 16px 0 10px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+
+/* ── DRILL TAB ──────────────────────────────────────────── */
+.spin-card {
+  background: linear-gradient(135deg, #0d1a30, #1a0a08);
+  border: 2px solid var(--red);
+  border-radius: 20px; padding: 24px 20px;
+  text-align: center; margin-bottom: 16px;
+  box-shadow: var(--glow-red);
+}
+.spin-icon { font-size: 72px; animation: spin-pulse 2s infinite; }
+@keyframes spin-pulse {
+  0%,100% { filter: drop-shadow(0 0 8px rgba(230,57,70,0.4)); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 20px rgba(230,57,70,0.8)); transform: scale(1.05); }
+}
+.spin-title { font-size: 22px; font-weight: 900; color: var(--red); margin-top: 10px; letter-spacing: 1px; }
+.spin-steps { text-align: left; margin-top: 16px; }
+.spin-step {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid rgba(230,57,70,0.15);
+}
+.spin-step:last-child { border-bottom: none; }
+.step-num {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--red); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 900; flex-shrink: 0;
+}
+.step-text { font-size: 16px; font-weight: 800; color: #bbb; line-height: 1.4; }
+.step-text strong { color: var(--red); }
+
+.daily-reminder {
+  background: var(--card); border: 1px solid var(--border);
+  border-left: 4px solid var(--gold);
+  border-radius: 12px; padding: 14px 16px; margin-bottom: 14px;
+  font-size: 15px; font-weight: 700; color: #7a9abf; line-height: 1.6;
+}
+.daily-reminder strong { color: var(--gold); }
+
+/* HIGH JABS CARD */
+.highjabs-card {
+  background: linear-gradient(135deg, #0a1a2e, #0d2a0a);
+  border: 2px solid var(--blue);
+  border-radius: 20px; padding: 20px;
+  text-align: center; margin-bottom: 16px;
+  box-shadow: var(--glow-blue);
+}
+.highjabs-icon { font-size: 56px; }
+.highjabs-title { font-size: 20px; font-weight: 900; color: var(--blue); margin-top: 8px; }
+.highjabs-desc { font-size: 15px; font-weight: 700; color: #5a8abf; margin-top: 8px; line-height: 1.6; }
+.jab-counter {
+  display: flex; gap: 10px; justify-content: center; margin-top: 16px;
+}
+.jab-arm {
+  flex: 1; background: #060c18; border: 1px solid var(--blue);
+  border-radius: 12px; padding: 14px 10px; text-align: center;
+}
+.jab-arm-label { font-size: 12px; font-weight: 800; color: #3a6aaf; letter-spacing: 1px; }
+.jab-count { font-size: 36px; font-weight: 900; color: var(--blue); margin: 6px 0; }
+.jab-btn {
+  width: 100%; padding: 10px; border-radius: 10px;
+  border: 1px solid var(--blue); background: #0a1828;
+  color: var(--blue); font-family: 'Nunito', Arial, sans-serif;
+  font-size: 14px; font-weight: 900; cursor: pointer;
+}
+.jab-btn:active { background: var(--blue); color: #fff; }
+.jab-reset { font-size: 12px; color: #2a4a6f; margin-top: 8px; cursor: pointer; font-weight: 700; }
+
+/* ── COMBO TAB ──────────────────────────────────────────── */
+.combo-display {
+  background: var(--card); border: 2px solid var(--gold);
+  border-radius: 24px; padding: 28px 20px;
+  text-align: center; margin-bottom: 20px;
+  box-shadow: var(--glow-gold); min-height: 160px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.combo-label { font-size: 12px; font-weight: 800; color: var(--gold-dark); letter-spacing: 3px; margin-bottom: 12px; }
+.combo-big { font-size: 72px; font-weight: 900; color: var(--gold); line-height: 1; letter-spacing: 4px; text-shadow: var(--glow-gold); transition: all 0.2s; }
+.combo-name { font-size: 18px; font-weight: 900; color: #4a6a9f; margin-top: 10px; }
+
+.combo-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.combo-btn {
+  padding: 18px 10px; border-radius: 16px;
+  border: 2px solid var(--border); background: var(--card);
+  color: #aaa; font-family: 'Nunito', Arial, sans-serif;
+  font-size: 20px; font-weight: 900; cursor: pointer;
+  transition: all 0.15s; text-align: center;
+}
+.combo-btn:active { transform: scale(0.95); }
+.combo-btn.num { border-color: var(--blue); color: var(--blue); }
+.combo-btn.num:active { background: var(--blue); color: white; }
+.combo-btn.special { border-color: var(--gold); color: var(--gold); }
+.combo-btn.special:active { background: var(--gold); color: #000; }
+
+.random-btn {
+  width: 100%; padding: 18px; border-radius: 16px;
+  border: 2px solid var(--red); background: linear-gradient(135deg, #1a0a08, #2a100a);
+  color: var(--red); font-family: 'Nunito', Arial, sans-serif;
+  font-size: 18px; font-weight: 900; cursor: pointer;
+  box-shadow: var(--glow-red); margin-bottom: 12px;
+}
+.random-btn:active { background: var(--red); color: white; }
+
+/* ── SKILLS TAB ─────────────────────────────────────────── */
+.skill-card {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px; border-bottom: 1px solid var(--border);
+  cursor: pointer; -webkit-user-select: none; user-select: none;
+  transition: background 0.15s;
+}
+.skill-card:active { background: rgba(68,153,255,0.05); }
+.skill-card.done { background: rgba(245,197,24,0.03); }
+.skill-check {
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0; margin-top: 2px; transition: all 0.3s;
+}
+.skill-card.done .skill-check { background: var(--gold); border-color: var(--gold); box-shadow: var(--glow-gold); }
+.skill-name { font-size: 18px; font-weight: 900; color: #aaa; }
+.skill-card.done .skill-name { color: var(--gold); }
+.skill-desc { font-size: 16px; font-weight: 700; color: #4a6a9f; margin-top: 6px; line-height: 1.7; }
+.skill-xp { font-size: 13px; font-weight: 800; color: var(--gold-dark); margin-top: 5px; }
+.skills-wrap {
+  background: #070c14; border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+}
+
+/* ── SESSION TAB ─────────────────────────────────────────── */
+.streak-row { display: flex; gap: 10px; margin-bottom: 14px; }
+.streak-chip {
+  flex: 1; background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 14px; text-align: center;
+}
+.streak-val { font-size: 30px; font-weight: 900; color: var(--gold); }
+.streak-lbl { font-size: 12px; color: #4a6a9f; font-weight: 700; margin-top: 3px; }
+
+.session-form { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 16px; }
+.form-label { font-size: 12px; font-weight: 800; color: #3a5a8f; letter-spacing: 2px; display: block; margin-bottom: 6px; }
+.wk-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+  cursor: pointer; -webkit-user-select: none; user-select: none;
+}
+.wk-item:last-child { border-bottom: none; }
+.wk-check {
+  width: 28px; height: 28px; border-radius: 8px;
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0; transition: all 0.2s;
+}
+.wk-item.checked .wk-check { background: var(--gold); border-color: var(--gold); }
+.wk-label { font-size: 16px; font-weight: 800; color: #aaa; }
+.wk-dur { font-size: 12px; color: #3a5a8f; margin-left: auto; font-weight: 700; }
+.wk-item.checked .wk-label { color: var(--gold); }
+textarea, select {
+  width: 100%; background: #06090f; border: 1px solid var(--border);
+  border-radius: 10px; color: #bbb; padding: 12px;
+  font-family: 'Nunito', Arial, sans-serif; font-size: 15px; font-weight: 700;
+  outline: none; resize: none; margin-top: 10px; -webkit-appearance: none;
+}
+.save-btn {
+  width: 100%; padding: 16px; background: linear-gradient(135deg, #0c1a08, #1a2a0a);
+  border: 2px solid var(--gold); border-radius: 14px;
+  color: var(--gold); font-family: 'Nunito', Arial, sans-serif;
+  font-size: 16px; font-weight: 900; cursor: pointer;
+  box-shadow: var(--glow-gold); margin-top: 12px;
+}
+.save-btn:active { background: var(--gold); color: #000; }
+
+.session-log-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-left: 4px solid var(--gold); border-radius: 10px;
+  padding: 12px 16px; margin-bottom: 10px;
+}
+.log-date { font-size: 12px; font-weight: 800; color: var(--gold-dark); margin-bottom: 4px; }
+.log-notes { font-size: 14px; font-weight: 700; color: #7a9abf; line-height: 1.5; }
+
+/* LEGENDS */
+.legend-card {
+  border-radius: 20px; padding: 24px 20px;
+  margin-bottom: 16px; position: relative; overflow: hidden;
+}
+.legend-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.015) 10px, rgba(255,255,255,0.015) 11px);
+}
+.legend-card.bruce { background: linear-gradient(135deg, #0a1428, #001a3a); border: 2px solid var(--blue); box-shadow: var(--glow-blue); }
+.legend-card.goggins { background: linear-gradient(135deg, #1a0808, #2a0a0a); border: 2px solid var(--red); box-shadow: var(--glow-red); }
+.legend-card.suntzu { background: linear-gradient(135deg, #0a0a08, #1a1808); border: 2px solid var(--gold); box-shadow: var(--glow-gold); }
+.legend-card.chay { background: linear-gradient(135deg, #0a1408, #101f08); border: 2px solid #2ec96e; box-shadow: 0 0 14px rgba(46,201,110,0.3); }
+.legend-card.code { background: linear-gradient(135deg, #0a0a14, #14081a); border: 2px solid #a855f7; box-shadow: 0 0 14px rgba(168,85,247,0.3); }
+.legend-card.lucas { background: linear-gradient(135deg, #0a1428, #1a0a28); border: 2px solid var(--gold); box-shadow: var(--glow-gold); }
+
+.legend-who {
+  font-size: 11px; font-weight: 900; letter-spacing: 3px;
+  text-transform: uppercase; margin-bottom: 12px; position: relative;
+}
+.legend-who.blue { color: var(--blue); }
+.legend-who.red { color: var(--red); }
+.legend-who.gold { color: var(--gold); }
+.legend-who.green { color: #2ec96e; }
+.legend-who.purple { color: #a855f7; }
+
+.legend-quote {
+  font-size: 20px; font-weight: 900; line-height: 1.6;
+  position: relative;
+}
+.legend-quote.blue { color: #a0c8ff; }
+.legend-quote.red { color: #ffaaaa; }
+.legend-quote.gold { color: #fde68a; }
+.legend-quote.green { color: #a7f3d0; }
+.legend-quote.white { color: #e2e8f0; }
+
+.legend-highlight {
+  font-size: 22px; font-weight: 900; margin-top: 12px;
+  display: block; position: relative;
+}
+.legend-highlight.blue { color: var(--blue); text-shadow: var(--glow-blue); }
+.legend-highlight.red { color: var(--red); text-shadow: var(--glow-red); }
+.legend-highlight.gold { color: var(--gold); text-shadow: var(--glow-gold); }
+.legend-highlight.green { color: #2ec96e; }
+
+.legend-bar-wrap { margin-top: 14px; background: rgba(0,0,0,0.4); border-radius: 8px; height: 20px; overflow: hidden; position: relative; }
+.legend-bar { height: 100%; width: 40%; background: linear-gradient(90deg, var(--red), #ff8800); border-radius: 8px; }
+.legend-bar-label { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: white; }
+
+.code-row { display: flex; gap: 14px; margin-bottom: 8px; }
+.code-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+.code-dot.green { background: #2ec96e; }
+.code-dot.red { background: var(--red); }
+.code-text { font-size: 16px; font-weight: 700; color: #c0d0e0; line-height: 1.5; }
+
+.lucas-personal {
+  font-size: 19px; font-weight: 800; color: #c0d8ff; line-height: 1.8; position: relative;
+}
+.lucas-personal .gold { color: var(--gold); font-size: 22px; display: block; margin-top: 8px; text-shadow: var(--glow-gold); }
+.lucas-oath {
+  margin-top: 16px; padding: 14px; background: rgba(0,0,0,0.3);
+  border-radius: 12px; border: 1px solid var(--gold);
+  font-size: 20px; font-weight: 900; color: var(--gold);
+  text-align: center; text-shadow: var(--glow-gold); letter-spacing: 1px;
+}
+
+.legend-movie-btn {
+  display: block; text-decoration: none; margin-bottom: 16px;
+  width: 100%; padding: 16px; text-align: center;
+  background: linear-gradient(135deg, #0c1a08, #1a2a0a);
+  border: 2px solid var(--gold); border-radius: 16px;
+  color: var(--gold); font-family: 'Nunito', Arial, sans-serif;
+  font-size: 16px; font-weight: 900; box-shadow: var(--glow-gold);
+}
+
+/* RESOURCES */
+.res-link {
+  display: block; text-decoration: none; margin-bottom: 10px;
+}
+.res-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px;
+  display: flex; align-items: center; gap: 14px;
+}
+.res-icon { font-size: 32px; flex-shrink: 0; }
+.res-title { font-size: 16px; font-weight: 900; color: var(--gold); }
+.res-sub { font-size: 12px; font-weight: 700; color: #4a6a9f; margin-top: 3px; }
+.res-arrow { margin-left: auto; font-size: 22px; color: #2a4a6f; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 80px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #0c1a08; border: 1px solid var(--gold);
+  color: var(--gold); padding: 10px 20px; border-radius: 20px;
+  font-size: 14px; font-weight: 900; opacity: 0;
+  transition: all 0.4s; z-index: 9000;
+  box-shadow: var(--glow-gold); pointer-events: none; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* BOOT */
+.boot {
+  position: fixed; inset: 0; background: var(--bg);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 99999; transition: opacity 0.8s;
+}
+.boot.out { opacity: 0; pointer-events: none; }
+.boot-icon { font-size: 80px; animation: boot-glow 1s infinite; }
+@keyframes boot-glow {
+  0%,100% { filter: drop-shadow(0 0 8px rgba(245,197,24,0.4)); }
+  50% { filter: drop-shadow(0 0 28px rgba(245,197,24,0.9)); }
+}
+.boot-title { font-size: 26px; font-weight: 900; color: var(--gold); letter-spacing: 4px; margin-top: 14px; }
+.boot-sub { font-size: 12px; color: #4a6a9f; letter-spacing: 4px; font-weight: 700; margin-top: 6px; }
+.boot-oath { font-size: 14px; color: #2a4a6f; font-style: italic; margin-top: 10px; font-weight: 700; }
+.boot-bar-wrap { width: 200px; height: 5px; background: var(--card); border-radius: 2px; margin-top: 22px; overflow: hidden; }
+.boot-bar { height: 100%; background: var(--gold); animation: boot-fill 1.8s ease-out forwards; box-shadow: 0 0 8px var(--gold); }
+@keyframes boot-fill { 0% { width: 0%; } 100% { width: 100%; } }
+</style>
+</head>
+<body>
+
+<!-- BOOT -->
+<div class="boot" id="boot">
+  <div class="boot-icon">🥊</div>
+  <div class="boot-title">WARRIOR</div>
+  <div class="boot-sub">LUCAS REINHARD</div>
+  <div class="boot-oath">"I am Lucas. I am unbreakable."</div>
+  <div class="boot-bar-wrap"><div class="boot-bar"></div></div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-row">
+    <span class="badge">WARRIOR-L117</span>
+    <span class="badge" id="total-xp">0 XP</span>
+  </div>
+  <h1>🥊 WARRIOR TRAINING</h1>
+  <div class="header-sub">LUCAS REINHARD // UNCLE'S METHOD</div>
+  <div class="xp-wrap"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+  <div class="xp-label" id="xp-label">ROOKIE → FIGHTER: 0/50 XP</div>
+</div>
+
+<!-- RANK -->
+<div class="rank-card">
+  <div class="rank-icon" id="rank-icon">🥊</div>
+  <div>
+    <div class="rank-name" id="rank-name">ROOKIE</div>
+    <div class="rank-sub" id="rank-sub">Just put the gloves on</div>
+  </div>
+  <div class="rank-stars" id="rank-stars">☆☆☆☆☆</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab(this,'tab-drill')">🌀 DRILLS</button>
+  <button class="tab-btn" onclick="switchTab(this,'tab-combos')">1-2-3 COMBOS</button>
+  <button class="tab-btn" onclick="switchTab(this,'tab-skills')">🏅 SKILLS</button>
+  <button class="tab-btn" onclick="switchTab(this,'tab-session')">📅 SESSION</button>
+  <button class="tab-btn" onclick="switchTab(this,'tab-legends')">💡 LEGENDS</button>
+  <button class="tab-btn" onclick="switchTab(this,'tab-resources')">📺 VIDEOS</button>
+</div>
+
+<!-- DRILLS TAB -->
+<div class="panel active" id="tab-drill">
+
+  <div class="daily-reminder">
+    <strong>⚡ Daily non-negotiable:</strong> Do THE WARRIOR SPIN every single session. It is THE drill. Everything else supports this one move.
+  </div>
+
+  <!-- WARRIOR SPIN -->
+  <div class="spin-card">
+    <div class="spin-icon">🌀</div>
+    <div class="spin-title">THE WARRIOR SPIN</div>
+    <div class="spin-steps">
+      <div class="spin-step"><div class="step-num">1</div><div class="step-text">Someone pushes you from behind — <strong>STOMP</strong> your back foot hard</div></div>
+      <div class="spin-step"><div class="step-num">2</div><div class="step-text"><strong>SPIN</strong> around fast to face them</div></div>
+      <div class="spin-step"><div class="step-num">3</div><div class="step-text"><strong>HANDS UP</strong> — warrior stance, eyes on them</div></div>
+      <div class="spin-step"><div class="step-num">4</div><div class="step-text">Look them in the eye. Say <strong>"STOP!"</strong></div></div>
+      <div class="spin-step"><div class="step-num">5</div><div class="step-text">If they come again — <strong>TEEP!</strong> Front kick, push them away</div></div>
+    </div>
+  </div>
+
+  <!-- HIGH JABS -->
+  <div class="highjabs-card">
+    <div class="highjabs-icon">🙌</div>
+    <div class="highjabs-title">HIGH JABS — UNCLE'S SECRET</div>
+    <div class="highjabs-desc">Hold both arms high above your head and throw jabs up there. 30 each arm. When you bring them down to fight, they feel light as a feather — and your shoulders NEVER get tired!</div>
+    <div class="jab-counter">
+      <div class="jab-arm">
+        <div class="jab-arm-label">LEFT ARM</div>
+        <div class="jab-count" id="left-count">0</div>
+        <button class="jab-btn" onclick="addJab('left')">+1 JAB</button>
+      </div>
+      <div class="jab-arm">
+        <div class="jab-arm-label">RIGHT ARM</div>
+        <div class="jab-count" id="right-count">0</div>
+        <button class="jab-btn" onclick="addJab('right')">+1 JAB</button>
+      </div>
+    </div>
+    <div class="jab-reset" onclick="resetJabs()">↺ Reset both arms</div>
+  </div>
+
+  <div class="sec">LEGS FIRST — ALWAYS</div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;">
+    <div style="font-size:40px;text-align:center;margin-bottom:10px;">🦵</div>
+    <div style="font-size:16px;font-weight:800;color:#7a9abf;line-height:1.7;">Your <strong style="color:var(--blue);">legs are your longest weapon</strong> and your most powerful punch. The <strong style="color:var(--blue);">TEEP</strong> (front kick straight out) keeps them away before they can even reach you.<br><br>Legs before hands. Always. Every time.</div>
+  </div>
+
+</div>
+
+<!-- COMBOS TAB -->
+<div class="panel" id="tab-combos">
+
+  <div class="combo-display">
+    <div class="combo-label">UNCLE CALLS —</div>
+    <div class="combo-big" id="combo-display">?</div>
+    <div class="combo-name" id="combo-name">Press a button below</div>
+  </div>
+
+  <div class="sec">CALL A SINGLE PUNCH</div>
+  <div class="combo-btns">
+    <button class="combo-btn num" onclick="showCombo('1','JAB — quick left snap!')">1</button>
+    <button class="combo-btn num" onclick="showCombo('2','CROSS — big right straight!')">2</button>
+    <button class="combo-btn num" onclick="showCombo('3','HOOK — right around the side!')">3</button>
+    <button class="combo-btn num" onclick="showCombo('🦵','TEEP — front kick, push away!')">🦵</button>
+  </div>
+
+  <div class="sec">COMBOS</div>
+  <div class="combo-btns">
+    <button class="combo-btn special" onclick="showCombo('1 — 2','Jab then Cross!')">1 — 2</button>
+    <button class="combo-btn special" onclick="showCombo('1 — 1 — 2','Double jab then Cross!')">1 — 1 — 2</button>
+    <button class="combo-btn special" onclick="showCombo('1 — 2 — 3','Jab, Cross, Hook!')">1 — 2 — 3</button>
+    <button class="combo-btn special" onclick="showCombo('2 — 🦵','Cross then Teep!')">2 — 🦵</button>
+  </div>
+
+  <button class="random-btn" onclick="randomCombo()">🎲 RANDOM — CALL IT!</button>
+
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;">
+    <div class="sec" style="margin-top:0">THE NUMBER CODE</div>
+    <div style="font-size:16px;font-weight:800;line-height:2;color:#7a9abf;">
+      <span style="color:var(--blue);">1</span> = JAB — fast left punch, snaps back<br>
+      <span style="color:var(--blue);">2</span> = CROSS — powerful right straight<br>
+      <span style="color:var(--blue);">3</span> = HOOK — right punch around the side<br>
+      <span style="color:var(--gold);">🦵</span> = TEEP — front kick, push them back
+    </div>
+  </div>
+</div>
+
+<!-- SKILLS TAB -->
+<div class="panel" id="tab-skills">
+  <div class="skills-wrap" id="skills-list"></div>
+</div>
+
+<!-- SESSION TAB -->
+<div class="panel" id="tab-session">
+
+  <div class="streak-row">
+    <div class="streak-chip"><div class="streak-val" id="s-streak">0</div><div class="streak-lbl">🔥 STREAK</div></div>
+    <div class="streak-chip"><div class="streak-val" id="s-total">0</div><div class="streak-lbl">🥊 TOTAL DAYS</div></div>
+    <div class="streak-chip"><div class="streak-val" id="s-best">0</div><div class="streak-lbl">⭐ BEST</div></div>
+  </div>
+
+  <div class="session-form">
+    <div class="sec" style="margin-top:0">TODAY'S WORKOUT</div>
+    <div id="session-checklist"></div>
+    <label class="form-label" style="margin-top:14px;">NOTES</label>
+    <textarea id="session-notes" rows="2" placeholder="How did Lucas go today? 💙🥊"></textarea>
+    <select id="session-rating">
+      <option value="5">🏆 LEGENDARY session</option>
+      <option value="4">⭐⭐⭐⭐ Really great</option>
+      <option value="3">⭐⭐⭐ Good work</option>
+      <option value="2">⭐⭐ Getting there</option>
+      <option value="1">⭐ First time — proud of you!</option>
+    </select>
+    <button class="save-btn" onclick="saveSession()">🥊 LOG SESSION +10 XP</button>
+  </div>
+
+  <div class="sec">SESSION HISTORY</div>
+  <div id="session-history"></div>
+</div>
+
+<!-- LEGENDS TAB -->
+<div class="panel" id="tab-legends">
+
+  <a class="legend-movie-btn" href="/LUCAS-WARRIOR-CODE.html">
+    ▶ WATCH THE FULL WARRIOR MOVIE 🎬
+  </a>
+
+  <!-- BRUCE LEE -->
+  <div class="legend-card bruce">
+    <div class="legend-who blue">🥋 BRUCE LEE — THE GREATEST</div>
+    <div class="legend-quote blue">
+      "Be formless. Shapeless.<br>Like water."<br><br>
+      Water in a cup — becomes the cup.<br>
+      Water in a bottle — becomes the bottle.
+    </div>
+    <span class="legend-highlight blue">BE LIKE WATER, LUCAS. 💧</span>
+  </div>
+
+  <!-- GOGGINS -->
+  <div class="legend-card goggins">
+    <div class="legend-who red">💪 DAVID GOGGINS — THE HARDEST MAN ALIVE</div>
+    <div class="legend-quote red">
+      "When your mind says stop..."
+    </div>
+    <div class="legend-bar-wrap" style="margin-top:12px;">
+      <div class="legend-bar"></div>
+      <div class="legend-bar-label">40% — YOUR MIND QUITS HERE</div>
+    </div>
+    <span class="legend-highlight red">YOU STILL HAVE 60% LEFT. KEEP GOING. 🔥</span>
+  </div>
+
+  <!-- SUN TZU -->
+  <div class="legend-card suntzu">
+    <div class="legend-who gold">📜 SUN TZU — 5,000 YEARS AGO</div>
+    <div class="legend-quote gold">
+      "Know yourself...<br>
+      ...and you will win all battles."
+    </div>
+    <div style="font-size:15px;font-weight:700;color:#78716c;margin-top:10px;line-height:1.6;">
+      The warrior who trains every day is never surprised.
+    </div>
+    <span class="legend-highlight gold">TRAIN EVERY DAY. WIN EVERY TIME. ⚔️</span>
+  </div>
+
+  <!-- PRESIDENT CHAY -->
+  <div class="legend-card chay">
+    <div class="legend-who green">🏗️ PRESIDENT CHAY — BUILT IT ALL FROM NOTHING</div>
+    <div class="legend-quote green">
+      He doesn't stop when he's tired.<br>
+      He stops when it's <strong style="color:#2ec96e;font-size:24px;">DONE.</strong>
+    </div>
+    <span class="legend-highlight green">NOT TIRED. DONE. 🏆</span>
+  </div>
+
+  <!-- THE WARRIOR CODE -->
+  <div class="legend-card code">
+    <div class="legend-who purple">⚖️ THE WARRIOR CODE</div>
+    <div class="code-row"><div class="code-dot green"></div><div class="code-text">We train to be kind and to respect everyone</div></div>
+    <div class="code-row"><div class="code-dot green"></div><div class="code-text">We bow to our teacher and our opponent</div></div>
+    <div class="code-row"><div class="code-dot green"></div><div class="code-text">We do NOT train to hurt people</div></div>
+    <div class="code-row" style="margin-top:10px;"><div class="code-dot red"></div><div class="code-text" style="color:#ffaaaa;">But if someone attacks us — we protect ourselves with <strong>everything we have</strong></div></div>
+    <div class="code-row"><div class="code-dot red"></div><div class="code-text" style="color:#ffaaaa;font-weight:900;">Every. Single. Time.</div></div>
+  </div>
+
+  <!-- FOR LUCAS -->
+  <div class="legend-card lucas">
+    <div class="legend-who gold">💙 THIS ONE IS FOR YOU, LUCAS</div>
+    <div class="lucas-personal">
+      You got pushed down.<br>
+      Every day. All year.<br>
+      You got back up.<br>
+      Without crying.<br>
+      Without quitting.<br>
+      <span class="gold">That's already a warrior.</span>
+    </div>
+    <div class="lucas-oath">
+      "I am Lucas.<br>I am unbreakable." 🥊
+    </div>
+  </div>
+
+</div>
+
+<!-- RESOURCES TAB -->
+<div class="panel" id="tab-resources">
+  <div class="daily-reminder"><strong>📺 Watch these with Lucas</strong> before or after training. They show the moves — not just explain them.</div>
+
+  <a class="res-link" href="/WARRIOR-PLAYLIST.html">
+    <div class="res-card" style="border-left:4px solid var(--gold);">
+      <div class="res-icon">📺</div>
+      <div><div class="res-title">WARRIOR PLAYLIST</div><div class="res-sub">8 verified boxing & training videos</div></div>
+      <div class="res-arrow">›</div>
+    </div>
+  </a>
+
+  <a class="res-link" href="/LUCAS-WARRIOR-PROGRAM.html">
+    <div class="res-card" style="border-left:4px solid var(--blue);">
+      <div class="res-icon">🥊</div>
+      <div><div class="res-title">DAILY WORKOUT PROGRAM</div><div class="res-sub">9-card full session — bear crawl to spin</div></div>
+      <div class="res-arrow">›</div>
+    </div>
+  </a>
+
+  <a class="res-link" href="/LUCAS-WARRIOR-CODE.html">
+    <div class="res-card" style="border-left:4px solid var(--red);">
+      <div class="res-icon">🏆</div>
+      <div><div class="res-title">THE WARRIOR CODE</div><div class="res-sub">Lucas's oath — animated mini-movie</div></div>
+      <div class="res-arrow">›</div>
+    </div>
+  </a>
+
+  <div class="sec">UNCLE'S KEY VIDEOS</div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;">
+    <div style="font-size:15px;font-weight:700;line-height:2;color:#5a7abf;">
+      📌 <strong style="color:#aaa;">START HERE:</strong> "How To Teach Boxing To Any Child Age 2-7"<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://youtu.be/C0sahZHUrWI" style="color:var(--blue);">youtu.be/C0sahZHUrWI</a> — 409K views<br>
+      📌 <strong style="color:#aaa;">DAILY SESSION:</strong> "Boxing Workout for Kids & Parents"<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://youtu.be/66d-cx6XObM" style="color:var(--blue);">youtu.be/66d-cx6XObM</a><br>
+      📌 <strong style="color:#aaa;">THE KICK:</strong> "TEEP Push Kick for Kids"<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://youtu.be/B1OOTNaPN7I" style="color:var(--blue);">youtu.be/B1OOTNaPN7I</a>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ────────────────────────────────────────────────────────────────────
+let ws = JSON.parse(localStorage.getItem('lucas-warrior') || '{}');
+if (!ws.done) ws.done = [];
+if (!ws.xp) ws.xp = 0;
+if (!ws.log) ws.log = [];
+let jabCounts = JSON.parse(localStorage.getItem('warrior-jabs') || '{"left":0,"right":0}');
+
+function saveWS() { localStorage.setItem('lucas-warrior', JSON.stringify(ws)); }
+
+// ── SKILLS DATA ──────────────────────────────────────────────────────────────
+const SKILLS = [
+  { id:'W1', name:'HIGH JABS WARM-UP 🙌', desc:"Uncle's secret — 30 jabs above your head each arm. When you come down to fight, shoulders never tire!", xp:25 },
+  { id:'W2', name:'WARRIOR STANCE 🦵', desc:'Feet apart, left foot forward, chin tucked, hands up, knees bent. Light on your toes — always ready!', xp:20 },
+  { id:'W3', name:'THE NUMBERS 1-2-3 🔢', desc:'1 = JAB. 2 = CROSS. 3 = HOOK. Uncle calls the number — you throw the punch. Learn the code!', xp:25 },
+  { id:'W4', name:'COMBO 1-2 🥊🥊', desc:'Jab then Cross. The most important combo in boxing. Snap back after each punch. Practice till it feels natural!', xp:25 },
+  { id:'W5', name:'COMBO 1-1-2 ⚡', desc:'Double jab then Cross! Jab, jab, then big cross. Uncle holds the mitts — you fire it!', xp:25 },
+  { id:'W6', name:'LEGS FIRST 🦵💥', desc:'Your legs are your longest and most powerful weapon. The TEEP pushes them away before they reach you!', xp:25 },
+  { id:'W7', name:'MOVE YOUR FEET 🔀', desc:'Shuffle forward, back, left, right. L-STEP: 45 degrees offline. Never stand still — a moving target is hard to hit!', xp:20 },
+  { id:'W8', name:'THE WARRIOR SPIN 🌀', desc:'Push from behind → STOMP → SPIN → hands up → STOP! → TEEP. Practise every single day. This is THE drill.', xp:40 },
+  { id:'W9', name:'WARRIOR GRADUATION 🏆', desc:'"I am Lucas. I am unbreakable." You know Uncle\'s method. You are a Warrior. Nobody messes with the Reinhard family. 🥊', xp:75 },
+];
+
+// ── RANKS ────────────────────────────────────────────────────────────────────
+const RANKS = [
+  { name:'ROOKIE', sub:'Just put the gloves on', icon:'🥊', stars:'☆☆☆☆☆', min:0 },
+  { name:'FIGHTER', sub:'Learning the combinations', icon:'⚡', stars:'⭐☆☆☆☆', min:50 },
+  { name:'BRAWLER', sub:'Footwork coming together', icon:'🦵', stars:'⭐⭐☆☆☆', min:120 },
+  { name:'CONTENDER', sub:'The Warrior Spin is locked in', icon:'🌀', stars:'⭐⭐⭐☆☆', min:200 },
+  { name:'CHAMPION', sub:'Warrior inside and out', icon:'🏆', stars:'⭐⭐⭐⭐☆', min:270 },
+  { name:'WARRIOR', sub:'I am Lucas. I am unbreakable.', icon:'💎', stars:'🏆🏆🏆🏆🏆', min:310 },
+];
+
+const COMBOS = [
+  ['1','JAB — quick left snap!'],
+  ['2','CROSS — big right straight!'],
+  ['3','HOOK — right around the side!'],
+  ['🦵','TEEP — front kick, push them away!'],
+  ['1 — 2','Jab then Cross!'],
+  ['1 — 1 — 2','Double jab, then Cross!'],
+  ['1 — 2 — 3','Jab, Cross, Hook!'],
+  ['2 — 🦵','Cross then Teep — get distance!'],
+];
+
+const WORKOUT = [
+  { label:'🙌 High Jabs', dur:'3 min' },
+  { label:'🏃 Warm Up', dur:'3 min' },
+  { label:'🌀 Warrior Spin Drill', dur:'5 min' },
+  { label:'🥊 Combos on Mitts', dur:'8 min' },
+  { label:'🦵 Teep Practice', dur:'4 min' },
+  { label:'🔀 Footwork Drill', dur:'3 min' },
+  { label:'🤸 Cool Down', dur:'3 min' },
+];
+
+// ── RANK / XP ────────────────────────────────────────────────────────────────
+function getRank() { let r = RANKS[0]; for (const x of RANKS) if (ws.xp >= x.min) r = x; return r; }
+function getNextRank() { for (const x of RANKS) if (x.min > ws.xp) return x; return null; }
+
+function updateXP() {
+  const r = getRank(), nx = getNextRank();
+  document.getElementById('rank-icon').textContent = r.icon;
+  document.getElementById('rank-name').textContent = r.name;
+  document.getElementById('rank-sub').textContent = r.sub;
+  document.getElementById('rank-stars').textContent = r.stars;
+  document.getElementById('total-xp').textContent = ws.xp + ' XP';
+  if (nx) {
+    const pct = Math.min(100, ((ws.xp - r.min) / (nx.min - r.min)) * 100);
+    document.getElementById('xp-fill').style.width = pct + '%';
+    document.getElementById('xp-label').textContent = r.name + ' → ' + nx.name + ': ' + ws.xp + '/' + nx.min + ' XP';
+  } else {
+    document.getElementById('xp-fill').style.width = '100%';
+    document.getElementById('xp-label').textContent = '🏆 WARRIOR — MAXIMUM RANK ACHIEVED';
+  }
+}
+
+// ── SKILLS ───────────────────────────────────────────────────────────────────
+function renderSkills() {
+  const el = document.getElementById('skills-list');
+  el.innerHTML = SKILLS.map(s => {
+    const done = ws.done.includes(s.id);
+    return `<div class="skill-card ${done?'done':''}" onclick="toggleSkill('${s.id}',${s.xp})">
+      <div class="skill-check">${done ? '✓' : ''}</div>
+      <div style="flex:1">
+        <div class="skill-name">${s.name}</div>
+        <div class="skill-desc">${s.desc}</div>
+        <div class="skill-xp">+${s.xp} XP</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleSkill(id, xp) {
+  if (ws.done.includes(id)) {
+    ws.done = ws.done.filter(d => d !== id);
+    ws.xp = Math.max(0, ws.xp - xp);
+    showToast('Skill unmarked');
+  } else {
+    ws.done.push(id);
+    ws.xp += xp;
+    showToast('⚡ +' + xp + ' XP!');
+  }
+  saveWS(); updateXP(); renderSkills();
+}
+
+// ── JABS ─────────────────────────────────────────────────────────────────────
+function addJab(arm) {
+  jabCounts[arm]++;
+  localStorage.setItem('warrior-jabs', JSON.stringify(jabCounts));
+  document.getElementById(arm + '-count').textContent = jabCounts[arm];
+  if (jabCounts[arm] === 30) showToast(arm === 'left' ? '🙌 Left arm done!' : '🙌 Right arm done!');
+}
+function resetJabs() {
+  jabCounts = { left: 0, right: 0 };
+  localStorage.setItem('warrior-jabs', JSON.stringify(jabCounts));
+  document.getElementById('left-count').textContent = 0;
+  document.getElementById('right-count').textContent = 0;
+  showToast('Jab counters reset');
+}
+
+// ── COMBOS ───────────────────────────────────────────────────────────────────
+function showCombo(num, name) {
+  const d = document.getElementById('combo-display');
+  const n = document.getElementById('combo-name');
+  d.style.transform = 'scale(0.8)';
+  setTimeout(() => {
+    d.textContent = num;
+    n.textContent = name;
+    d.style.transform = 'scale(1)';
+    d.style.transition = 'transform 0.15s ease';
+  }, 100);
+  if (navigator.vibrate) navigator.vibrate(80);
+}
+
+function randomCombo() {
+  const c = COMBOS[Math.floor(Math.random() * COMBOS.length)];
+  showCombo(c[0], c[1]);
+}
+
+// ── SESSION ───────────────────────────────────────────────────────────────────
+let sessionChecks = WORKOUT.map(() => false);
+
+function renderSessionChecklist() {
+  document.getElementById('session-checklist').innerHTML = WORKOUT.map((w,i) => `
+    <div class="wk-item ${sessionChecks[i]?'checked':''}" onclick="toggleWk(${i})">
+      <div class="wk-check">${sessionChecks[i]?'✓':''}</div>
+      <div class="wk-label">${w.label}</div>
+      <div class="wk-dur">${w.dur}</div>
+    </div>`).join('');
+}
+
+function toggleWk(i) {
+  sessionChecks[i] = !sessionChecks[i];
+  renderSessionChecklist();
+}
+
+function calcStreaks() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const total = ws.log.length;
+  let streak = 0, best = 0, run = 0, prev = null;
+  const sorted = [...ws.log].sort((a,b) => new Date(b.isoDate||0) - new Date(a.isoDate||0));
+  // current streak
+  let check = new Date(today);
+  const logDates = new Set(ws.log.map(l => l.isoDate).filter(Boolean));
+  while (true) {
+    const k = check.toISOString().split('T')[0];
+    if (logDates.has(k)) { streak++; check.setDate(check.getDate()-1); }
+    else break;
+  }
+  // best streak
+  const sortedAsc = [...logDates].sort();
+  for (const k of sortedAsc) {
+    const d = new Date(k);
+    if (prev) { const diff = (d-prev)/86400000; run = diff === 1 ? run+1 : 1; }
+    else run = 1;
+    if (run > best) best = run;
+    prev = d;
+  }
+  return { streak, total, best };
+}
+
+function updateStreaks() {
+  const { streak, total, best } = calcStreaks();
+  document.getElementById('s-streak').textContent = streak;
+  document.getElementById('s-total').textContent = total;
+  document.getElementById('s-best').textContent = best;
+}
+
+function saveSession() {
+  const notes = document.getElementById('session-notes').value.trim();
+  const rating = parseInt(document.getElementById('session-rating').value);
+  const isoDate = new Date().toISOString().split('T')[0];
+  const dateLabel = new Date().toLocaleDateString('en-AU', {weekday:'short',day:'numeric',month:'short'});
+  ws.log.unshift({ date: dateLabel, isoDate, notes, rating, checks: [...sessionChecks] });
+  ws.xp += 10;
+  saveWS(); updateXP(); updateStreaks(); renderHistory();
+  sessionChecks = WORKOUT.map(() => false);
+  renderSessionChecklist();
+  document.getElementById('session-notes').value = '';
+  showToast('🥊 SESSION LOGGED! +10 XP');
+}
+
+function renderHistory() {
+  const el = document.getElementById('session-history');
+  if (!ws.log.length) { el.innerHTML = '<div style="text-align:center;padding:30px;color:#333;font-weight:700;">No sessions yet — let\'s go! 🥊</div>'; return; }
+  const stars = n => '⭐'.repeat(n)+'☆'.repeat(5-n);
+  el.innerHTML = ws.log.map(l => `
+    <div class="session-log-card">
+      <div class="log-date">${l.date} · ${stars(l.rating)}</div>
+      <div class="log-notes">${l.notes || '—'}</div>
+    </div>`).join('');
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(btn, id) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+  if (id === 'tab-skills') renderSkills();
+  if (id === 'tab-session') { updateStreaks(); renderHistory(); renderSessionChecklist(); }
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  updateXP();
+  document.getElementById('left-count').textContent = jabCounts.left;
+  document.getElementById('right-count').textContent = jabCounts.right;
+  setTimeout(() => {
+    const b = document.getElementById('boot');
+    b.classList.add('out');
+    setTimeout(() => b.remove(), 900);
+  }, 2200);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Lucas Mission">
+<meta name="theme-color" content="#0a1a0a">
+<link rel="manifest" href="/lucas-manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<title>LUCAS MISSION: SPARTAN</title>
+<style>
+  :root {
+    --halo-green: #4499ff;
+    --halo-dark: #1a6abf;
+    --halo-bg: #03060f;
+    --halo-card: #0a1020;
+    --halo-border: #152040;
+    --halo-glow: 0 0 12px rgba(68,153,255,0.35);
+    --halo-glow-strong: 0 0 24px rgba(68,153,255,0.6);
+    --locked: #2a2a2a;
+    --locked-text: #555;
+    --gold: #ffd700;
+    --alert-red: #ff4444;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--halo-bg);
+    color: #ccc;
+    font-family: 'Nunito', 'Arial Rounded MT Bold', Arial, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* SCANLINE EFFECT */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(180deg, #0a1a30 0%, var(--halo-bg) 100%);
+    border-bottom: 2px solid var(--halo-green);
+    box-shadow: var(--halo-glow);
+    padding: 16px 20px 12px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .spartan-id {
+    font-size: 10px;
+    color: var(--halo-dark);
+    letter-spacing: 2px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--halo-green);
+    text-shadow: var(--halo-glow);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .header .subtitle {
+    font-size: 10px;
+    color: var(--halo-dark);
+    letter-spacing: 4px;
+    margin-top: 2px;
+  }
+
+  .xp-bar-wrap {
+    margin-top: 10px;
+    background: #0c180c;
+    border: 1px solid var(--halo-border);
+    border-radius: 4px;
+    height: 8px;
+    overflow: hidden;
+  }
+
+  .xp-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #1a6abf, #4499ff);
+    box-shadow: 0 0 8px var(--halo-green);
+    transition: width 0.8s ease;
+  }
+
+  .xp-label {
+    font-size: 13px;
+    color: var(--halo-dark);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+    font-weight: 800;
+  }
+
+  /* RANK BADGE */
+  .rank-badge {
+    background: var(--halo-card);
+    border: 1px solid var(--halo-green);
+    border-radius: 8px;
+    padding: 8px 14px;
+    margin: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: var(--halo-glow);
+  }
+
+  .rank-icon { font-size: 32px; }
+
+  .rank-info { flex: 1; }
+  .rank-name { font-size: 20px; color: var(--halo-green); font-weight: 900; letter-spacing: 1px; }
+  .rank-sub { font-size: 14px; color: var(--halo-dark); margin-top: 4px; font-weight: 700; }
+
+  .rank-stars { font-size: 22px; }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--halo-border);
+    background: var(--halo-card);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    flex: 1;
+    min-width: 80px;
+    padding: 12px 8px;
+    background: none;
+    border: none;
+    color: #555;
+    font-family: 'Nunito', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    white-space: nowrap;
+    text-transform: uppercase;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .tab-btn.active {
+    color: var(--halo-green);
+    border-bottom-color: var(--halo-green);
+    text-shadow: 0 0 8px var(--halo-green);
+  }
+
+  /* CONTENT */
+  .panel { display: none; padding: 16px; }
+  .panel.active { display: block; }
+
+  /* MISSION LEVEL */
+  .level-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--halo-card);
+    border: 1px solid var(--halo-border);
+    border-radius: 8px 8px 0 0;
+    margin-top: 16px;
+    cursor: pointer;
+  }
+
+  .level-header.unlocked {
+    border-color: var(--halo-green);
+    box-shadow: 0 0 8px rgba(68,153,255,0.2);
+  }
+
+  .level-header.locked {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  .level-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--halo-border);
+    border: 2px solid var(--halo-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: bold;
+    color: var(--halo-green);
+    flex-shrink: 0;
+  }
+
+  .level-header.locked .level-num {
+    border-color: #333;
+    color: #444;
+  }
+
+  .level-title { font-size: 17px; color: var(--halo-green); font-weight: 900; letter-spacing: 0.5px; }
+  .level-subtitle { font-size: 14px; color: #5a7a9f; margin-top: 3px; font-weight: 700; }
+  .level-prog { margin-left: auto; font-size: 15px; color: var(--halo-dark); font-weight: 800; }
+
+  .level-skills {
+    background: #05080f;
+    border: 1px solid var(--halo-border);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+  }
+
+  /* SKILL CARD */
+  .skill-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 16px;
+    border-bottom: 1px solid var(--halo-border);
+    cursor: pointer;
+    transition: background 0.15s;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .skill-card:last-child { border-bottom: none; }
+  .skill-card:active { background: rgba(68,255,68,0.05); }
+
+  .skill-card.done { background: rgba(68,255,68,0.04); }
+  .skill-card.done .skill-name { color: var(--halo-green); }
+
+  .skill-check {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 2px solid var(--halo-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: all 0.3s;
+  }
+
+  .skill-card.done .skill-check {
+    background: #4499ff;
+    border-color: var(--halo-green);
+    box-shadow: 0 0 10px rgba(68,255,68,0.5);
+  }
+
+  .skill-body { flex: 1; }
+  .skill-name { font-size: 18px; color: #bbb; font-weight: 900; letter-spacing: 0.5px; }
+  .skill-desc { font-size: 16px; color: #7a9abf; margin-top: 6px; line-height: 1.7; font-weight: 700; }
+  .skill-xp { font-size: 14px; color: var(--halo-dark); margin-top: 6px; font-weight: 800; }
+  .skill-card.done .skill-desc { color: #5a7a9f; }
+
+  /* ACHIEVEMENT */
+  .achievement {
+    background: var(--halo-card);
+    border: 1px solid var(--halo-border);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    opacity: 0.3;
+    transition: all 0.4s;
+  }
+
+  .achievement.unlocked {
+    opacity: 1;
+    border-color: var(--gold);
+    box-shadow: 0 0 12px rgba(255,215,0,0.3);
+  }
+
+  .ach-icon { font-size: 36px; }
+  .ach-name { font-size: 14px; color: var(--gold); font-weight: bold; }
+  .ach-desc { font-size: 15px; color: #666; margin-top: 3px; }
+
+  /* LOG TAB */
+  .log-entry-form {
+    background: var(--halo-card);
+    border: 1px solid var(--halo-border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .form-label { font-size: 15px; color: var(--halo-dark); letter-spacing: 2px; margin-bottom: 6px; display: block; }
+
+  select, textarea, input[type="text"] {
+    width: 100%;
+    background: #05080f;
+    border: 1px solid var(--halo-border);
+    border-radius: 6px;
+    color: #bbb;
+    font-family: 'Nunito', Arial, sans-serif;
+    font-size: 16px;
+    padding: 10px;
+    margin-bottom: 12px;
+    outline: none;
+    -webkit-appearance: none;
+  }
+
+  select:focus, textarea:focus, input:focus {
+    border-color: var(--halo-green);
+    box-shadow: 0 0 6px rgba(68,255,68,0.2);
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #081828, #0d2a50);
+    border: 1px solid var(--halo-green);
+    border-radius: 8px;
+    color: var(--halo-green);
+    font-family: 'Nunito', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: var(--halo-glow);
+    transition: all 0.2s;
+  }
+
+  .btn-primary:active {
+    background: linear-gradient(135deg, #0d2a50, #081828);
+    box-shadow: var(--halo-glow-strong);
+  }
+
+  .log-card {
+    background: var(--halo-card);
+    border: 1px solid var(--halo-border);
+    border-left: 3px solid var(--halo-green);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+
+  .log-date { font-size: 14px; color: var(--halo-dark); margin-bottom: 4px; }
+  .log-notes { font-size: 12px; color: #aaa; line-height: 1.5; }
+
+  /* STATS TAB */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .stat-card {
+    background: var(--halo-card);
+    border: 1px solid var(--halo-border);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .stat-val { font-size: 28px; color: var(--halo-green); font-weight: bold; text-shadow: var(--halo-glow); }
+  .stat-label { font-size: 14px; color: #555; letter-spacing: 1px; margin-top: 4px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #081828;
+    border: 1px solid var(--halo-green);
+    color: var(--halo-green);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: all 0.4s;
+    z-index: 9000;
+    box-shadow: var(--halo-glow-strong);
+    text-align: center;
+    max-width: 280px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* SPARTAN BOOT */
+  .boot-screen {
+    position: fixed;
+    inset: 0;
+    background: var(--halo-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    font-family: 'Nunito', Arial, sans-serif;
+    transition: opacity 0.8s;
+  }
+
+  .boot-screen.fade-out { opacity: 0; pointer-events: none; }
+
+  .boot-logo { font-size: 72px; animation: pulse-logo 1s infinite; }
+  @keyframes pulse-logo {
+    0%, 100% { filter: drop-shadow(0 0 8px rgba(68,153,255,0.3)); }
+    50% { filter: drop-shadow(0 0 24px rgba(68,153,255,0.8)); }
+  }
+
+  .boot-title { font-size: 24px; color: var(--halo-green); letter-spacing: 4px; margin-top: 12px; }
+  .boot-sub { font-size: 11px; color: var(--halo-dark); letter-spacing: 6px; margin-top: 6px; }
+  .boot-line { font-size: 11px; color: #1a2a4a; margin-top: 4px; letter-spacing: 1px; }
+  .boot-progress {
+    width: 200px;
+    height: 4px;
+    background: #0c180c;
+    border: 1px solid var(--halo-border);
+    border-radius: 2px;
+    margin-top: 24px;
+    overflow: hidden;
+  }
+  .boot-fill {
+    height: 100%;
+    background: #4499ff;
+    width: 0%;
+    animation: boot-load 1.6s ease-out forwards;
+    box-shadow: 0 0 8px var(--halo-green);
+  }
+  @keyframes boot-load {
+    0% { width: 0%; }
+    100% { width: 100%; }
+  }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-size: 14px;
+    color: var(--halo-dark);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin: 16px 0 8px;
+    border-bottom: 1px solid var(--halo-border);
+    padding-bottom: 6px;
+  }
+
+  /* EMPTY */
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #333;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.3; }
+
+  /* ── CALENDAR ─────────────────────────────────────────── */
+  .streak-bar {
+    display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .streak-chip {
+    flex: 1; min-width: 120px;
+    background: var(--halo-card);
+    border: 1px solid var(--halo-border);
+    border-radius: 14px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .streak-val { font-size: 32px; font-weight: 900; color: var(--halo-green); }
+  .streak-lbl { font-size: 13px; color: #5a7abf; font-weight: 700; margin-top: 4px; }
+
+  .cal-month-title {
+    font-size: 18px; font-weight: 900; color: var(--halo-green);
+    text-align: center; margin: 18px 0 8px;
+    letter-spacing: 1px;
+  }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-bottom: 6px;
+  }
+  .cal-dow {
+    text-align: center; font-size: 12px; font-weight: 900;
+    color: #3a5a8f; padding: 4px 0;
+  }
+  .cal-day {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--halo-card);
+    border: 1px solid var(--halo-border);
+    color: #5a7abf;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .cal-day.empty { background: transparent; border-color: transparent; cursor: default; }
+  .cal-day.today { border-color: var(--halo-green); color: var(--halo-green); }
+  .cal-day.trained {
+    background: linear-gradient(135deg, #0d2a50, #1a4a8a);
+    border-color: #4499ff;
+    color: #fff;
+    box-shadow: 0 0 8px rgba(68,153,255,0.4);
+  }
+  .cal-day.trained::after { content: '🥊'; font-size: 10px; position: absolute; bottom: 2px; right: 2px; }
+  .cal-day { position: relative; }
+  .cal-day.rest { opacity: 0.35; }
+  .cal-day.future { opacity: 0.4; cursor: default; }
+  .cal-day:active:not(.empty):not(.future) { transform: scale(0.92); }
+
+  /* LOG MODAL */
+  .cal-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 800;
+    display: none; align-items: flex-end; justify-content: center; padding: 16px;
+  }
+  .cal-modal-overlay.open { display: flex; }
+  .cal-modal {
+    background: #0a1020; border: 1px solid var(--halo-border);
+    border-radius: 24px; padding: 24px 20px;
+    width: 100%; max-width: 420px;
+    animation: slide-up-cal 0.3s ease;
+  }
+  @keyframes slide-up-cal {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .cal-modal-date { font-size: 20px; font-weight: 900; color: var(--halo-green); margin-bottom: 16px; }
+  .workout-checklist { margin-bottom: 16px; }
+  .wk-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0; border-bottom: 1px solid var(--halo-border);
+    cursor: pointer; -webkit-user-select: none; user-select: none;
+  }
+  .wk-item:last-child { border-bottom: none; }
+  .wk-check {
+    width: 28px; height: 28px; border-radius: 8px;
+    border: 2px solid var(--halo-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0; transition: all 0.2s;
+  }
+  .wk-item.checked .wk-check { background: #4499ff; border-color: #4499ff; }
+  .wk-label { font-size: 16px; font-weight: 800; color: #aaa; }
+  .wk-item.checked .wk-label { color: var(--halo-green); }
+  .wk-dur { font-size: 12px; color: #4a6a9f; margin-left: auto; font-weight: 700; }
+  .cal-notes-input {
+    width: 100%; background: #05080f; border: 1px solid var(--halo-border);
+    border-radius: 10px; color: #bbb; font-family: 'Nunito', Arial, sans-serif;
+    font-size: 15px; font-weight: 700; padding: 12px; margin-bottom: 14px;
+    outline: none; resize: none;
+  }
+  .cal-modal-btns { display: flex; gap: 10px; }
+  .cal-save-btn {
+    flex: 2; padding: 14px; background: linear-gradient(135deg, #081828, #0d2a50);
+    border: 1px solid var(--halo-green); border-radius: 12px;
+    color: var(--halo-green); font-family: 'Nunito', Arial, sans-serif;
+    font-size: 15px; font-weight: 900; cursor: pointer;
+  }
+  .cal-cancel-btn {
+    flex: 1; padding: 14px; background: var(--halo-card);
+    border: 1px solid var(--halo-border); border-radius: 12px;
+    color: #555; font-family: 'Nunito', Arial, sans-serif;
+    font-size: 15px; font-weight: 900; cursor: pointer;
+  }
+  .cal-clear-btn {
+    width: 100%; margin-top: 8px; padding: 12px;
+    background: transparent; border: 1px solid #441111;
+    border-radius: 12px; color: #884444;
+    font-family: 'Nunito', Arial, sans-serif; font-size: 14px; font-weight: 800;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<!-- BOOT SCREEN -->
+<div class="boot-screen" id="boot-screen">
+  <div class="boot-logo">🪖</div>
+  <div class="boot-title">LUCAS</div>
+  <div class="boot-sub">SPARTAN · FIELD AGENT</div>
+  <div class="boot-line">INITIALISING CORTANA INTERFACE...</div>
+  <div class="boot-progress"><div class="boot-fill"></div></div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <span class="spartan-id">SPARTAN-L117</span>
+    <span id="total-xp-label" class="spartan-id">0 XP</span>
+  </div>
+  <h1>⚔️ SPARTAN TRAINING</h1>
+  <div class="subtitle">LUCAS REINHARD // SPARTAN & SPY ACADEMY</div>
+  <div class="xp-bar-wrap">
+    <div class="xp-bar" id="xp-bar" style="width:0%"></div>
+  </div>
+  <div class="xp-label" id="xp-label">RECRUIT → WARRIOR: 0/100 XP</div>
+</div>
+
+<!-- RANK BADGE -->
+<div class="rank-badge" id="rank-badge">
+  <div class="rank-icon" id="rank-icon">🪖</div>
+  <div class="rank-info">
+    <div class="rank-name" id="rank-name">RECRUIT</div>
+    <div class="rank-sub" id="rank-sub">BEGINNING THE SPARTAN PATH</div>
+  </div>
+  <div class="rank-stars" id="rank-stars">☆☆☆☆☆</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab(this,'tab-missions')">🎯 MISSIONS</button>
+  <button class="tab-btn" onclick="switchTab(this,'tab-calendar')">📅 TRAINING</button>
+  <button class="tab-btn" onclick="switchTab(this,'tab-achievements')">🏅 BADGES</button>
+  <button class="tab-btn" onclick="switchTab(this,'tab-log')">📋 LOG</button>
+  <button class="tab-btn" onclick="switchTab(this,'tab-stats')">📊 STATS</button>
+</div>
+
+<!-- MISSIONS TAB -->
+<div class="panel active" id="tab-missions">
+  <div id="missions-list"></div>
+</div>
+
+<!-- CALENDAR TAB -->
+<div class="panel" id="tab-calendar">
+  <div class="streak-bar">
+    <div class="streak-chip">
+      <div class="streak-val" id="cal-streak">0</div>
+      <div class="streak-lbl">🔥 DAY STREAK</div>
+    </div>
+    <div class="streak-chip">
+      <div class="streak-val" id="cal-total">0</div>
+      <div class="streak-lbl">🥊 DAYS TRAINED</div>
+    </div>
+    <div class="streak-chip">
+      <div class="streak-val" id="cal-best">0</div>
+      <div class="streak-lbl">⭐ BEST STREAK</div>
+    </div>
+  </div>
+  <div id="calendar-months"></div>
+</div>
+
+<!-- CALENDAR LOG MODAL -->
+<div class="cal-modal-overlay" id="cal-modal-overlay" onclick="calOverlayClick(event)">
+  <div class="cal-modal">
+    <div class="cal-modal-date" id="cal-modal-date">Sunday 29 March</div>
+    <div class="section-title" style="font-size:13px;margin-top:0">TODAY'S WORKOUT</div>
+    <div class="workout-checklist" id="workout-checklist"></div>
+    <textarea class="cal-notes-input" id="cal-notes" rows="2" placeholder="Any notes? How did Lucas go today? 💙"></textarea>
+    <div class="cal-modal-btns">
+      <button class="cal-save-btn" onclick="saveCalDay()">✅ SAVE SESSION +10 XP</button>
+      <button class="cal-cancel-btn" onclick="closeCalModal()">✕</button>
+    </div>
+    <button class="cal-clear-btn" id="cal-clear-btn" onclick="clearCalDay()">🗑️ Clear this day</button>
+  </div>
+</div>
+
+<!-- ACHIEVEMENTS TAB -->
+<div class="panel" id="tab-achievements">
+  <div class="section-title">MISSION BADGES</div>
+  <div id="achievements-list"></div>
+</div>
+
+<!-- LOG TAB -->
+<div class="panel" id="tab-log">
+  <div class="log-entry-form">
+    <div class="section-title">LOG TRAINING SESSION</div>
+    <label class="form-label">DATE</label>
+    <input type="text" id="log-date" placeholder="Today's date">
+    <label class="form-label">WHAT DID WE PRACTISE?</label>
+    <textarea id="log-notes" rows="3" placeholder="e.g. Practised loud NO! voice and wrist escape..."></textarea>
+    <label class="form-label">HOW WAS LUCAS? (1–5 ⭐)</label>
+    <select id="log-rating">
+      <option value="5">⭐⭐⭐⭐⭐ LEGENDARY</option>
+      <option value="4">⭐⭐⭐⭐ GREAT</option>
+      <option value="3">⭐⭐⭐ SOLID</option>
+      <option value="2">⭐⭐ LEARNING</option>
+      <option value="1">⭐ JUST STARTED</option>
+    </select>
+    <button class="btn-primary" onclick="saveLog()">▶ LOG SESSION +10 XP</button>
+  </div>
+  <div class="section-title">SESSION HISTORY</div>
+  <div id="log-list"></div>
+</div>
+
+<!-- STATS TAB -->
+<div class="panel" id="tab-stats">
+  <div class="section-title">SPARTAN INTEL</div>
+  <div class="stat-grid" id="stats-grid"></div>
+
+  <div class="section-title">NEXT MISSION UNLOCKS AT</div>
+  <div id="next-unlock" style="padding:12px;background:var(--halo-card);border:1px solid var(--halo-border);border-radius:10px;font-size:14px;color:#666;font-weight:700;"></div>
+  </div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+const LEVELS = [
+  {
+    id: 1, title: 'LEVEL 1: AWARENESS', subtitle: 'Know your world — stay safe! 👁️',
+    emoji: '👁️', unlockAt: 0,
+    skills: [
+      { id:'L1S1', name:'MY FULL NAME 🏷️', desc:'Can you say your full name out loud? Practice saying it nice and clear so everyone can hear you!', xp:10 },
+      { id:'L1S2', name:'MY ADDRESS 🏠', desc:'Do you know where you live? Learn your address so you can tell a police officer if you need help.', xp:15 },
+      { id:'L1S3', name:"UNCLE'S PHONE NUMBER 📱", desc:"Learn Uncle's phone number by heart! Try saying it out loud without looking. You can do it!", xp:15 },
+      { id:'L1S4', name:'MY SAFE GROWN-UPS 🤗', desc:'Your 3 safe grown-ups are Uncle Adam, Uncle Simon and Grandpa. If you are not sure about someone — ask them first!', xp:10 },
+      { id:'L1S5', name:'TRUST YOUR TUMMY 🦋', desc:'If your tummy feels yucky or scared — listen to it! Your body is trying to tell you something important.', xp:10 },
+    ]
+  },
+  {
+    id: 2, title: 'LEVEL 2: VOICE POWER', subtitle: 'Your voice is a superpower! 📢',
+    emoji: '📢', unlockAt: 40,
+    skills: [
+      { id:'L2S1', name:'THE SPARTAN NO! 🦁', desc:'Yell NO as loud as a lion! Not a tiny no — a HUGE Spartan NO! It surprises bad people and gets attention.', xp:15 },
+      { id:'L2S2', name:'CALL FOR HELP 🆘', desc:'Shout HELP! really loud. Or yell THIS IS NOT MY UNCLE! so everyone nearby can hear you!', xp:15 },
+      { id:'L2S3', name:'POINT AT SOMEONE 👆', desc:'Pick one person and say YOU IN THE RED SHIRT — CALL THE POLICE! Pointing at one person works better than just yelling.', xp:20 },
+      { id:'L2S4', name:'GOOD SECRETS vs BAD SECRETS 🤫', desc:'A good surprise feels happy and exciting. A bad secret makes your tummy feel sick or scared. Never keep bad secrets — always tell Uncle!', xp:15 },
+    ]
+  },
+  {
+    id: 3, title: 'LEVEL 3: BODY SHIELD', subtitle: 'Your body — your rules! 🛡️',
+    emoji: '🛡️', unlockAt: 100,
+    skills: [
+      { id:'L3S1', name:'YOUR BUBBLE 🫧', desc:'Imagine a big bubble around you. Nobody is allowed inside your bubble without asking — not even grown-ups!', xp:10 },
+      { id:'L3S2', name:'SPARTAN STANCE ⚔️', desc:'Feet apart, chin down, hands up. Stand strong like a Spartan warrior! Practice this with Uncle.', xp:15 },
+      { id:'L3S3', name:'STOMP AND PULL 🦶', desc:'If someone grabs your arm — STOMP on their foot really hard, then PULL your arm away fast! Try it on both arms.', xp:20 },
+      { id:'L3S4', name:'THE LION ROAR 🦁', desc:'Take a big breath and let out your loudest ROAR! It surprises bad people and helps grown-ups nearby hear you.', xp:15 },
+      { id:'L3S5', name:'TURTLE CURL 🐢', desc:'If you fall down — tuck your chin in, cover your head with your arms, and curl up small. Then get up super fast!', xp:20 },
+    ]
+  },
+  {
+    id: 4, title: 'LEVEL 4: ESCAPE ARTIST', subtitle: 'Running away is always the right choice! 🏃',
+    emoji: '🏃', unlockAt: 175,
+    skills: [
+      { id:'L4S1', name:'WRIST SPIN 🔄', desc:'If someone grabs your wrist — spin your arm toward their thumb (that is the weakest part!) and pull away hard. Try both hands!', xp:20 },
+      { id:'L4S2', name:'BEAR HUG BREAK 🐻', desc:'If someone grabs you from behind — drop your weight down, STOMP on their foot, and push your elbow back into them. Then RUN!', xp:25 },
+      { id:'L4S3', name:'FIND SAFE PEOPLE 🏪', desc:'Run to a shop, a school, or a mum with little kids. Find lots of people — do not hide by yourself!', xp:15 },
+      { id:'L4S4', name:'FALL LIKE A PRO 🤸', desc:'Tuck your chin, stretch your arms out, and roll to the side. Never land on your head or flat on your face!', xp:20 },
+      { id:'L4S5', name:'KEEP RUNNING! 🚀', desc:'If you get away — keep going! Do not stop and do not go back. Find a safe grown-up and tell them straight away.', xp:15 },
+    ]
+  },
+  {
+    id: 5, title: 'LEVEL 5: SPARTAN MODE', subtitle: 'Master Chief is almost unlocked! 🪖',
+    emoji: '🪖', unlockAt: 270,
+    skills: [
+      { id:'L5S1', name:'FULL SPARTAN DRILL 💪', desc:'Do ALL your moves from memory — no help allowed! Spartan stance, big NO, wrist spin, bear hug break, run to safety!', xp:30 },
+      { id:'L5S2', name:'STRANGER GAME 🎭', desc:'Uncle pretends to be a stranger who offers you a lolly or a ride. Practice saying NO and getting away!', xp:25 },
+      { id:'L5S3', name:'SURPRISE GRAB GAME 🤼', desc:'Uncle grabs you from behind (gently!). You stomp, elbow, roar and run! Practice until it feels easy.', xp:25 },
+      { id:'L5S4', name:'LOST IN A SHOP GAME 🛒', desc:"Practice being lost in a shop. Find a safe grown-up, say your full name, and say Uncle's phone number. You've got this!", xp:20 },
+      { id:'L5S5', name:'SPARTAN GRADUATION! 🥳', desc:'You finished ALL the missions! You are now a MASTER CHIEF SPARTAN. Uncle is SO proud of you! 🪖⭐', xp:50 },
+    ]
+  },
+  {
+    id: 6, title: 'LEVEL 6: CIA TRADECRAFT', subtitle: 'Real spy skills — just for you! 🕵️',
+    emoji: '🕵️', unlockAt: 370,
+    skills: [
+      { id:'L6S1', name:'SPY EYES 👀', desc:'When you walk into any room — look around and notice 3 things. Where are the doors? Who is there? What looks different? Real spies do this everywhere they go!', xp:20 },
+      { id:'L6S2', name:'COUNT THE EXITS 🚪', desc:'In every building — find the doors first. Shops, school, restaurants. A spy always knows two ways out. How many exits can you find?', xp:20 },
+      { id:'L6S3', name:'THE FAMILY CODE WORD 🔑', desc:'Pick a secret word with Uncle that ONLY your family knows. If a stranger says "Uncle sent me to get you" — ask for the code word. No word? Do NOT go with them. Ever.', xp:25 },
+      { id:'L6S4', name:"KIM'S GAME 🧠", desc:'Look at 10 things on a table for 30 seconds. Then close your eyes. How many can you remember? Real CIA agents train their memory like this. Try to beat your score each time!', xp:20 },
+      { id:'L6S5', name:'COLOUR CODE ALERT 🟢🟡🔴', desc:'GREEN = everything feels safe and normal. YELLOW = something feels a bit weird — stay close to Uncle. RED = danger — use your Spartan moves NOW! Which colour are you right now?', xp:20 },
+      { id:'L6S6', name:'SPOT THE WEIRD THING 🔍', desc:'Look at a busy place like a shopping centre. What does NORMAL look like? Now — what looks different or out of place? Spies call this "checking the baseline." Practice spotting what does not fit.', xp:20 },
+      { id:'L6S7', name:'THE THREE TIMES RULE 👣', desc:'If you see the SAME person in three different places when you are out — that is not normal. Tell Uncle straight away. A spy notices when someone might be following them.', xp:25 },
+      { id:'L6S8', name:'FIELD AGENT GRADUATION! 🏅', desc:'You have completed ALL SIX levels! You know Spartan moves AND spy skills. You are now a CERTIFIED FIELD AGENT. Uncle is beyond proud. You are one of a kind, Lucas! 🕵️🪖⭐', xp:60 },
+    ]
+  }
+];
+
+const ACHIEVEMENTS = [
+  { id:'ach-01', name:'FIRST BLOOD', desc:'Complete your first skill', emoji:'⚡', condition: s => s.done.length >= 1 },
+  { id:'ach-02', name:'VOICE OF THUNDER', desc:'Complete all Level 2 skills', emoji:'📢', condition: s => LEVELS[1].skills.every(sk => s.done.includes(sk.id)) },
+  { id:'ach-03', name:'SHIELD OF STEEL', desc:'Complete all Level 3 skills', emoji:'🛡️', condition: s => LEVELS[2].skills.every(sk => s.done.includes(sk.id)) },
+  { id:'ach-04', name:'THE ESCAPE', desc:'Complete all Level 4 skills', emoji:'🏃', condition: s => LEVELS[3].skills.every(sk => s.done.includes(sk.id)) },
+  { id:'ach-05', name:'MASTER CHIEF', desc:'Complete ALL 26 Spartan skills', emoji:'🪖', condition: s => s.done.length >= 26 },
+  { id:'ach-06', name:'SESSION WARRIOR', desc:'Log 5 training sessions', emoji:'📋', condition: s => (s.log||[]).length >= 5 },
+  { id:'ach-07', name:'NEVER STOP', desc:'Log 10 training sessions', emoji:'💪', condition: s => (s.log||[]).length >= 10 },
+  { id:'ach-08', name:'SPARTAN LEVEL 1', desc:'Complete Level 1: Awareness', emoji:'👁️', condition: s => LEVELS[0].skills.every(sk => s.done.includes(sk.id)) },
+  { id:'ach-09', name:'SPY EYES OPEN', desc:'Complete your first CIA skill', emoji:'👀', condition: s => LEVELS[5].skills.some(sk => s.done.includes(sk.id)) },
+  { id:'ach-10', name:'CODE WORD KEEPER', desc:'Complete all CIA Tradecraft skills', emoji:'🕵️', condition: s => LEVELS[5].skills.every(sk => s.done.includes(sk.id)) },
+  { id:'ach-11', name:'CERTIFIED FIELD AGENT', desc:'Complete all 6 levels — Spartan AND Spy', emoji:'🏅', condition: s => LEVELS.every(lv => lv.skills.every(sk => s.done.includes(sk.id))) },
+  { id:'ach-12', name:'FIRST TRAINING DAY', desc:'Log your very first workout session', emoji:'🥊', condition: s => calcStreaks().total >= 1 },
+  { id:'ach-13', name:'ONE WEEK WARRIOR', desc:'Train 7 days in a row', emoji:'🔥', condition: s => calcStreaks().streak >= 7 },
+  { id:'ach-14', name:'30 DAY SPARTAN', desc:'Train 30 days in a row — legendary!', emoji:'💎', condition: s => calcStreaks().streak >= 30 },
+  { id:'ach-15', name:'GLOVES ON', desc:'Complete 10 total training days', emoji:'🥇', condition: s => calcStreaks().total >= 10 },
+];
+
+const RANKS = [
+  { name:'RECRUIT', sub:'Beginning the Spartan path', icon:'🪖', stars:'☆☆☆☆☆', min:0 },
+  { name:'CADET', sub:'Learning the basics', icon:'🛡️', stars:'⭐☆☆☆☆', min:30 },
+  { name:'RANGER', sub:'Body and voice activated', icon:'📢', stars:'⭐⭐☆☆☆', min:80 },
+  { name:'DEFENDER', sub:'Escape artist unlocked', icon:'🏃', stars:'⭐⭐⭐☆☆', min:150 },
+  { name:'GUARDIAN', sub:'Spartan protector status', icon:'⚔️', stars:'⭐⭐⭐⭐☆', min:250 },
+  { name:'MASTER CHIEF', sub:'Full Spartan — never forgotten', icon:'🪖', stars:'⭐⭐⭐⭐⭐', min:370 },
+  { name:'FIELD AGENT', sub:'Spartan + Spy — totally unstoppable', icon:'🕵️', stars:'🌟🌟🌟🌟🌟', min:550 },
+];
+
+const TOTAL_XP_POSSIBLE = LEVELS.reduce((a,l) => a + l.skills.reduce((b,s) => b+s.xp, 0), 0);
+
+// ─── STATE ──────────────────────────────────────────────────────────────────
+let state = JSON.parse(localStorage.getItem('lucas-spartan') || '{}');
+if (!state.done) state.done = [];
+if (!state.log) state.log = [];
+if (!state.xp) state.xp = 0;
+
+function save() {
+  localStorage.setItem('lucas-spartan', JSON.stringify(state));
+}
+
+// ─── XP / RANK ──────────────────────────────────────────────────────────────
+function getCurrentRank() {
+  let rank = RANKS[0];
+  for (const r of RANKS) { if (state.xp >= r.min) rank = r; }
+  return rank;
+}
+
+function getNextRank() {
+  let next = null;
+  for (const r of RANKS) { if (r.min > state.xp) { next = r; break; } }
+  return next;
+}
+
+function updateXP() {
+  const rank = getCurrentRank();
+  const next = getNextRank();
+
+  document.getElementById('rank-icon').textContent = rank.icon;
+  document.getElementById('rank-name').textContent = rank.name;
+  document.getElementById('rank-sub').textContent = rank.sub;
+  document.getElementById('rank-stars').textContent = rank.stars;
+  document.getElementById('total-xp-label').textContent = state.xp + ' XP';
+
+  if (next) {
+    const pct = Math.min(100, ((state.xp - rank.min) / (next.min - rank.min)) * 100);
+    document.getElementById('xp-bar').style.width = pct + '%';
+    document.getElementById('xp-label').textContent = rank.name + ' → ' + next.name + ': ' + state.xp + '/' + next.min + ' XP';
+    document.getElementById('next-unlock').textContent = 'Reach ' + next.min + ' XP to become a ' + next.name + '. You need ' + (next.min - state.xp) + ' more XP.';
+  } else {
+    document.getElementById('xp-bar').style.width = '100%';
+    document.getElementById('xp-label').textContent = 'MASTER CHIEF — MAXIMUM RANK ACHIEVED 🪖';
+    document.getElementById('next-unlock').textContent = '🪖 MASTER CHIEF STATUS — All ranks unlocked. Lucas is a full Spartan.';
+  }
+}
+
+// ─── MISSIONS ───────────────────────────────────────────────────────────────
+function renderMissions() {
+  const el = document.getElementById('missions-list');
+  let html = '';
+  for (const level of LEVELS) {
+    const totalLevelXP = level.skills.reduce((a,s) => a + s.xp, 0);
+    const doneCount = level.skills.filter(s => state.done.includes(s.id)).length;
+    const locked = state.xp < level.unlockAt;
+
+    html += `<div class="level-header ${locked ? 'locked' : 'unlocked'}" onclick="${locked ? 'showToast(\'🔒 Earn ' + level.unlockAt + ' XP to unlock this level\')' : 'toggleLevel(\'lvl-' + level.id + '\')'}">
+      <div class="level-num">${level.emoji}</div>
+      <div>
+        <div class="level-title">${level.title}</div>
+        <div class="level-subtitle">${level.subtitle}</div>
+      </div>
+      <div class="level-prog">${doneCount}/${level.skills.length}</div>
+    </div>`;
+
+    if (!locked) {
+      html += `<div class="level-skills" id="lvl-${level.id}">`;
+      for (const skill of level.skills) {
+        const done = state.done.includes(skill.id);
+        html += `<div class="skill-card ${done ? 'done' : ''}" onclick="toggleSkill('${skill.id}', ${skill.xp})">
+          <div class="skill-check">${done ? '✓' : ''}</div>
+          <div class="skill-body">
+            <div class="skill-name">${skill.name}</div>
+            <div class="skill-desc">${skill.desc}</div>
+            <div class="skill-xp">+${skill.xp} XP</div>
+          </div>
+        </div>`;
+      }
+      html += '</div>';
+    } else {
+      html += `<div class="level-skills" id="lvl-${level.id}" style="display:none"></div>`;
+    }
+  }
+  el.innerHTML = html;
+}
+
+function toggleLevel(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function toggleSkill(id, xp) {
+  if (state.done.includes(id)) {
+    state.done = state.done.filter(d => d !== id);
+    state.xp = Math.max(0, state.xp - xp);
+    showToast('Skill unmarked — ' + xp + ' XP removed');
+  } else {
+    state.done.push(id);
+    state.xp += xp;
+    showToast('⚡ SKILL UNLOCKED! +' + xp + ' XP');
+  }
+  save();
+  updateXP();
+  renderMissions();
+  checkAchievements();
+  renderStats();
+}
+
+// ─── ACHIEVEMENTS ───────────────────────────────────────────────────────────
+function checkAchievements() {
+  const el = document.getElementById('achievements-list');
+  if (!el) return;
+  let html = '';
+  for (const ach of ACHIEVEMENTS) {
+    const earned = ach.condition(state);
+    html += `<div class="achievement ${earned ? 'unlocked' : ''}">
+      <div class="ach-icon">${ach.emoji}</div>
+      <div>
+        <div class="ach-name">${ach.name} ${earned ? '✓' : '🔒'}</div>
+        <div class="ach-desc">${ach.desc}</div>
+      </div>
+    </div>`;
+  }
+  el.innerHTML = html;
+}
+
+// ─── LOG ────────────────────────────────────────────────────────────────────
+function setDefaultDate() {
+  const d = new Date();
+  document.getElementById('log-date').value = d.toLocaleDateString('en-AU', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
+}
+
+function saveLog() {
+  const date = document.getElementById('log-date').value.trim();
+  const notes = document.getElementById('log-notes').value.trim();
+  const rating = document.getElementById('log-rating').value;
+  if (!notes) { showToast('⚠️ Add some notes first'); return; }
+
+  state.log.unshift({ date, notes, rating: parseInt(rating) });
+  state.xp += 10;
+  save();
+  updateXP();
+  renderLog();
+  checkAchievements();
+  renderStats();
+  document.getElementById('log-notes').value = '';
+  showToast('📋 Session logged! +10 XP');
+}
+
+function renderLog() {
+  const el = document.getElementById('log-list');
+  if (!state.log.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div>No sessions logged yet</div>';
+    return;
+  }
+  const stars = (n) => '⭐'.repeat(n) + '☆'.repeat(5-n);
+  el.innerHTML = state.log.map(l => `
+    <div class="log-card">
+      <div class="log-date">${l.date} · ${stars(l.rating)}</div>
+      <div class="log-notes">${l.notes}</div>
+    </div>
+  `).join('');
+}
+
+// ─── STATS ──────────────────────────────────────────────────────────────────
+function renderStats() {
+  const el = document.getElementById('stats-grid');
+  if (!el) return;
+  const totalSkills = LEVELS.reduce((a,l) => a + l.skills.length, 0);
+  const pct = Math.round((state.done.length / totalSkills) * 100);
+  const avgRating = state.log.length ? (state.log.reduce((a,l) => a + l.rating, 0) / state.log.length).toFixed(1) : '—';
+  const rank = getCurrentRank();
+
+  el.innerHTML = `
+    <div class="stat-card"><div class="stat-val">${state.done.length}</div><div class="stat-label">SKILLS DONE</div></div>
+    <div class="stat-card"><div class="stat-val">${totalSkills - state.done.length}</div><div class="stat-label">REMAINING</div></div>
+    <div class="stat-card"><div class="stat-val">${state.xp}</div><div class="stat-label">TOTAL XP</div></div>
+    <div class="stat-card"><div class="stat-val">${state.log.length}</div><div class="stat-label">SESSIONS</div></div>
+    <div class="stat-card"><div class="stat-val">${pct}%</div><div class="stat-label">COMPLETE</div></div>
+    <div class="stat-card"><div class="stat-val">${avgRating}</div><div class="stat-label">AVG RATING</div></div>
+  `;
+}
+
+// ─── TABS ───────────────────────────────────────────────────────────────────
+function switchTab(btn, panelId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+
+  if (panelId === 'tab-achievements') checkAchievements();
+  if (panelId === 'tab-stats') renderStats();
+  if (panelId === 'tab-calendar') renderCalendar();
+}
+
+// ─── TOAST ──────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ─── CALENDAR ───────────────────────────────────────────────────────────────
+// Data: { 'YYYY-MM-DD': { trained: bool, checks: [bool x 6], notes: str } }
+let calData = JSON.parse(localStorage.getItem('lucas-cal') || '{}');
+
+const WORKOUT_ITEMS = [
+  { id:'w1', label:'🏃 Warm Up', detail:'Jumping jacks, run on spot, arm circles', dur:'3 min' },
+  { id:'w2', label:'🥊 Boxing', detail:'Guard, jab, cross, footwork', dur:'8 min' },
+  { id:'w3', label:'🛡️ Spartan Moves', detail:'Stomp & pull, bear hug break, lion roar', dur:'5 min' },
+  { id:'w4', label:'🕵️ Spy Drill', detail:'SPY EYES: notice 3 things around you', dur:'3 min' },
+  { id:'w5', label:'🤸 Cool Down', detail:'Stretches, deep breaths, well done!', dur:'3 min' },
+  { id:'w6', label:'📖 Skill Review', detail:'Re-read one level skill together', dur:'2 min' },
+];
+
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+let calActiveDate = null; // currently open in modal
+
+function dateKey(y, m, d) {
+  return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+}
+
+function saveCalData() {
+  localStorage.setItem('lucas-cal', JSON.stringify(calData));
+}
+
+function calcStreaks() {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const keys = Object.keys(calData).filter(k => calData[k].trained).sort();
+  const total = keys.length;
+
+  // Current streak
+  let streak = 0;
+  let check = new Date(today);
+  while (true) {
+    const k = check.toISOString().split('T')[0];
+    if (calData[k] && calData[k].trained) {
+      streak++;
+      check.setDate(check.getDate() - 1);
+    } else { break; }
+  }
+
+  // Best streak
+  let best = 0, run = 0;
+  let prev = null;
+  for (const k of keys) {
+    const d = new Date(k);
+    if (prev) {
+      const diff = (d - prev) / 86400000;
+      if (diff === 1) { run++; } else { run = 1; }
+    } else { run = 1; }
+    if (run > best) best = run;
+    prev = d;
+  }
+
+  return { streak, best, total };
+}
+
+function renderCalendar() {
+  const { streak, best, total } = calcStreaks();
+  document.getElementById('cal-streak').textContent = streak;
+  document.getElementById('cal-best').textContent = best;
+  document.getElementById('cal-total').textContent = total;
+
+  // Render Apr, May, Jun 2026 (+ partial March from today)
+  const startYear = 2026;
+  const startMonth = 3; // April = index 3
+  const months = [[2026,2], [2026,3], [2026,4], [2026,5]]; // Mar, Apr, May, Jun
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  let html = '';
+  for (const [yr, mo] of months) {
+    const firstDay = new Date(yr, mo, 1).getDay();
+    const daysInMonth = new Date(yr, mo + 1, 0).getDate();
+
+    html += `<div class="cal-month-title">${MONTHS[mo]} ${yr}</div>`;
+    html += '<div class="cal-grid">';
+    DAYS_SHORT.forEach(d => { html += `<div class="cal-dow">${d}</div>`; });
+
+    // empty cells before first day
+    for (let i = 0; i < firstDay; i++) html += '<div class="cal-day empty"></div>';
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const k = dateKey(yr, mo, d);
+      const dayDate = new Date(yr, mo, d); dayDate.setHours(0,0,0,0);
+      const isFuture = dayDate > today;
+      const isToday = dayDate.getTime() === today.getTime();
+      const entry = calData[k];
+      const trained = entry && entry.trained;
+
+      let cls = 'cal-day';
+      if (!d) cls += ' empty';
+      else if (isFuture) cls += ' future';
+      else if (isToday) cls += ' today' + (trained ? ' trained' : '');
+      else if (trained) cls += ' trained';
+      else cls += ' rest';
+
+      const click = (!isFuture) ? `onclick="openCalModal('${k}')"` : '';
+      html += `<div class="${cls}" ${click}>${d}</div>`;
+    }
+    html += '</div>';
+  }
+
+  document.getElementById('calendar-months').innerHTML = html;
+}
+
+function openCalModal(key) {
+  calActiveDate = key;
+  const [yr, mo, d] = key.split('-').map(Number);
+  const dayObj = new Date(yr, mo - 1, d);
+  const label = dayObj.toLocaleDateString('en-AU', { weekday:'long', day:'numeric', month:'long' });
+  document.getElementById('cal-modal-date').textContent = '📅 ' + label;
+
+  const entry = calData[key] || { checks: [false,false,false,false,false,false], notes: '' };
+
+  // Workout checklist
+  let html = '';
+  WORKOUT_ITEMS.forEach((item, i) => {
+    const checked = entry.checks ? entry.checks[i] : false;
+    html += `<div class="wk-item ${checked ? 'checked' : ''}" onclick="toggleWkItem(${i})">
+      <div class="wk-check">${checked ? '✓' : ''}</div>
+      <div class="wk-label">${item.label}</div>
+      <div class="wk-dur">${item.dur}</div>
+    </div>`;
+  });
+  document.getElementById('workout-checklist').innerHTML = html;
+  document.getElementById('cal-notes').value = entry.notes || '';
+
+  const hasTrained = entry.trained;
+  document.getElementById('cal-clear-btn').style.display = hasTrained ? 'block' : 'none';
+  document.getElementById('cal-modal-overlay').classList.add('open');
+}
+
+function toggleWkItem(idx) {
+  const key = calActiveDate;
+  if (!calData[key]) calData[key] = { trained: false, checks: [false,false,false,false,false,false], notes: '' };
+  if (!calData[key].checks) calData[key].checks = [false,false,false,false,false,false];
+  calData[key].checks[idx] = !calData[key].checks[idx];
+
+  // Re-render checklist
+  const items = document.querySelectorAll('.wk-item');
+  items[idx].classList.toggle('checked', calData[key].checks[idx]);
+  items[idx].querySelector('.wk-check').textContent = calData[key].checks[idx] ? '✓' : '';
+}
+
+function saveCalDay() {
+  const key = calActiveDate;
+  const notes = document.getElementById('cal-notes').value.trim();
+  const checks = calData[key] ? (calData[key].checks || [false,false,false,false,false,false]) : [false,false,false,false,false,false];
+  const wasNew = !calData[key] || !calData[key].trained;
+
+  calData[key] = { trained: true, checks, notes };
+  saveCalData();
+
+  if (wasNew) {
+    state.xp += 10;
+    save();
+    updateXP();
+    showToast('🥊 TRAINING DAY LOGGED! +10 XP');
+  } else {
+    showToast('✅ Session updated!');
+  }
+
+  closeCalModal();
+  renderCalendar();
+  checkAchievements();
+}
+
+function clearCalDay() {
+  if (!calActiveDate) return;
+  delete calData[calActiveDate];
+  saveCalData();
+  closeCalModal();
+  renderCalendar();
+  showToast('Day cleared');
+}
+
+function closeCalModal() {
+  document.getElementById('cal-modal-overlay').classList.remove('open');
+  calActiveDate = null;
+}
+
+function calOverlayClick(e) {
+  if (e.target === document.getElementById('cal-modal-overlay')) closeCalModal();
+}
+
+// ─── BOOT ───────────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  setDefaultDate();
+  updateXP();
+  renderMissions();
+  renderLog();
+  renderStats();
+
+  setTimeout(() => {
+    const boot = document.getElementById('boot-screen');
+    boot.classList.add('fade-out');
+    setTimeout(() => boot.remove(), 900);
+  }, 2000);
+});
+</script>
+</body>
+</html>

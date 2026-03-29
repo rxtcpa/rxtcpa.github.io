@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>THE LUCAS WARRIOR CODE</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Georgia', serif;
+    color: #fff;
+    cursor: none;
+  }
+
+  #stage {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ─── TRANSITION OVERLAY ─── */
+  #fade-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 999;
+    transition: opacity 0.5s ease;
+  }
+  #fade-overlay.fading { opacity: 1; }
+
+  /* ─── PROGRESS DOTS ─── */
+  #progress-dots {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 100;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,215,0,0.25);
+    transition: background 0.4s, transform 0.3s;
+  }
+  .dot.active {
+    background: #FFD700;
+    transform: scale(1.4);
+  }
+
+  /* ─── PAUSE INDICATOR ─── */
+  #pause-icon {
+    position: fixed;
+    top: 16px; right: 20px;
+    font-size: 1.1rem;
+    color: rgba(255,215,0,0.5);
+    z-index: 100;
+    letter-spacing: 2px;
+    transition: opacity 0.4s;
+  }
+
+  /* ─── SCENE BASE ─── */
+  .scene {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+  .scene.active { display: flex; }
+
+  /* ─────────────────────────────────────────
+     SCENE 1 — TITLE
+  ───────────────────────────────────────── */
+  #scene1 { background: #000; }
+
+  .title-main {
+    font-size: clamp(2.4rem, 7vw, 5.5rem);
+    font-weight: bold;
+    color: #FFD700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeInSlow 1.8s ease forwards 0.3s;
+    text-shadow: 0 0 40px rgba(255,215,0,0.6), 0 0 80px rgba(255,215,0,0.3);
+    line-height: 1.15;
+  }
+  .title-sub {
+    font-size: clamp(1rem, 2.5vw, 1.6rem);
+    color: rgba(255,255,255,0.75);
+    font-style: italic;
+    margin-top: 18px;
+    opacity: 0;
+    animation: fadeInSlow 1.5s ease forwards 1.8s;
+    letter-spacing: 2px;
+  }
+
+  /* Corner sparks */
+  .corner-spark {
+    position: absolute;
+    width: 80px; height: 80px;
+  }
+  .corner-spark.tl { top: 20px; left: 20px; }
+  .corner-spark.tr { top: 20px; right: 20px; }
+  .corner-spark.bl { bottom: 35px; left: 20px; }
+  .corner-spark.br { bottom: 35px; right: 20px; }
+
+  .spark-particle {
+    position: absolute;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: #FFD700;
+    animation: sparkFloat 2.2s ease-in-out infinite;
+    box-shadow: 0 0 6px #FFD700;
+  }
+  @keyframes sparkFloat {
+    0%   { opacity: 0; transform: translate(0,0) scale(0); }
+    30%  { opacity: 1; transform: translate(var(--sx),var(--sy)) scale(1.4); }
+    100% { opacity: 0; transform: translate(calc(var(--sx)*2.5), calc(var(--sy)*2.5)) scale(0); }
+  }
+
+  /* ─────────────────────────────────────────
+     SCENE 2 — THE CHOICE
+  ───────────────────────────────────────── */
+  #scene2 { background: #000; }
+
+  .choice-text {
+    font-size: clamp(1.4rem, 3.5vw, 2.4rem);
+    color: #fff;
+    line-height: 2;
+    max-width: 700px;
+  }
+  .choice-line {
+    opacity: 0;
+    display: block;
+    animation: fadeUp 0.8s ease forwards;
+  }
+  .choice-line:nth-child(1) { animation-delay: 0.3s; }
+  .choice-line:nth-child(2) { animation-delay: 1.4s; }
+  .choice-line:nth-child(3) { animation-delay: 2.6s; }
+
+  /* Lucas stick figure */
+  .stick-scene2 {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .lucas-figure {
+    animation: lucasStandUp 2s ease forwards 2s;
+  }
+  @keyframes lucasStandUp {
+    0%   { transform: scaleY(0.7) translateY(20px); }
+    60%  { transform: scaleY(1.05) translateY(-4px); }
+    100% { transform: scaleY(1) translateY(0); }
+  }
+
+  /* ─────────────────────────────────────────
+     SCENE 3 — BRUCE LEE
+  ───────────────────────────────────────── */
+  #scene3 { background: linear-gradient(180deg, #000 60%, #001a2e 100%); }
+
+  .scene3-title {
+    font-size: clamp(1.1rem, 2.8vw, 2rem);
+    color: #FFD700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeInSlow 1s ease forwards 0.2s;
+    margin-bottom: 10px;
+  }
+  .bruce-quote-line {
+    display: block;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards;
+  }
+  .bruce-quote-line.gold { color: #FFD700; font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: bold; }
+  .bruce-quote-line.white { color: rgba(255,255,255,0.85); font-size: clamp(1rem, 2.2vw, 1.5rem); }
+  .bruce-quote-line.big { color: #FFD700; font-size: clamp(1.6rem, 4vw, 2.8rem); font-weight: bold; text-shadow: 0 0 30px #FFD700; }
+  .bruce-quote-line:nth-child(1) { animation-delay: 0.8s; }
+  .bruce-quote-line:nth-child(2) { animation-delay: 1.6s; }
+  .bruce-quote-line:nth-child(3) { animation-delay: 2.4s; }
+  .bruce-quote-line:nth-child(4) { animation-delay: 3.2s; }
+  .bruce-quote-line:nth-child(5) { animation-delay: 4.2s; }
+
+  .water-ripple {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 80px;
+    background: linear-gradient(180deg, transparent, rgba(0,100,200,0.25) 50%, rgba(0,150,255,0.4));
+    animation: waterRise 3s ease forwards 3s;
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+  @keyframes waterRise {
+    0%   { transform: scaleY(0); opacity: 0; }
+    100% { transform: scaleY(1); opacity: 1; }
+  }
+  .water-wave {
+    position: absolute;
+    bottom: 60px; left: -50%;
+    width: 200%; height: 30px;
+    background: radial-gradient(ellipse at 50% 100%, rgba(0,180,255,0.3) 0%, transparent 70%);
+    animation: waveMove 2s ease-in-out infinite 3.5s;
+  }
+  @keyframes waveMove {
+    0%, 100% { transform: translateX(0) scaleY(1); }
+    50%       { transform: translateX(5%) scaleY(1.3); }
+  }
+
+  /* ─────────────────────────────────────────
+     SCENE 4 — SUN TZU
+  ───────────────────────────────────────── */
+  #scene4 { background: #0a0800; }
+
+  .scroll-container {
+    position: relative;
+    background: linear-gradient(180deg, #2a1f00, #1a1200);
+    border: 2px solid #8B6914;
+    border-radius: 8px;
+    padding: 30px 40px;
+    max-width: 680px;
+    width: 90%;
+    box-shadow: 0 0 40px rgba(139,105,20,0.3), inset 0 0 20px rgba(0,0,0,0.5);
+    overflow: hidden;
+    animation: scrollUnfurl 1.5s cubic-bezier(0.23,1,0.32,1) forwards 0.3s;
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  @keyframes scrollUnfurl {
+    0%   { transform: scaleY(0); opacity: 0.5; }
+    100% { transform: scaleY(1); opacity: 1; }
+  }
+  .scroll-rod {
+    height: 14px;
+    background: linear-gradient(90deg, #5a3a00, #8B6914, #5a3a00);
+    border-radius: 7px;
+    margin: -30px -40px 20px -40px;
+  }
+  .scroll-rod.bottom { margin: 20px -40px -30px -40px; }
+  .scroll-title {
+    font-size: clamp(0.85rem, 2vw, 1.3rem);
+    color: #c8a020;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeInSlow 0.8s ease forwards 1.5s;
+  }
+  .scroll-line {
+    display: block;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards;
+    margin-bottom: 8px;
+  }
+  .scroll-line.gold { color: #FFD700; font-size: clamp(1.3rem, 3vw, 2rem); font-weight: bold; }
+  .scroll-line.soft { color: rgba(220,200,150,0.8); font-size: clamp(0.9rem, 2vw, 1.3rem); font-style: italic; }
+  .scroll-line:nth-child(1) { animation-delay: 1.8s; }
+  .scroll-line:nth-child(2) { animation-delay: 2.6s; }
+  .scroll-line:nth-child(3) { animation-delay: 3.5s; }
+
+  /* ─────────────────────────────────────────
+     SCENE 5 — PRESIDENT CHAY
+  ───────────────────────────────────────── */
+  #scene5 { background: linear-gradient(180deg, #0a0500, #1a0f00); }
+
+  .chay-title {
+    font-size: clamp(1.1rem, 2.6vw, 1.9rem);
+    color: #fff;
+    max-width: 680px;
+    line-height: 1.5;
+    opacity: 0;
+    animation: fadeInSlow 1s ease forwards 0.3s;
+    margin-bottom: 16px;
+  }
+  .chay-done {
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 0 0 30px #FFD700;
+    opacity: 0;
+    animation: pulseBig 0.6s ease forwards 3.8s;
+    margin-top: 10px;
+  }
+  .chay-sub {
+    font-size: clamp(1rem, 2.2vw, 1.5rem);
+    color: rgba(255,255,255,0.85);
+    font-style: italic;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 2.8s;
+    margin-top: 8px;
+  }
+  @keyframes pulseBig {
+    0%   { opacity: 0; transform: scale(0.7); }
+    60%  { opacity: 1; transform: scale(1.08); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  /* Bus CSS shape */
+  .bus-area {
+    position: absolute;
+    bottom: 70px;
+    right: 60px;
+    opacity: 0;
+    animation: fadeInSlow 1s ease forwards 1.5s;
+  }
+  .bus-body {
+    width: 100px; height: 50px;
+    background: #ff6600;
+    border-radius: 8px 8px 4px 4px;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(255,100,0,0.4);
+  }
+  .bus-body::before {
+    content: '';
+    position: absolute;
+    top: 8px; left: 8px; right: 8px; height: 20px;
+    background: rgba(0,150,255,0.5);
+    border-radius: 4px;
+  }
+  .bus-wheel {
+    width: 18px; height: 18px;
+    background: #222;
+    border: 3px solid #888;
+    border-radius: 50%;
+    position: absolute;
+    bottom: -12px;
+  }
+  .bus-wheel.l { left: 12px; }
+  .bus-wheel.r { right: 12px; }
+  .bus-tag {
+    font-size: 0.55rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 18px;
+    text-align: center;
+  }
+
+  /* Chay stick figure with build animation */
+  .chay-figure-wrap {
+    position: absolute;
+    bottom: 60px;
+    left: 80px;
+  }
+  .chay-figure {
+    animation: chayBuild 3s ease-in-out infinite 1s;
+  }
+  @keyframes chayBuild {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25%       { transform: translateY(-8px) rotate(-5deg); }
+    50%       { transform: translateY(0) rotate(0deg); }
+    60%       { transform: translateY(12px) rotate(3deg); } /* falls */
+    75%       { transform: translateY(0) rotate(0deg); } /* gets up */
+  }
+
+  /* ─────────────────────────────────────────
+     SCENE 6 — GOGGINS
+  ───────────────────────────────────────── */
+  #scene6 { background: linear-gradient(180deg, #0d0000, #1a0000); }
+
+  .goggins-title {
+    font-size: clamp(1rem, 2.4vw, 1.8rem);
+    color: #cc3333;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeInSlow 0.8s ease forwards 0.3s;
+    margin-bottom: 14px;
+  }
+  .goggins-line {
+    display: block;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards;
+    font-size: clamp(1.2rem, 2.8vw, 2rem);
+  }
+  .goggins-line.white { color: #fff; }
+  .goggins-line.red   { color: #ff3333; font-size: clamp(1rem, 2.4vw, 1.7rem); }
+  .goggins-line.gold  { color: #FFD700; font-size: clamp(1.6rem, 4.5vw, 3.2rem); font-weight: bold; text-shadow: 0 0 25px rgba(255,215,0,0.5); }
+  .goggins-line:nth-child(1) { animation-delay: 0.9s; }
+  .goggins-line:nth-child(2) { animation-delay: 1.8s; }
+  .goggins-line:nth-child(3) { animation-delay: 2.8s; }
+
+  .progress-bar-wrap {
+    width: min(500px, 80%);
+    margin-top: 28px;
+    opacity: 0;
+    animation: fadeInSlow 0.5s ease forwards 1.2s;
+  }
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 6px;
+    padding: 0 2px;
+  }
+  .progress-track {
+    height: 20px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 10px;
+    animation: fillTo40 1.5s ease forwards 1.5s, fillTo100 2s ease forwards 3.2s;
+    position: relative;
+  }
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  @keyframes fillTo40 {
+    0%   { width: 0%; background: linear-gradient(90deg, #cc0000, #ff3333); }
+    100% { width: 40%; background: linear-gradient(90deg, #cc0000, #ff3333); }
+  }
+  @keyframes fillTo100 {
+    0%   { width: 40%; background: linear-gradient(90deg, #cc0000, #ff3333); }
+    100% { width: 100%; background: linear-gradient(90deg, #cc6600, #FFD700); }
+  }
+  .progress-marker {
+    position: absolute;
+    top: -22px;
+    left: 40%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    color: #ff4444;
+    white-space: nowrap;
+    opacity: 0;
+    animation: fadeInSlow 0.5s ease forwards 2.8s;
+  }
+
+  /* ─────────────────────────────────────────
+     SCENE 7 — THE CODE
+  ───────────────────────────────────────── */
+  #scene7 { background: #000; padding: 15px; }
+
+  .code-grid {
+    display: flex;
+    width: 100%;
+    max-width: 900px;
+    height: 80vh;
+    gap: 0;
+    position: relative;
+  }
+  .code-divider {
+    width: 2px;
+    background: linear-gradient(180deg, transparent, #FFD700 30%, #FFD700 70%, transparent);
+    flex-shrink: 0;
+    align-self: stretch;
+    animation: dividerGrow 1s ease forwards 0.5s;
+    transform: scaleY(0);
+    transform-origin: center;
+  }
+  @keyframes dividerGrow {
+    to { transform: scaleY(1); }
+  }
+  .code-left, .code-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 15px 20px;
+    gap: 8px;
+  }
+  .code-left { text-align: right; }
+  .code-right { text-align: left; }
+
+  .code-line {
+    font-size: clamp(0.9rem, 2vw, 1.4rem);
+    opacity: 0;
+    animation: fadeUp 0.5s ease forwards;
+    line-height: 1.6;
+  }
+  .code-left .code-line { color: rgba(200,230,255,0.9); }
+  .code-right .code-line { color: rgba(255,180,150,0.9); }
+  .code-right .code-line.red { color: #ff4444; font-weight: bold; }
+
+  .code-left .code-line:nth-child(1) { animation-delay: 0.8s; }
+  .code-left .code-line:nth-child(2) { animation-delay: 1.3s; }
+  .code-left .code-line:nth-child(3) { animation-delay: 1.8s; }
+  .code-left .code-line:nth-child(4) { animation-delay: 2.3s; }
+  .code-left .code-line:nth-child(5) { animation-delay: 2.8s; }
+  .code-left .code-line:nth-child(6) { animation-delay: 3.3s; }
+
+  .code-right .code-line:nth-child(1) { animation-delay: 1.5s; }
+  .code-right .code-line:nth-child(2) { animation-delay: 2.2s; }
+  .code-right .code-line:nth-child(3) { animation-delay: 2.9s; }
+  .code-right .code-line:nth-child(4) { animation-delay: 3.6s; }
+
+  .flame-container {
+    position: absolute;
+    right: 0; bottom: 0; top: 0;
+    width: 50%;
+    pointer-events: none;
+    overflow: hidden;
+    opacity: 0.12;
+    animation: flameAppear 1s ease forwards 2s;
+  }
+  @keyframes flameAppear {
+    to { opacity: 0.12; }
+  }
+
+  .code-footer {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: clamp(1.1rem, 2.8vw, 2rem);
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 0 0 20px rgba(255,215,0,0.6);
+    opacity: 0;
+    animation: fadeInSlow 1s ease forwards 4.5s;
+    letter-spacing: 2px;
+  }
+
+  /* fire CSS animation */
+  .fire-flame {
+    position: absolute;
+    bottom: 0;
+    width: 60px;
+    animation: flameRise 1.5s ease-in-out infinite;
+    background: linear-gradient(180deg, transparent, rgba(255,80,0,0.8));
+    border-radius: 50% 50% 20% 20%;
+  }
+  @keyframes flameRise {
+    0%, 100% { transform: scaleX(1) scaleY(1); }
+    50%       { transform: scaleX(0.85) scaleY(1.15); }
+  }
+
+  /* ─────────────────────────────────────────
+     SCENE 8 — FOR LUCAS
+  ───────────────────────────────────────── */
+  #scene8 { background: #000; }
+
+  .lucas-lines {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .lucas-line {
+    font-size: clamp(1.3rem, 3.5vw, 2.5rem);
+    color: #fff;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+    line-height: 1.4;
+  }
+  .lucas-line.name    { font-size: clamp(1.8rem, 5vw, 3.5rem); font-weight: bold; animation-delay: 0.4s; }
+  .lucas-line:nth-child(2) { animation-delay: 1.2s; }
+  .lucas-line:nth-child(3) { animation-delay: 2s; }
+  .lucas-line:nth-child(4) { animation-delay: 2.8s; }
+  .lucas-line:nth-child(5) { animation-delay: 3.5s; }
+  .lucas-line:nth-child(6) { animation-delay: 4.2s; }
+  .lucas-line.gold {
+    color: #FFD700;
+    font-weight: bold;
+    font-size: clamp(1.6rem, 4.5vw, 3rem);
+    text-shadow: 0 0 30px rgba(255,215,0,0.6);
+    animation-delay: 5.2s;
+  }
+
+  /* Lucas fall/rise figure */
+  .lucas-fall-figure {
+    position: absolute;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .fig-fall {
+    animation: fallAndRise 4s ease-in-out forwards 2.5s;
+  }
+  @keyframes fallAndRise {
+    0%   { transform: translateY(0) rotate(0deg); }
+    25%  { transform: translateY(20px) rotate(35deg); }
+    55%  { transform: translateY(10px) rotate(10deg); }
+    80%  { transform: translateY(0) rotate(0deg) scaleY(1.05); }
+    100% { transform: translateY(0) rotate(0deg) scaleY(1); }
+  }
+
+  /* ─────────────────────────────────────────
+     SCENE 9 — NEVER GIVE UP
+  ───────────────────────────────────────── */
+  #scene9 { background: #000; }
+
+  .never-flash {
+    position: absolute;
+    inset: 0;
+    background: #FFD700;
+    animation: goldFlash 0.6s ease-out forwards 0.2s;
+    opacity: 0;
+    pointer-events: none;
+  }
+  @keyframes goldFlash {
+    0%   { opacity: 0; }
+    20%  { opacity: 0.7; }
+    100% { opacity: 0; }
+  }
+
+  .never-word {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(2rem, 6vw, 4.5rem);
+    font-weight: bold;
+    color: #FFD700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    text-shadow: 0 0 30px rgba(255,215,0,0.7);
+    opacity: 0;
+    text-align: center;
+    width: 90%;
+  }
+  .never-word:nth-child(2) { animation: heartbeat 1.2s ease forwards 0.8s; }
+  .never-word:nth-child(3) { animation: heartbeat 1.2s ease forwards 2s; }
+  .never-word:nth-child(4) { animation: heartbeat 1.2s ease forwards 3.2s; }
+  .never-word:nth-child(5) { animation: heartbeat 1.2s ease forwards 4.4s; }
+  .never-word:nth-child(6) {
+    font-size: clamp(3rem, 9vw, 7rem);
+    color: #fff;
+    text-shadow: 0 0 60px #FFD700, 0 0 30px #FFD700;
+    animation: heartbeat 1.4s ease forwards 5.4s;
+  }
+
+  @keyframes heartbeat {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+    30%  { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+    60%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    85%  { opacity: 0.9; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.3); }
+  }
+
+  /* ─────────────────────────────────────────
+     SCENE 10 — THE OATH
+  ───────────────────────────────────────── */
+  #scene10 { background: #000; }
+
+  .oath-intro {
+    font-size: clamp(1rem, 2.5vw, 1.8rem);
+    color: rgba(255,255,255,0.7);
+    font-style: italic;
+    opacity: 0;
+    animation: fadeInSlow 1s ease forwards 0.3s;
+    margin-bottom: 20px;
+  }
+
+  .oath-lines {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .oath-line {
+    font-size: clamp(1.4rem, 3.5vw, 2.6rem);
+    font-weight: bold;
+    color: #FFD700;
+    opacity: 0;
+    animation: oathReveal 0.8s ease forwards;
+    transform: translateY(20px);
+    text-shadow: 0 0 20px rgba(255,215,0,0.4);
+  }
+  .oath-line:nth-child(1) { animation-delay: 1s; }
+  .oath-line:nth-child(2) { animation-delay: 2s;  font-size: clamp(1.5rem, 3.8vw, 2.8rem); }
+  .oath-line:nth-child(3) { animation-delay: 3s;  font-size: clamp(1.6rem, 4.1vw, 3rem); }
+  .oath-line:nth-child(4) { animation-delay: 4s;  font-size: clamp(1.7rem, 4.4vw, 3.2rem); }
+  .oath-line:nth-child(5) { animation-delay: 5s;  font-size: clamp(1.8rem, 4.7vw, 3.5rem); }
+
+  @keyframes oathReveal {
+    0%   { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Screen flash */
+  .oath-flash {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    animation: whiteFlash 0.8s ease forwards 6.2s;
+    opacity: 0;
+    pointer-events: none;
+  }
+  @keyframes whiteFlash {
+    0%   { opacity: 0; }
+    20%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* UNBREAKABLE text */
+  .unbreakable-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeInSlow 1.5s ease forwards 7s;
+  }
+  .unbreak-line1 {
+    font-size: clamp(2rem, 6vw, 4.5rem);
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 0 0 60px #FFD700, 0 0 120px rgba(255,215,0,0.4);
+    letter-spacing: 3px;
+    animation: glowPulse 2s ease-in-out infinite 7.5s;
+  }
+  .unbreak-line2 {
+    font-size: clamp(1.8rem, 5.5vw, 4rem);
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 0 0 60px #FFD700, 0 0 120px rgba(255,215,0,0.4);
+    letter-spacing: 2px;
+    animation: glowPulse 2s ease-in-out infinite 7.8s;
+  }
+  @keyframes glowPulse {
+    0%, 100% { text-shadow: 0 0 40px #FFD700, 0 0 80px rgba(255,215,0,0.3); }
+    50%       { text-shadow: 0 0 80px #FFD700, 0 0 160px rgba(255,215,0,0.6); }
+  }
+
+  /* PARTICLES */
+  #particle-canvas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+  #particle-canvas.active { opacity: 1; }
+
+  /* ─────────────────────────────────────────
+     SCENE 11 — CLOSE
+  ───────────────────────────────────────── */
+  #scene11 { background: #000; }
+
+  #star-canvas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .close-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: 600px;
+  }
+  .close-line1 {
+    font-size: clamp(1.3rem, 3.5vw, 2.4rem);
+    color: #FFD700;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 1s;
+    text-shadow: 0 0 20px rgba(255,215,0,0.4);
+  }
+  .close-line2 {
+    font-size: clamp(1.1rem, 2.8vw, 2rem);
+    color: #FFD700;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 2.2s;
+    text-shadow: 0 0 20px rgba(255,215,0,0.4);
+  }
+  .close-team {
+    font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+    color: #fff;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 3.5s;
+    margin-top: 10px;
+    letter-spacing: 2px;
+  }
+  .replay-btn {
+    margin-top: 24px;
+    padding: 14px 40px;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    background: transparent;
+    border: 2px solid #FFD700;
+    color: #FFD700;
+    border-radius: 50px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 4.5s;
+    font-family: 'Georgia', serif;
+  }
+  .replay-btn:hover, .replay-btn:active {
+    background: #FFD700;
+    color: #000;
+    transform: scale(1.05);
+  }
+
+  /* ─── SHARED ANIMATIONS ─── */
+  @keyframes fadeInSlow {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes fadeUp {
+    0%   { opacity: 0; transform: translateY(16px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── SVG STICK FIGURES ─── */
+  .stick-fig { overflow: visible; }
+
+  /* Mobile responsive */
+  @media (max-width: 600px) {
+    .code-grid { flex-direction: column; height: auto; padding: 10px 0; }
+    .code-divider { width: 80%; height: 2px; margin: 10px auto; }
+    .code-left, .code-right { text-align: center; padding: 10px; }
+    .bus-area { right: 10px; }
+    .chay-figure-wrap { left: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="fade-overlay"></div>
+<div id="stage">
+
+  <!-- ═══ SCENE 1 — TITLE ═══ -->
+  <div class="scene" id="scene1">
+    <!-- Corner sparks -->
+    <div class="corner-spark tl" id="cs-tl"></div>
+    <div class="corner-spark tr" id="cs-tr"></div>
+    <div class="corner-spark bl" id="cs-bl"></div>
+    <div class="corner-spark br" id="cs-br"></div>
+
+    <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;">
+      <div class="title-main">THE LUCAS<br>WARRIOR CODE</div>
+      <div class="title-sub">A film for warriors in training</div>
+    </div>
+  </div>
+
+  <!-- ═══ SCENE 2 — THE CHOICE ═══ -->
+  <div class="scene" id="scene2">
+    <div class="choice-text">
+      <span class="choice-line">Every warrior has a choice.</span>
+      <span class="choice-line">Let the world push you down...</span>
+      <span class="choice-line">...or decide who you are.</span>
+    </div>
+
+    <div class="stick-scene2">
+      <svg width="80" height="120" viewBox="0 0 80 120" class="stick-fig">
+        <g class="lucas-figure" transform-origin="40 110">
+          <!-- body -->
+          <circle cx="40" cy="20" r="12" fill="none" stroke="#FFD700" stroke-width="3"/>
+          <line x1="40" y1="32" x2="40" y2="75" stroke="#FFD700" stroke-width="3"/>
+          <!-- arms slightly raised = standing tall -->
+          <line x1="40" y1="45" x2="15" y2="62" stroke="#FFD700" stroke-width="3"/>
+          <line x1="40" y1="45" x2="65" y2="62" stroke="#FFD700" stroke-width="3"/>
+          <!-- legs -->
+          <line x1="40" y1="75" x2="22" y2="105" stroke="#FFD700" stroke-width="3"/>
+          <line x1="40" y1="75" x2="58" y2="105" stroke="#FFD700" stroke-width="3"/>
+          <!-- shoulder emphasis = wide -->
+          <line x1="22" y1="40" x2="58" y2="40" stroke="#FFD700" stroke-width="2" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ═══ SCENE 3 — BRUCE LEE ═══ -->
+  <div class="scene" id="scene3">
+    <div class="water-ripple"></div>
+    <div class="water-wave"></div>
+
+    <div style="display:flex;align-items:center;gap:40px;flex-wrap:wrap;justify-content:center;position:relative;z-index:2;">
+      <!-- Bruce Lee figure -->
+      <svg width="100" height="160" viewBox="0 0 100 160" class="stick-fig" style="flex-shrink:0;">
+        <g id="bruce-anim">
+          <!-- head -->
+          <circle cx="50" cy="22" r="14" fill="none" stroke="#FFD700" stroke-width="3"/>
+          <!-- body angled = fighting stance -->
+          <line x1="50" y1="36" x2="45" y2="90" stroke="#FFD700" stroke-width="3"/>
+          <!-- front arm extended = punch -->
+          <line x1="47" y1="55" x2="10" y2="45" stroke="#FFD700" stroke-width="3"/>
+          <circle cx="8" cy="44" r="5" fill="#FFD700"/>
+          <!-- back arm guard -->
+          <line x1="47" y1="55" x2="70" y2="65" stroke="#FFD700" stroke-width="3"/>
+          <!-- front leg forward -->
+          <line x1="45" y1="90" x2="20" y2="130" stroke="#FFD700" stroke-width="3"/>
+          <!-- back leg planted -->
+          <line x1="45" y1="90" x2="75" y2="125" stroke="#FFD700" stroke-width="3"/>
+          <!-- shoulders -->
+          <line x1="30" y1="48" x2="68" y2="52" stroke="#FFD700" stroke-width="2"/>
+        </g>
+        <animateTransform xlink:href="#bruce-anim" attributeName="transform" type="translate"
+          values="0,0; 3,-3; 0,0; -3,3; 0,0" dur="2.4s" repeatCount="indefinite"/>
+      </svg>
+
+      <!-- quotes -->
+      <div style="max-width:480px;text-align:left;">
+        <div class="scene3-title">THE MASTER SAID:</div>
+        <div style="line-height:1.9;">
+          <span class="bruce-quote-line gold">"Be formless. Shapeless."</span>
+          <span class="bruce-quote-line gold">"Like water."</span>
+          <span class="bruce-quote-line white">Water in a cup becomes the cup.</span>
+          <span class="bruce-quote-line white">Water in a bottle becomes the bottle.</span>
+          <span class="bruce-quote-line big">BE LIKE WATER, LUCAS.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SCENE 4 — SUN TZU ═══ -->
+  <div class="scene" id="scene4">
+    <div class="scroll-container">
+      <div class="scroll-rod"></div>
+      <div class="scroll-title">5,000 YEARS AGO, A GENERAL WROTE:</div>
+      <div style="line-height:2;">
+        <span class="scroll-line gold">"Know yourself..."</span>
+        <span class="scroll-line gold">"...and you will win all battles."</span>
+        <span class="scroll-line soft">The warrior who trains every day is never surprised.</span>
+      </div>
+      <div class="scroll-rod bottom"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SCENE 5 — PRESIDENT CHAY ═══ -->
+  <div class="scene" id="scene5">
+    <!-- Chay building figure -->
+    <div class="chay-figure-wrap">
+      <svg width="70" height="130" viewBox="0 0 70 130" class="stick-fig">
+        <g class="chay-figure">
+          <circle cx="35" cy="18" r="11" fill="none" stroke="#fff" stroke-width="2.5"/>
+          <line x1="35" y1="29" x2="35" y2="72" stroke="#fff" stroke-width="2.5"/>
+          <!-- arms raised building -->
+          <line x1="35" y1="45" x2="8" y2="30" stroke="#fff" stroke-width="2.5"/>
+          <line x1="35" y1="45" x2="62" y2="30" stroke="#fff" stroke-width="2.5"/>
+          <!-- hammer/tool in right hand -->
+          <rect x="60" y="20" width="10" height="6" fill="#fff" rx="1"/>
+          <line x1="65" y1="26" x2="65" y2="34" stroke="#fff" stroke-width="2"/>
+          <!-- legs -->
+          <line x1="35" y1="72" x2="20" y2="100" stroke="#fff" stroke-width="2.5"/>
+          <line x1="35" y1="72" x2="50" y2="100" stroke="#fff" stroke-width="2.5"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Bus build area -->
+    <div class="bus-area">
+      <div class="bus-body">
+        <div class="bus-wheel l"></div>
+        <div class="bus-wheel r"></div>
+      </div>
+      <div class="bus-tag">SCHOOL BUS</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;position:relative;z-index:2;max-width:700px;">
+      <div class="chay-title">PRESIDENT CHAY DOESN'T STOP WHEN HE'S TIRED.</div>
+      <div class="chay-sub">He stops when it's DONE.</div>
+      <div class="chay-done">DONE. NOT TIRED. DONE.</div>
+    </div>
+  </div>
+
+  <!-- ═══ SCENE 6 — GOGGINS ═══ -->
+  <div class="scene" id="scene6">
+    <div class="goggins-title">DAVID GOGGINS TAUGHT US:</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:20px;">
+      <span class="goggins-line white">"When your mind says stop..."</span>
+      <span class="goggins-line red">You're only at 40%.</span>
+      <span class="goggins-line gold">YOU HAVE 60% LEFT.</span>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-labels">
+        <span>0%</span><span>40% — MIND QUITS HERE</span><span>100%</span>
+      </div>
+      <div class="progress-track" style="position:relative;">
+        <div class="progress-marker">⬇ your mind quits here</div>
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SCENE 7 — THE CODE ═══ -->
+  <div class="scene" id="scene7">
+    <div class="code-grid">
+      <div class="code-left">
+        <span class="code-line">We train...</span>
+        <span class="code-line">...to be kind.</span>
+        <span class="code-line">...to respect everyone.</span>
+        <span class="code-line">...to bow to our teacher.</span>
+        <span class="code-line">...to bow to our opponent.</span>
+        <span class="code-line" style="color:#aaddff;font-weight:bold;">We do NOT train to hurt people.</span>
+      </div>
+      <div class="code-divider"></div>
+      <div class="code-right">
+        <span class="code-line">But if someone attacks us...</span>
+        <span class="code-line">...we protect ourselves.</span>
+        <span class="code-line">...with everything we have.</span>
+        <span class="code-line red">Every. Single. Time.</span>
+
+        <!-- mini flame effect -->
+        <div style="position:relative;height:60px;margin-top:10px;overflow:hidden;border-radius:8px;">
+          <div style="position:absolute;bottom:0;left:10%;width:20%;height:50px;background:linear-gradient(0deg,#ff4400,#ff8800,transparent);border-radius:50%;animation:flameRise 1.2s ease-in-out infinite;"></div>
+          <div style="position:absolute;bottom:0;left:35%;width:30%;height:60px;background:linear-gradient(0deg,#ff2200,#ff6600,transparent);border-radius:50%;animation:flameRise 1.5s ease-in-out infinite 0.3s;"></div>
+          <div style="position:absolute;bottom:0;left:60%;width:25%;height:45px;background:linear-gradient(0deg,#ff4400,#ffaa00,transparent);border-radius:50%;animation:flameRise 1.3s ease-in-out infinite 0.6s;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="code-footer">THIS IS THE WARRIOR CODE.</div>
+  </div>
+
+  <!-- ═══ SCENE 8 — FOR LUCAS ═══ -->
+  <div class="scene" id="scene8">
+    <div class="lucas-lines">
+      <span class="lucas-line name">Lucas.</span>
+      <span class="lucas-line">You got pushed down.</span>
+      <span class="lucas-line">Every day. All year.</span>
+      <span class="lucas-line">You got back up.</span>
+      <span class="lucas-line">Without crying.</span>
+      <span class="lucas-line">Without quitting.</span>
+      <span class="lucas-line gold">That's already a warrior.</span>
+    </div>
+
+    <!-- Fall and rise figure -->
+    <div class="lucas-fall-figure">
+      <svg width="80" height="120" viewBox="0 0 80 120" class="stick-fig">
+        <g class="fig-fall" transform-origin="40 110">
+          <circle cx="40" cy="20" r="12" fill="none" stroke="#FFD700" stroke-width="3"/>
+          <line x1="40" y1="32" x2="40" y2="75" stroke="#FFD700" stroke-width="3"/>
+          <line x1="40" y1="45" x2="15" y2="58" stroke="#FFD700" stroke-width="3"/>
+          <line x1="40" y1="45" x2="65" y2="58" stroke="#FFD700" stroke-width="3"/>
+          <line x1="40" y1="75" x2="22" y2="105" stroke="#FFD700" stroke-width="3"/>
+          <line x1="40" y1="75" x2="58" y2="105" stroke="#FFD700" stroke-width="3"/>
+          <line x1="22" y1="40" x2="58" y2="40" stroke="#FFD700" stroke-width="2"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ═══ SCENE 9 — NEVER GIVE UP ═══ -->
+  <div class="scene" id="scene9">
+    <div class="never-flash"></div>
+    <div class="never-word">NEVER GIVE UP.</div>
+    <div class="never-word">NEVER SURRENDER.</div>
+    <div class="never-word">NEVER STOP TRAINING.</div>
+    <div class="never-word">NEVER LET THEM SEE YOU FALL.</div>
+    <div class="never-word">NEVER.</div>
+  </div>
+
+  <!-- ═══ SCENE 10 — THE OATH ═══ -->
+  <div class="scene" id="scene10">
+    <canvas id="particle-canvas"></canvas>
+    <div class="oath-flash"></div>
+
+    <!-- Lines that go away after flash -->
+    <div id="oath-main" style="display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:2;">
+      <div class="oath-intro">Say it with me, Lucas:</div>
+      <div class="oath-lines">
+        <span class="oath-line">I am a warrior.</span>
+        <span class="oath-line">I am kind.</span>
+        <span class="oath-line">I am strong.</span>
+        <span class="oath-line">I never give up.</span>
+        <span class="oath-line">I never surrender.</span>
+      </div>
+    </div>
+
+    <!-- UNBREAKABLE — hidden until flash -->
+    <div class="unbreakable-wrap" id="unbreakable-wrap">
+      <div class="unbreak-line1">I AM LUCAS.</div>
+      <div class="unbreak-line2">AND I AM UNBREAKABLE.</div>
+    </div>
+  </div>
+
+  <!-- ═══ SCENE 11 — CLOSE ═══ -->
+  <div class="scene" id="scene11">
+    <canvas id="star-canvas"></canvas>
+    <div class="close-content">
+      <div class="close-line1">Train today. Train tomorrow.</div>
+      <div class="close-line2">Every day you train,<br>the warrior gets stronger.</div>
+      <div class="close-team">🥊 Lucas &amp; Uncle — UNBEATABLE TEAM 🥊</div>
+      <button class="replay-btn" id="replay-btn">▶ Watch Again</button>
+    </div>
+  </div>
+
+</div><!-- /stage -->
+
+<!-- Progress dots -->
+<div id="progress-dots">
+  <div class="dot" data-n="1"></div>
+  <div class="dot" data-n="2"></div>
+  <div class="dot" data-n="3"></div>
+  <div class="dot" data-n="4"></div>
+  <div class="dot" data-n="5"></div>
+  <div class="dot" data-n="6"></div>
+  <div class="dot" data-n="7"></div>
+  <div class="dot" data-n="8"></div>
+  <div class="dot" data-n="9"></div>
+  <div class="dot" data-n="10"></div>
+  <div class="dot" data-n="11"></div>
+</div>
+
+<div id="pause-icon">⏸ PAUSED</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  AUDIO ENGINE
+// ═══════════════════════════════════════════════════
+let audioCtx = null;
+function getAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playTone(freq, duration, type='sine', vol=0.15, delay=0) {
+  try {
+    const ctx = getAudio();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+    gain.gain.setValueAtTime(0, ctx.currentTime + delay);
+    gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + delay + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
+    osc.start(ctx.currentTime + delay);
+    osc.stop(ctx.currentTime + delay + duration + 0.05);
+  } catch(e) {}
+}
+
+function playTransition() {
+  playTone(120, 0.4, 'sine', 0.12);
+}
+
+function playReveal() {
+  playTone(330, 0.15, 'triangle', 0.2);
+  playTone(440, 0.25, 'triangle', 0.2, 0.12);
+  playTone(550, 0.4, 'triangle', 0.18, 0.22);
+}
+
+function playFanfare() {
+  playTone(330, 0.25, 'triangle', 0.2);
+  playTone(415, 0.25, 'triangle', 0.2, 0.28);
+  playTone(550, 0.5, 'triangle', 0.22, 0.55);
+  playTone(660, 0.8, 'triangle', 0.2, 0.85);
+}
+
+function playHeartbeat() {
+  playTone(80, 0.08, 'sine', 0.2);
+  playTone(60, 0.06, 'sine', 0.15, 0.12);
+}
+
+// ═══════════════════════════════════════════════════
+//  CORNER SPARKS — Scene 1
+// ═══════════════════════════════════════════════════
+function buildCornerSparks() {
+  const corners = [
+    {id:'cs-tl', dirs: [{sx:-20,sy:-20},{sx:-5,sy:-25},{sx:-25,sy:-5},{sx:-15,sy:-15}]},
+    {id:'cs-tr', dirs: [{sx:20,sy:-20},{sx:5,sy:-25},{sx:25,sy:-5},{sx:15,sy:-15}]},
+    {id:'cs-bl', dirs: [{sx:-20,sy:20},{sx:-5,sy:25},{sx:-25,sy:5},{sx:-15,sy:15}]},
+    {id:'cs-br', dirs: [{sx:20,sy:20},{sx:5,sy:25},{sx:25,sy:5},{sx:15,sy:15}]},
+  ];
+  corners.forEach(c => {
+    const el = document.getElementById(c.id);
+    if (!el) return;
+    c.dirs.forEach((d, i) => {
+      const p = document.createElement('div');
+      p.className = 'spark-particle';
+      p.style.cssText = `
+        left: 40px; top: 40px;
+        --sx: ${d.sx}px; --sy: ${d.sy}px;
+        animation-delay: ${i * 0.45 + Math.random()*0.3}s;
+        animation-duration: ${1.8 + Math.random()*0.8}s;
+        width: ${3+Math.random()*4}px; height: ${3+Math.random()*4}px;
+      `;
+      el.appendChild(p);
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  PARTICLES — Scene 10
+// ═══════════════════════════════════════════════════
+let particleRAF = null;
+let particles = [];
+
+function initParticles() {
+  const canvas = document.getElementById('particle-canvas');
+  if (!canvas) return;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  particles = [];
+  for (let i = 0; i < 140; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height + canvas.height * 0.3,
+      vx: (Math.random() - 0.5) * 5,
+      vy: -(Math.random() * 7 + 3),
+      alpha: 1,
+      size: Math.random() * 5 + 2,
+      color: Math.random() > 0.3 ? '#FFD700' : '#fff',
+      life: Math.random() * 0.5 + 0.5,
+    });
+  }
+  canvas.classList.add('active');
+  animateParticles(canvas);
+}
+
+function animateParticles(canvas) {
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let alive = false;
+  particles.forEach(p => {
+    if (p.alpha <= 0) return;
+    alive = true;
+    ctx.save();
+    ctx.globalAlpha = p.alpha;
+    ctx.fillStyle = p.color;
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.1; // gravity
+    p.alpha -= 0.008;
+    p.size *= 0.995;
+  });
+  if (alive) particleRAF = requestAnimationFrame(() => animateParticles(canvas));
+}
+
+// ═══════════════════════════════════════════════════
+//  STARS — Scene 11
+// ═══════════════════════════════════════════════════
+let starRAF = null;
+let stars = [];
+
+function initStars() {
+  const canvas = document.getElementById('star-canvas');
+  if (!canvas) return;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  stars = [];
+  for (let i = 0; i < 200; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 2 + 0.5,
+      alpha: 0,
+      targetAlpha: Math.random() * 0.8 + 0.2,
+      delay: Math.random() * 3,
+      twinkle: Math.random() * Math.PI * 2,
+    });
+  }
+  animateStars(canvas, 0);
+}
+
+function animateStars(canvas, t) {
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const elapsed = t / 1000;
+  stars.forEach(s => {
+    const prog = Math.max(0, Math.min(1, (elapsed - s.delay) / 2));
+    s.alpha = prog * s.targetAlpha * (0.7 + 0.3 * Math.sin(elapsed * 1.2 + s.twinkle));
+    ctx.save();
+    ctx.globalAlpha = s.alpha;
+    ctx.fillStyle = '#FFD700';
+    ctx.shadowBlur = 4;
+    ctx.shadowColor = '#FFD700';
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+  starRAF = requestAnimationFrame(ts => animateStars(canvas, ts));
+}
+
+// ═══════════════════════════════════════════════════
+//  SCENE ENGINE
+// ═══════════════════════════════════════════════════
+const SCENE_DURATIONS = [
+  4000,   // 1 — title
+  6000,   // 2 — choice
+  8000,   // 3 — bruce lee
+  8000,   // 4 — sun tzu
+  7000,   // 5 — chay
+  7000,   // 6 — goggins
+  9000,   // 7 — code
+  8000,   // 8 — for lucas
+  6500,   // 9 — never give up
+  null,   // 10 — oath (manual)
+  null,   // 11 — close (stay)
+];
+
+const TOTAL_SCENES = 11;
+let currentScene = 1;
+let isPaused = false;
+let autoTimer = null;
+let sceneStartTime = null;
+let remainingTime = null;
+
+const overlay = document.getElementById('fade-overlay');
+const pauseIcon = document.getElementById('pause-icon');
+
+function getDot(n) { return document.querySelector(`.dot[data-n="${n}"]`); }
+
+function updateDots(n) {
+  document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+  const d = getDot(n);
+  if (d) d.classList.add('active');
+}
+
+function resetScene(n) {
+  const el = document.getElementById(`scene${n}`);
+  if (!el) return;
+  // Restart animations by cloning
+  const clone = el.cloneNode(true);
+  el.parentNode.replaceChild(clone, el);
+}
+
+function showScene(n) {
+  // Stop any running animations
+  if (particleRAF) { cancelAnimationFrame(particleRAF); particleRAF = null; }
+  if (starRAF)     { cancelAnimationFrame(starRAF);     starRAF = null; }
+
+  // Hide all scenes
+  document.querySelectorAll('.scene').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+
+  const el = document.getElementById(`scene${n}`);
+  if (!el) return;
+  el.style.display = 'flex';
+  el.classList.add('active');
+
+  updateDots(n);
+  currentScene = n;
+
+  // Scene-specific setup
+  if (n === 1) buildCornerSparks();
+  if (n === 10) {
+    setTimeout(() => {
+      initParticles();
+      playFanfare();
+    }, 7200);
+    // After flash (6.2s), hide oath-main, show unbreakable
+    setTimeout(() => {
+      const m = document.getElementById('oath-main');
+      const u = document.getElementById('unbreakable-wrap');
+      if (m) m.style.opacity = '0';
+      if (u) u.style.display = 'flex';
+    }, 7000);
+  }
+  if (n === 11) {
+    setTimeout(() => initStars(), 200);
+    // wire replay
+    const btn = document.getElementById('replay-btn');
+    if (btn) btn.onclick = () => startFilm();
+  }
+
+  // Play scene-specific sounds
+  const bigRevealScenes = [3,5,6,9,10];
+  if (bigRevealScenes.includes(n)) {
+    const delays = {3:4200, 5:3800, 6:2800, 9:300, 10:7200};
+    const d = delays[n] || 500;
+    setTimeout(() => playReveal(), d);
+  }
+
+  // Schedule auto-advance
+  clearTimeout(autoTimer);
+  const dur = SCENE_DURATIONS[n - 1];
+  if (dur !== null && !isPaused) {
+    sceneStartTime = Date.now();
+    remainingTime = dur;
+    autoTimer = setTimeout(() => advanceScene(), dur);
+  } else {
+    sceneStartTime = null;
+    remainingTime = null;
+  }
+}
+
+function advanceScene() {
+  if (currentScene >= TOTAL_SCENES) return;
+  const next = currentScene + 1;
+  transitionTo(next);
+}
+
+function transitionTo(n) {
+  clearTimeout(autoTimer);
+  overlay.classList.add('fading');
+  playTransition();
+  setTimeout(() => {
+    // Reset the target scene DOM to restart animations
+    const el = document.getElementById(`scene${n}`);
+    if (el && n !== 10 && n !== 11) {
+      const parent = el.parentNode;
+      const clone = el.cloneNode(true);
+      parent.replaceChild(clone, el);
+      // Re-wire scene-specific things that need JS
+    }
+    showScene(n);
+    overlay.classList.remove('fading');
+  }, 500);
+}
+
+function togglePause() {
+  if (currentScene >= TOTAL_SCENES) return; // last scene — no pause
+  if (isPaused) {
+    // Resume
+    isPaused = false;
+    pauseIcon.style.opacity = '0';
+    const dur = SCENE_DURATIONS[currentScene - 1];
+    if (dur !== null) {
+      const left = remainingTime || dur;
+      sceneStartTime = Date.now();
+      autoTimer = setTimeout(() => advanceScene(), left);
+    }
+  } else {
+    // Pause
+    isPaused = true;
+    pauseIcon.style.opacity = '1';
+    clearTimeout(autoTimer);
+    if (sceneStartTime && remainingTime) {
+      remainingTime = remainingTime - (Date.now() - sceneStartTime);
+    }
+  }
+}
+
+function handleTap() {
+  // Scene 10 oath — tapping just advances after unbreakable shown
+  if (currentScene === 10) {
+    transitionTo(11);
+    return;
+  }
+  if (currentScene === TOTAL_SCENES) return;
+  // Toggle pause with tap — but double-tap advances
+  // Simple: single tap = advance if not auto-advancing; else toggle pause
+  if (SCENE_DURATIONS[currentScene - 1] === null) {
+    advanceScene();
+  } else {
+    togglePause();
+  }
+}
+
+// Spacebar = advance scene or toggle pause
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space') {
+    e.preventDefault();
+    if (currentScene === 10) { transitionTo(11); return; }
+    if (currentScene === TOTAL_SCENES) return;
+    if (SCENE_DURATIONS[currentScene - 1] === null) advanceScene();
+    else {
+      // Space always advances
+      transitionTo(currentScene + 1);
+    }
+  }
+  if (e.code === 'ArrowRight') { e.preventDefault(); transitionTo(Math.min(TOTAL_SCENES, currentScene+1)); }
+  if (e.code === 'ArrowLeft')  { e.preventDefault(); transitionTo(Math.max(1, currentScene-1)); }
+  if (e.code === 'KeyP') togglePause();
+});
+
+// Tap/click
+document.getElementById('stage').addEventListener('click', e => {
+  if (e.target.closest('#replay-btn')) return;
+  handleTap();
+});
+
+// Touch
+let touchStartX = 0, touchStartY = 0, touchStartTime = 0;
+document.addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+  touchStartTime = Date.now();
+}, {passive: true});
+document.addEventListener('touchend', e => {
+  const dx = Math.abs(e.changedTouches[0].clientX - touchStartX);
+  const dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
+  const dt = Date.now() - touchStartTime;
+  if (dx < 15 && dy < 15 && dt < 400) {
+    if (!e.target.closest('#replay-btn')) handleTap();
+  }
+}, {passive: true});
+
+pauseIcon.style.opacity = '0';
+
+function startFilm() {
+  isPaused = false;
+  clearTimeout(autoTimer);
+  if (particleRAF) { cancelAnimationFrame(particleRAF); particleRAF = null; }
+  if (starRAF)     { cancelAnimationFrame(starRAF);     starRAF = null; }
+  // Reset oath scene elements
+  const oathMain = document.getElementById('oath-main');
+  const unbreak = document.getElementById('unbreakable-wrap');
+  if (oathMain) oathMain.style.opacity = '1';
+  if (unbreak) unbreak.style.display = 'none';
+
+  transitionTo(1);
+}
+
+// ── kick it off ──
+window.addEventListener('load', () => {
+  setTimeout(() => startFilm(), 300);
+});
+
+window.addEventListener('resize', () => {
+  const pc = document.getElementById('particle-canvas');
+  const sc = document.getElementById('star-canvas');
+  if (pc) { pc.width = window.innerWidth; pc.height = window.innerHeight; }
+  if (sc) { sc.width = window.innerWidth; sc.height = window.innerHeight; }
+});
+</script>
+</body>
+</html>

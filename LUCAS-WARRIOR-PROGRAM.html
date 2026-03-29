@@ -1,0 +1,2417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE LUCAS WARRIOR PROGRAM 🏆</title>
+<style>
+  /* ===== GLOBAL RESET & BASE ===== */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Sans', cursive;
+    background: #0a1a4a;
+    color: #fff;
+    min-height: 100vh;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* ===== STAR BACKGROUND ===== */
+  .stars {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0;
+    background: radial-gradient(ellipse at 20% 50%, #0a1a4a 0%, #060e2a 100%);
+    overflow: hidden;
+  }
+  .star {
+    position: absolute; background: #fff; border-radius: 50%;
+    animation: twinkle 2s infinite alternate;
+  }
+
+  @keyframes twinkle {
+    0% { opacity: 0.2; transform: scale(1); }
+    100% { opacity: 1; transform: scale(1.4); }
+  }
+
+  /* ===== MAIN APP CONTAINER ===== */
+  #app {
+    position: relative; z-index: 1;
+    width: 100vw; height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+
+  /* ===== SCREEN SYSTEM ===== */
+  .screen {
+    position: absolute;
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+  }
+
+  .screen.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: all;
+  }
+
+  .screen.exit-left {
+    opacity: 0;
+    transform: translateX(-120%) scale(0.8);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .screen.exit-right {
+    opacity: 0;
+    transform: translateX(120%) scale(0.8);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  /* ===== CARD CONTAINER ===== */
+  .card {
+    background: linear-gradient(145deg, #1a2e7a, #0d1f5c);
+    border: 4px solid #f5c518;
+    border-radius: 30px;
+    padding: 25px 30px;
+    width: min(95vw, 820px);
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 0 40px rgba(245, 197, 24, 0.4), 0 10px 40px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    scrollbar-width: none;
+  }
+  .card::-webkit-scrollbar { display: none; }
+
+  /* ===== OPENING SCREEN ===== */
+  #screen-intro .main-title {
+    font-size: clamp(2rem, 7vw, 4.5rem);
+    color: #f5c518;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(245,197,24,0.8), 3px 3px 0 #8b6914;
+    line-height: 1.1;
+    animation: titlePulse 2s ease-in-out infinite;
+    letter-spacing: 2px;
+  }
+
+  @keyframes titlePulse {
+    0%, 100% { transform: scale(1); text-shadow: 0 0 20px rgba(245,197,24,0.8), 3px 3px 0 #8b6914; }
+    50% { transform: scale(1.04); text-shadow: 0 0 40px rgba(245,197,24,1), 3px 3px 0 #8b6914; }
+  }
+
+  #screen-intro .subtitle {
+    font-size: clamp(1.2rem, 3.5vw, 2rem);
+    color: #fff;
+    text-align: center;
+    margin-top: 8px;
+    animation: fadeInUp 1s ease 0.5s both;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== FIST BUMP ANIMATION ===== */
+  .fistbump-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0;
+    margin: 10px 0;
+    height: 180px;
+  }
+
+  .character-intro {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+
+  .char-label {
+    font-size: clamp(0.7rem, 2vw, 0.95rem);
+    color: #f5c518;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 2px 2px 0 #000;
+  }
+
+  /* Lucas SVG - bouncy on intro */
+  .lucas-intro {
+    animation: bounceChar 0.8s ease-in-out infinite alternate;
+  }
+  .uncle-intro {
+    animation: bounceChar 0.8s ease-in-out 0.4s infinite alternate;
+  }
+
+  @keyframes bounceChar {
+    from { transform: translateY(0); }
+    to { transform: translateY(-8px); }
+  }
+
+  /* Fist bump - two fists meeting */
+  .fist-left {
+    animation: fistLeft 1.2s ease-in-out infinite;
+    display: inline-block;
+    font-size: 3.5rem;
+    filter: drop-shadow(0 0 8px rgba(245,197,24,0.8));
+  }
+  .fist-right {
+    animation: fistRight 1.2s ease-in-out infinite;
+    display: inline-block;
+    font-size: 3.5rem;
+    filter: drop-shadow(0 0 8px rgba(245,197,24,0.8));
+  }
+
+  @keyframes fistLeft {
+    0%, 100% { transform: translateX(-30px) rotate(-10deg); }
+    50% { transform: translateX(5px) rotate(0deg); }
+  }
+  @keyframes fistRight {
+    0%, 100% { transform: translateX(30px) rotate(10deg); }
+    50% { transform: translateX(-5px) rotate(0deg); }
+  }
+
+  .fist-flash {
+    animation: flashBurst 1.2s ease-in-out infinite;
+    font-size: 2rem;
+    position: absolute;
+  }
+
+  @keyframes flashBurst {
+    0%, 30%, 100% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.5); }
+  }
+
+  .fistbump-row {
+    display: flex; align-items: center; justify-content: center;
+    position: relative; height: 80px;
+  }
+
+  /* ===== START BUTTON ===== */
+  .btn-start {
+    font-family: 'Comic Sans MS', cursive;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    font-weight: bold;
+    background: linear-gradient(135deg, #f5c518, #e6a800);
+    color: #0a1a4a;
+    border: none;
+    border-radius: 50px;
+    padding: 18px 50px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(245,197,24,0.5), 0 4px 0 #8b6914;
+    transition: all 0.15s ease;
+    animation: buttonPop 2s ease-in-out 1s infinite;
+    letter-spacing: 1px;
+  }
+
+  .btn-start:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(245,197,24,0.7), 0 6px 0 #8b6914;
+  }
+
+  .btn-start:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 10px rgba(245,197,24,0.5), 0 2px 0 #8b6914;
+  }
+
+  @keyframes buttonPop {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+  }
+
+  /* ===== CARD HEADER ===== */
+  .card-title {
+    font-size: clamp(1.6rem, 5vw, 3rem);
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.1;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+  }
+
+  .card-subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    text-align: center;
+    color: #cde;
+    font-style: italic;
+  }
+
+  /* ===== TIME BADGE ===== */
+  .time-badge {
+    background: linear-gradient(135deg, #e63946, #c1121f);
+    border: 3px solid #f5c518;
+    border-radius: 20px;
+    padding: 10px 30px;
+    font-size: clamp(1.3rem, 4vw, 2rem);
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(230,57,70,0.5);
+    animation: badgePulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes badgePulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(230,57,70,0.5); }
+    50% { transform: scale(1.03); box-shadow: 0 6px 25px rgba(230,57,70,0.8); }
+  }
+
+  /* ===== INSTRUCTION BOX ===== */
+  .instruction-box {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(245,197,24,0.4);
+    border-radius: 15px;
+    padding: 12px 20px;
+    text-align: center;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    line-height: 1.5;
+    color: #fff;
+    width: 100%;
+  }
+
+  .instruction-box strong {
+    color: #f5c518;
+    display: block;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+  }
+
+  /* ===== CHEER LINE ===== */
+  .cheer {
+    font-size: clamp(1.1rem, 3vw, 1.7rem);
+    color: #4ade80;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+    animation: cheerBounce 1s ease-in-out infinite alternate;
+  }
+
+  @keyframes cheerBounce {
+    from { transform: scale(1); }
+    to { transform: scale(1.05); }
+  }
+
+  /* ===== EXERCISE ROW ===== */
+  .exercise-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .exercise-item {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    min-width: 120px;
+  }
+
+  .exercise-label {
+    font-size: clamp(0.7rem, 1.8vw, 0.95rem);
+    color: #f5c518;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  /* ===== SVG STICK FIGURES ===== */
+  svg.figure {
+    overflow: visible;
+  }
+
+  /* ===== JUMP ROPE FIGURE ===== */
+  @keyframes jumpBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-18px); }
+  }
+
+  @keyframes ropeSwing {
+    0%, 100% { d: path("M 20,60 Q 40,90 60,60"); }
+    50% { d: path("M 20,40 Q 40,20 60,40"); }
+  }
+
+  .jump-figure { animation: jumpBounce 0.6s ease-in-out infinite; }
+  .rope-arc { animation: ropeArc 0.6s ease-in-out infinite; }
+
+  @keyframes ropeArc {
+    0%, 100% { transform: rotateX(0deg) translateY(0); }
+    50% { transform: rotateX(180deg) translateY(-36px); }
+  }
+
+  /* ===== HIGH KNEES FIGURE ===== */
+  @keyframes leftKnee {
+    0%, 100% { transform: rotate(0deg); transform-origin: top center; }
+    25% { transform: rotate(-50deg); transform-origin: top center; }
+    50% { transform: rotate(0deg); transform-origin: top center; }
+  }
+
+  @keyframes rightKnee {
+    0%, 50% { transform: rotate(0deg); transform-origin: top center; }
+    75% { transform: rotate(-50deg); transform-origin: top center; }
+    100% { transform: rotate(0deg); transform-origin: top center; }
+  }
+
+  .left-knee { animation: leftKnee 0.8s ease-in-out infinite; transform-origin: 40px 55px; }
+  .right-knee { animation: rightKnee 0.8s ease-in-out 0.4s infinite; transform-origin: 60px 55px; }
+
+  /* ===== PUNCH ANIMATIONS ===== */
+  @keyframes jabArm {
+    0%, 100% { transform: rotate(0deg) translateX(0); transform-origin: left center; }
+    40% { transform: rotate(-10deg) translateX(25px); transform-origin: left center; }
+    60% { transform: rotate(-10deg) translateX(25px); transform-origin: left center; }
+  }
+
+  @keyframes crossArm {
+    0%, 100% { transform: rotate(0deg) translateX(0); transform-origin: right center; }
+    40% { transform: rotate(10deg) translateX(-25px); transform-origin: right center; }
+  }
+
+  .jab-arm { animation: jabArm 1s ease-in-out infinite; transform-box: fill-box; transform-origin: 30% 50%; }
+  .cross-arm { animation: crossArm 1s ease-in-out 0.5s infinite; transform-box: fill-box; transform-origin: 70% 50%; }
+
+  /* ===== KICK ANIMATION ===== */
+  @keyframes frontKick {
+    0%, 100% { transform: rotate(0deg); transform-origin: top center; }
+    40%, 60% { transform: rotate(-70deg); transform-origin: top center; }
+  }
+
+  @keyframes roundhouse {
+    0%, 100% { transform: rotate(0deg); transform-origin: top center; }
+    40%, 60% { transform: rotate(-90deg) translateY(-10px); transform-origin: top center; }
+  }
+
+  .kick-leg { animation: frontKick 1.2s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 0%; }
+  .roundhouse-leg { animation: roundhouse 1.4s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 0%; }
+
+  /* ===== SPIN ANIMATION ===== */
+  @keyframes spinAround {
+    0% { transform: rotate(0deg); }
+    30% { transform: rotate(360deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .spin-figure { animation: spinAround 2s ease-in-out infinite; transform-box: fill-box; transform-origin: center center; }
+
+  /* ===== STOMP ANIMATION ===== */
+  @keyframes stomp {
+    0%, 100% { transform: translateY(0); }
+    10%, 30% { transform: translateY(-5px); }
+    20%, 40% { transform: translateY(3px); }
+  }
+
+  .stomp-figure { animation: stomp 1s ease-in-out infinite; }
+
+  /* ===== BOB AND WEAVE ===== */
+  @keyframes bobWeave {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    25% { transform: translateY(-8px) translateX(-10px); }
+    75% { transform: translateY(-8px) translateX(10px); }
+  }
+
+  .bob-figure { animation: bobWeave 1.5s ease-in-out infinite; }
+
+  /* ===== PLANK ANIMATION ===== */
+  @keyframes pushupMove {
+    from { transform: translateY(6px); }
+    to   { transform: translateY(0px); }
+  }
+  @keyframes chinupMove {
+    from { transform: translateY(10px); }
+    to   { transform: translateY(0px); }
+  }
+  @keyframes squatMove {
+    from { transform: translateY(12px) scaleY(0.88); }
+    to   { transform: translateY(0px)  scaleY(1); }
+  }
+  @keyframes plankShake {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-1deg) translateY(-1px); }
+    75% { transform: rotate(1deg) translateY(1px); }
+  }
+  .plank-figure { animation: plankShake 1s ease-in-out infinite; }
+
+  /* ===== BEAR CRAWL ANIMATION ===== */
+  @keyframes crawlMove {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(15px); }
+  }
+
+  @keyframes crawlArmL {
+    0%, 100% { transform: rotate(0deg); transform-origin: top; }
+    50% { transform: rotate(-30deg); transform-origin: top; }
+  }
+
+  @keyframes crawlArmR {
+    0%, 50% { transform: rotate(0deg); transform-origin: top; }
+    75% { transform: rotate(-30deg); transform-origin: top; }
+    100% { transform: rotate(0deg); transform-origin: top; }
+  }
+
+  .crawl-figure { animation: crawlMove 0.8s ease-in-out infinite; }
+  .crawl-arm-l { animation: crawlArmL 0.8s ease-in-out infinite; transform-box: fill-box; }
+  .crawl-arm-r { animation: crawlArmR 0.8s ease-in-out infinite; transform-box: fill-box; }
+
+  /* ===== FISTBUMP PAIR ===== */
+  @keyframes fistBumpL {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(18px); }
+  }
+
+  @keyframes fistBumpR {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(-18px); }
+  }
+
+  @keyframes flashStar {
+    0%, 40%, 100% { opacity: 0; transform: scale(0); }
+    55% { opacity: 1; transform: scale(1.5); }
+  }
+
+  .bump-l { animation: fistBumpL 1s ease-in-out infinite; }
+  .bump-r { animation: fistBumpR 1s ease-in-out infinite; }
+  .bump-star { animation: flashStar 1s ease-in-out infinite; }
+
+  /* ===== GUARD/COVER UP ===== */
+  @keyframes coverUp {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  .guard-figure { animation: coverUp 1.2s ease-in-out infinite; }
+
+  /* ===== BALANCE FIGURE ===== */
+  @keyframes balanceWobble {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+  .balance-figure { animation: balanceWobble 1.5s ease-in-out infinite; transform-origin: bottom center; }
+
+  /* ===== SHUFFLE FIGURE ===== */
+  @keyframes highJabMove {
+    from { transform: translateY(0px) translateX(0px); }
+    to   { transform: translateY(-8px) translateX(-5px); }
+  }
+  @keyframes hookSwing {
+    from { transform: rotate(-25deg); }
+    to   { transform: rotate(15deg); }
+  }
+  @keyframes shuffleMove {
+    0%, 100% { transform: translateX(-15px); }
+    50% { transform: translateX(15px); }
+  }
+  .shuffle-figure { animation: shuffleMove 0.7s ease-in-out infinite; }
+
+  /* ===== LADDER FEET ===== */
+  @keyframes ladderFeet {
+    0%, 100% { transform: translateY(0) translateX(-5px); }
+    25% { transform: translateY(-8px) translateX(5px); }
+    50% { transform: translateY(0) translateX(5px); }
+    75% { transform: translateY(-8px) translateX(-5px); }
+  }
+  .ladder-figure { animation: ladderFeet 0.5s ease-in-out infinite; }
+
+  /* ===== WARRIOR STANCE ===== */
+  @keyframes rockSolid {
+    0%, 100% { transform: scale(1,1); }
+    50% { transform: scale(1.02, 0.99); }
+  }
+  .stance-figure { animation: rockSolid 1.5s ease-in-out infinite; }
+
+  /* ===== PUSH ATTACKER ===== */
+  @keyframes attackerRun {
+    0%, 100% { transform: translateX(20px); }
+    50% { transform: translateX(0px); }
+  }
+  .attacker-figure { animation: attackerRun 2s ease-in-out infinite; }
+
+  @keyframes attackerPushed {
+    0%, 60% { transform: translateX(0); opacity: 1; }
+    80%, 100% { transform: translateX(30px) rotate(20deg); opacity: 0.4; }
+  }
+  .pushed-figure { animation: attackerPushed 3s ease-in-out infinite; }
+
+  /* ===== SLOW BOX (COOL DOWN) ===== */
+  @keyframes slowBox {
+    0%, 100% { transform: rotate(0deg) translateX(0); transform-origin: left center; }
+    40% { transform: rotate(-5deg) translateX(10px); transform-origin: left center; }
+  }
+  .slow-jab { animation: slowBox 2s ease-in-out infinite; transform-box: fill-box; transform-origin: 30% 50%; }
+
+  /* ===== SHAKE OUT ===== */
+  @keyframes shakeOut {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(-5deg) translateY(-3px); }
+    40% { transform: rotate(5deg) translateY(3px); }
+    60% { transform: rotate(-3deg); }
+    80% { transform: rotate(3deg); }
+  }
+  .shake-figure { animation: shakeOut 1.5s ease-in-out infinite; }
+
+  /* ===== STOP TEXT EXPLOSION ===== */
+  @keyframes stopBoom {
+    0%, 60% { opacity: 0; transform: scale(0.3) rotate(-5deg); }
+    70%, 85% { opacity: 1; transform: scale(1.2) rotate(3deg); }
+    95%, 100% { opacity: 0; transform: scale(1.5); }
+  }
+  .stop-text {
+    font-size: clamp(2rem, 8vw, 4rem);
+    color: #e63946;
+    font-weight: bold;
+    text-shadow: 0 0 20px rgba(230,57,70,0.9), 3px 3px 0 #000;
+    animation: stopBoom 3s ease-in-out infinite;
+    text-align: center;
+    letter-spacing: 5px;
+  }
+
+  /* ===== FINAL SCREEN ===== */
+  .trophy-big {
+    font-size: clamp(4rem, 15vw, 8rem);
+    animation: trophyBounce 1s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 20px rgba(245,197,24,0.8));
+  }
+
+  @keyframes trophyBounce {
+    from { transform: scale(1) rotate(-5deg); }
+    to { transform: scale(1.1) rotate(5deg); }
+  }
+
+  .complete-title {
+    font-size: clamp(1.8rem, 6vw, 3.5rem);
+    color: #f5c518;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 0 0 20px rgba(245,197,24,0.8), 3px 3px 0 #8b6914;
+    animation: titlePulse 1.5s ease-in-out infinite;
+  }
+
+  .stars-row {
+    display: flex; gap: 10px; justify-content: center;
+    font-size: clamp(2rem, 7vw, 4rem);
+  }
+
+  .star-item {
+    animation: starSpin 2s linear infinite;
+    display: inline-block;
+    filter: drop-shadow(0 0 10px rgba(245,197,24,0.9));
+  }
+
+  .star-item:nth-child(1) { animation-delay: 0s; }
+  .star-item:nth-child(2) { animation-delay: 0.2s; }
+  .star-item:nth-child(3) { animation-delay: 0.4s; }
+  .star-item:nth-child(4) { animation-delay: 0.6s; }
+  .star-item:nth-child(5) { animation-delay: 0.8s; }
+
+  @keyframes starSpin {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.3) rotate(180deg); }
+  }
+
+  .unbeatable {
+    font-size: clamp(1.2rem, 3.5vw, 2rem);
+    color: #4ade80;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+  }
+
+  /* ===== FINAL CHARACTERS ===== */
+  .final-pair {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  /* ===== NAVIGATION ===== */
+  .nav-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 12px 20px;
+    background: linear-gradient(180deg, transparent 0%, rgba(6,14,42,0.95) 40%);
+    z-index: 100;
+  }
+
+  .btn-nav {
+    font-family: 'Comic Sans MS', cursive;
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    font-weight: bold;
+    background: linear-gradient(135deg, #f5c518, #e6a800);
+    color: #0a1a4a;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 28px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #8b6914, 0 4px 15px rgba(245,197,24,0.4);
+    transition: all 0.15s ease;
+    min-width: 120px;
+  }
+
+  .btn-nav:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #8b6914, 0 6px 20px rgba(245,197,24,0.6);
+  }
+
+  .btn-nav:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #8b6914;
+  }
+
+  .btn-nav:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ===== PROGRESS DOTS ===== */
+  .progress-dots {
+    display: flex; gap: 8px; align-items: center;
+  }
+
+  .dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: rgba(245,197,24,0.3);
+    border: 2px solid rgba(245,197,24,0.5);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .dot.active {
+    background: #f5c518;
+    border-color: #f5c518;
+    transform: scale(1.3);
+    box-shadow: 0 0 10px rgba(245,197,24,0.8);
+  }
+
+  .progress-label {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    min-width: 70px;
+  }
+
+  /* ===== COLOUR THEMES PER CARD ===== */
+  .color-fire { color: #ff6b35; }
+  .color-gold { color: #f5c518; }
+  .color-blue { color: #4dabf7; }
+  .color-green { color: #4ade80; }
+  .color-red { color: #f87171; }
+  .color-purple { color: #c084fc; }
+  .color-orange { color: #fb923c; }
+  .color-star { color: #fbbf24; }
+  .color-white { color: #fff; }
+
+  /* ===== DRILL SEQUENCE ===== */
+  .drill-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .drill-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 8px 14px;
+    border-left: 4px solid #f5c518;
+    font-size: clamp(0.85rem, 2.2vw, 1.1rem);
+    animation: stepSlideIn 0.5s ease both;
+  }
+
+  .drill-step:nth-child(1) { animation-delay: 0.1s; }
+  .drill-step:nth-child(2) { animation-delay: 0.2s; }
+  .drill-step:nth-child(3) { animation-delay: 0.3s; }
+  .drill-step:nth-child(4) { animation-delay: 0.4s; }
+  .drill-step:nth-child(5) { animation-delay: 0.5s; }
+  .drill-step:nth-child(6) { animation-delay: 0.6s; }
+  .drill-step:nth-child(7) { animation-delay: 0.7s; }
+
+  @keyframes stepSlideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .step-num {
+    background: #f5c518;
+    color: #0a1a4a;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  /* ===== GOLD STAR REVEAL ===== */
+  @keyframes starReveal {
+    0%, 70% { opacity: 0; transform: scale(0) rotate(-180deg); }
+    80%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+  .gold-star-big {
+    font-size: clamp(3rem, 10vw, 5rem);
+    animation: starReveal 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 15px rgba(245,197,24,0.9));
+    display: block;
+    text-align: center;
+  }
+
+  /* ===== RESPONSIVE TWEAKS ===== */
+  @media (max-height: 700px) {
+    .card { padding: 15px 20px; gap: 10px; max-height: 85vh; }
+    .card-title { font-size: clamp(1.3rem, 4vw, 2rem); }
+    .nav-bar { padding: 8px 15px; }
+  }
+
+  @media (max-width: 480px) {
+    .exercise-row { gap: 5px; }
+    .exercise-item { min-width: 90px; }
+    .card { padding: 15px; }
+  }
+
+  /* ===== CONFETTI ===== */
+  .confetti-piece {
+    position: fixed;
+    width: 10px; height: 14px;
+    top: -20px;
+    animation: confettiFall linear infinite;
+    pointer-events: none;
+    z-index: 200;
+    border-radius: 2px;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* ===== WALKING AWAY FIGURE ===== */
+  @keyframes walkAway {
+    0% { transform: translateX(0) scaleX(1); opacity: 1; }
+    80% { transform: translateX(40px) scaleX(1); opacity: 1; }
+    100% { transform: translateX(40px) scaleX(1); opacity: 1; }
+  }
+  .walk-figure { animation: walkAway 3s ease-in-out infinite; }
+
+  /* ===== CARD NUMBER BADGE ===== */
+  .card-number {
+    background: rgba(245,197,24,0.2);
+    border: 2px solid #f5c518;
+    border-radius: 20px;
+    padding: 4px 16px;
+    font-size: 0.85rem;
+    color: #f5c518;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<!-- STAR FIELD -->
+<div class="stars" id="starfield"></div>
+
+<!-- MAIN APP -->
+<div id="app">
+
+  <!-- ===== OPENING SCREEN ===== -->
+  <div class="screen active" id="screen-intro">
+    <div style="text-align:center; display:flex; flex-direction:column; align-items:center; gap:20px; padding-bottom: 30px;">
+
+      <div class="main-title">🏆 THE LUCAS<br>WARRIOR PROGRAM 🏆</div>
+      <div class="subtitle">Lucas &amp; Uncle's Daily Training 💪</div>
+
+      <!-- FISTBUMP SCENE -->
+      <div style="display:flex; align-items:flex-end; gap:30px; margin: 10px 0;">
+
+        <!-- LUCAS CHARACTER -->
+        <div class="character-intro">
+          <div class="lucas-intro">
+            <!-- Lucas stick figure - big kid, wide stance -->
+            <svg class="figure" width="90" height="140" viewBox="0 0 90 140">
+              <!-- Head -->
+              <circle cx="45" cy="18" r="16" fill="#FDBCB4" stroke="#222" stroke-width="2.5"/>
+              <!-- Face - determined -->
+              <circle cx="40" cy="15" r="2.5" fill="#222"/>
+              <circle cx="50" cy="15" r="2.5" fill="#222"/>
+              <path d="M 39,23 Q 45,27 51,23" stroke="#222" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <!-- Hair -->
+              <path d="M 30,10 Q 45,0 60,10" stroke="#555" stroke-width="4" fill="none" stroke-linecap="round"/>
+              <!-- Body -->
+              <rect x="33" y="34" width="24" height="35" rx="6" fill="#3b82f6" stroke="#222" stroke-width="2"/>
+              <!-- WARRIOR on shirt -->
+              <text x="45" y="55" text-anchor="middle" font-size="6" fill="#f5c518" font-weight="bold">WARRIOR</text>
+              <!-- Arms up - guard position -->
+              <line x1="33" y1="40" x2="16" y2="55" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+              <circle cx="14" cy="57" r="6" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <line x1="57" y1="40" x2="74" y2="55" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+              <circle cx="76" cy="57" r="6" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <!-- Legs wide stance -->
+              <line x1="40" y1="69" x2="28" y2="105" stroke="#1e40af" stroke-width="9" stroke-linecap="round"/>
+              <line x1="50" y1="69" x2="62" y2="105" stroke="#1e40af" stroke-width="9" stroke-linecap="round"/>
+              <!-- Feet -->
+              <ellipse cx="25" cy="108" rx="9" ry="5" fill="#333" stroke="#222" stroke-width="1.5"/>
+              <ellipse cx="65" cy="108" rx="9" ry="5" fill="#333" stroke="#222" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="char-label">LUCAS<br>THE WARRIOR 🧒</div>
+        </div>
+
+        <!-- FISTBUMP -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:5px; padding-bottom: 40px;">
+          <div style="font-size:1rem; color:#f5c518; font-weight:bold; margin-bottom:5px;">TEAM!</div>
+          <div class="fistbump-row" style="position:relative; width:120px; height:70px; display:flex; align-items:center; justify-content:center;">
+            <span class="fist-left">🤜</span>
+            <span class="fist-flash" style="position:absolute; top:5px;">✨</span>
+            <span class="fist-right">🤛</span>
+          </div>
+        </div>
+
+        <!-- UNCLE CHARACTER -->
+        <div class="character-intro">
+          <div class="uncle-intro">
+            <!-- Uncle stick figure - adult, martial arts stance -->
+            <svg class="figure" width="90" height="155" viewBox="0 0 90 155">
+              <!-- Head -->
+              <circle cx="45" cy="20" r="17" fill="#FDBCB4" stroke="#222" stroke-width="2.5"/>
+              <!-- Sunglasses / cool look -->
+              <rect x="33" y="15" width="12" height="7" rx="3" fill="#222"/>
+              <rect x="46" y="15" width="12" height="7" rx="3" fill="#222"/>
+              <line x1="45" y1="18" x2="46" y2="18" stroke="#222" stroke-width="2"/>
+              <!-- Smile -->
+              <path d="M 38,27 Q 45,32 52,27" stroke="#222" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <!-- Black belt gi - body -->
+              <rect x="30" y="37" width="30" height="40" rx="6" fill="white" stroke="#222" stroke-width="2"/>
+              <!-- Belt -->
+              <rect x="30" y="65" width="30" height="6" rx="2" fill="#111" stroke="#222" stroke-width="1"/>
+              <!-- Gi lapels -->
+              <path d="M 45,37 L 36,60 L 45,55 L 54,60 L 45,37" fill="#ddd" stroke="#222" stroke-width="1.5"/>
+              <!-- Arms in guard -->
+              <line x1="30" y1="43" x2="12" y2="60" stroke="#FDBCB4" stroke-width="8" stroke-linecap="round"/>
+              <circle cx="10" cy="62" r="7" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <line x1="60" y1="43" x2="78" y2="60" stroke="#FDBCB4" stroke-width="8" stroke-linecap="round"/>
+              <circle cx="80" cy="62" r="7" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <!-- Legs - martial arts stance -->
+              <line x1="39" y1="77" x2="25" y2="120" stroke="#333" stroke-width="10" stroke-linecap="round"/>
+              <line x1="51" y1="77" x2="65" y2="120" stroke="#333" stroke-width="10" stroke-linecap="round"/>
+              <!-- Feet -->
+              <ellipse cx="22" cy="124" rx="10" ry="5" fill="#222" stroke="#111" stroke-width="1.5"/>
+              <ellipse cx="68" cy="124" rx="10" ry="5" fill="#222" stroke="#111" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="char-label">UNCLE<br>THE SENSEI 🥋</div>
+        </div>
+      </div>
+
+      <button class="btn-start" onclick="startProgram()">LET'S GO! →</button>
+    </div>
+  </div>
+
+  <!-- ===== NAVIGATION BAR (hidden on intro/final) ===== -->
+  <div class="nav-bar" id="nav-bar" style="display:none;">
+    <button class="btn-nav" id="btn-back" onclick="prevCard()">◀ BACK</button>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <div class="progress-dots" id="progress-dots"></div>
+      <div class="progress-label" id="progress-label">Card 1 of 8</div>
+    </div>
+    <button class="btn-nav" id="btn-next" onclick="nextCard()">NEXT ▶</button>
+  </div>
+
+  <!-- ===== CARD 1: WARM UP ===== -->
+  <div class="screen" id="screen-1">
+    <div class="card">
+      <div class="card-number">Card 1 of 9</div>
+      <div class="card-title color-fire">🔥 WARM UP! 🔥</div>
+      <div class="card-subtitle">"Get those muscles ready, warrior!"</div>
+
+      <div class="exercise-row">
+
+        <!-- Jump Rope -->
+        <div class="exercise-item">
+          <svg class="figure" width="80" height="120" viewBox="0 0 80 130" style="overflow:visible;">
+            <g class="jump-figure">
+              <!-- Head -->
+              <circle cx="40" cy="20" r="12" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <circle cx="36" cy="18" r="2" fill="#222"/>
+              <circle cx="44" cy="18" r="2" fill="#222"/>
+              <path d="M 35,24 Q 40,28 45,24" stroke="#222" stroke-width="1.5" fill="none"/>
+              <!-- Body -->
+              <line x1="40" y1="32" x2="40" y2="65" stroke="#e63946" stroke-width="8" stroke-linecap="round"/>
+              <!-- Arms down holding rope -->
+              <line x1="40" y1="40" x2="20" y2="58" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+              <circle cx="18" cy="60" r="5" fill="#FDBCB4" stroke="#222" stroke-width="1.5"/>
+              <line x1="40" y1="40" x2="60" y2="58" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+              <circle cx="62" cy="60" r="5" fill="#FDBCB4" stroke="#222" stroke-width="1.5"/>
+              <!-- Legs together, slightly bent -->
+              <line x1="40" y1="65" x2="35" y2="95" stroke="#333" stroke-width="7" stroke-linecap="round"/>
+              <line x1="40" y1="65" x2="45" y2="95" stroke="#333" stroke-width="7" stroke-linecap="round"/>
+              <ellipse cx="33" cy="98" rx="7" ry="4" fill="#222"/>
+              <ellipse cx="47" cy="98" rx="7" ry="4" fill="#222"/>
+            </g>
+            <!-- Jump Rope arc -->
+            <path id="rope-path" d="M 18,60 Q 40,120 62,60" stroke="#f5c518" stroke-width="3" fill="none" stroke-linecap="round" class="rope-arc"/>
+          </svg>
+          <div class="exercise-label">JUMP ROPE! 🪢</div>
+        </div>
+
+        <!-- High Knees -->
+        <div class="exercise-item">
+          <svg class="figure" width="70" height="120" viewBox="0 0 70 130">
+            <!-- Head -->
+            <circle cx="35" cy="18" r="12" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <circle cx="31" cy="16" r="2" fill="#222"/>
+            <circle cx="39" cy="16" r="2" fill="#222"/>
+            <path d="M 30,22 Q 35,26 40,22" stroke="#222" stroke-width="1.5" fill="none"/>
+            <!-- Body -->
+            <line x1="35" y1="30" x2="35" y2="62" stroke="#4ade80" stroke-width="8" stroke-linecap="round"/>
+            <!-- Arms pumping -->
+            <line x1="35" y1="38" x2="15" y2="52" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+            <line x1="35" y1="38" x2="55" y2="45" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+            <!-- Left leg up (HIGH KNEE) -->
+            <g class="left-knee">
+              <line x1="32" y1="62" x2="22" y2="85" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+              <line x1="22" y1="85" x2="18" y2="98" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+              <ellipse cx="16" cy="101" rx="6" ry="4" fill="#222"/>
+            </g>
+            <!-- Right leg down -->
+            <line x1="38" y1="62" x2="48" y2="95" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+            <ellipse cx="50" cy="98" rx="6" ry="4" fill="#222"/>
+          </svg>
+          <div class="exercise-label">HIGH KNEES! 🦵</div>
+        </div>
+
+        <!-- Shadow Boxing -->
+        <div class="exercise-item">
+          <svg class="figure" width="90" height="120" viewBox="0 0 90 130">
+            <!-- Head -->
+            <circle cx="45" cy="18" r="12" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <circle cx="41" cy="16" r="2" fill="#222"/>
+            <circle cx="49" cy="16" r="2" fill="#222"/>
+            <path d="M 40,23 Q 45,27 50,23" stroke="#222" stroke-width="1.5" fill="none"/>
+            <!-- Body -->
+            <line x1="45" y1="30" x2="45" y2="65" stroke="#c084fc" stroke-width="8" stroke-linecap="round"/>
+            <!-- Jab arm - punching out -->
+            <g class="jab-arm">
+              <line x1="45" y1="40" x2="18" y2="50" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+              <circle cx="15" cy="51" r="6" fill="#FDBCB4" stroke="#222" stroke-width="1.5"/>
+            </g>
+            <!-- Guard arm -->
+            <line x1="45" y1="40" x2="62" y2="48" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="65" cy="49" r="6" fill="#FDBCB4" stroke="#222" stroke-width="1.5"/>
+            <!-- Legs stance -->
+            <line x1="42" y1="65" x2="30" y2="98" stroke="#555" stroke-width="7" stroke-linecap="round"/>
+            <line x1="48" y1="65" x2="58" y2="98" stroke="#555" stroke-width="7" stroke-linecap="round"/>
+            <ellipse cx="28" cy="101" rx="7" ry="4" fill="#333"/>
+            <ellipse cx="60" cy="101" rx="7" ry="4" fill="#333"/>
+          </svg>
+          <div class="exercise-label">SHADOW BOX! 🥊</div>
+        </div>
+
+      </div>
+
+      <div class="time-badge">⏱️ 5 MINUTES — LET'S MOVE! 🚀</div>
+      <div class="cheer">You got this, WARRIOR! 💪🔥</div>
+    </div>
+  </div>
+
+  <!-- ===== CARD 2: WARRIOR STANCE ===== -->
+  <div class="screen" id="screen-2">
+    <div class="card">
+      <div class="card-number">Card 2 of 9</div>
+      <div class="card-title color-gold">🦾 WARRIOR STANCE! 🦾</div>
+      <div class="card-subtitle">"The secret weapon — nobody can push you over!"</div>
+
+      <div class="exercise-row">
+
+        <!-- Wide Stance Figure -->
+        <div class="exercise-item">
+          <svg class="figure stance-figure" width="100" height="130" viewBox="0 0 100 140">
+            <!-- Glow effect -->
+            <circle cx="50" cy="70" r="55" fill="rgba(245,197,24,0.08)"/>
+            <!-- Head -->
+            <circle cx="50" cy="18" r="14" fill="#FDBCB4" stroke="#222" stroke-width="2.5"/>
+            <circle cx="45" cy="15" r="2.5" fill="#222"/>
+            <circle cx="55" cy="15" r="2.5" fill="#222"/>
+            <!-- Determined face - straight line mouth -->
+            <line x1="44" y1="22" x2="56" y2="22" stroke="#222" stroke-width="2" stroke-linecap="round"/>
+            <!-- Eyebrows angled - serious -->
+            <line x1="43" y1="11" x2="48" y2="13" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+            <line x1="52" y1="13" x2="57" y2="11" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+            <!-- Body - warrior blue -->
+            <rect x="36" y="32" width="28" height="38" rx="7" fill="#3b82f6" stroke="#222" stroke-width="2"/>
+            <text x="50" y="55" text-anchor="middle" font-size="6" fill="#f5c518" font-weight="bold">LUCAS</text>
+            <!-- Arms UP in guard - wide -->
+            <line x1="36" y1="38" x2="14" y2="52" stroke="#FDBCB4" stroke-width="8" stroke-linecap="round"/>
+            <circle cx="11" cy="54" r="7" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <line x1="64" y1="38" x2="86" y2="52" stroke="#FDBCB4" stroke-width="8" stroke-linecap="round"/>
+            <circle cx="89" cy="54" r="7" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <!-- VERY WIDE legs - bent knees -->
+            <line x1="45" y1="70" x2="22" y2="105" stroke="#1e40af" stroke-width="10" stroke-linecap="round"/>
+            <line x1="55" y1="70" x2="78" y2="105" stroke="#1e40af" stroke-width="10" stroke-linecap="round"/>
+            <!-- Feet wide -->
+            <ellipse cx="18" cy="110" rx="11" ry="6" fill="#222" stroke="#111" stroke-width="1.5"/>
+            <ellipse cx="82" cy="110" rx="11" ry="6" fill="#222" stroke="#111" stroke-width="1.5"/>
+            <!-- STOMP lines under feet -->
+            <line x1="8" y1="118" x2="28" y2="118" stroke="#f5c518" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="72" y1="118" x2="92" y2="118" stroke="#f5c518" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <div class="exercise-label">WIDE STANCE! 🦶🦶</div>
+        </div>
+
+        <!-- Uncle Pushing, Lucas Not Moving -->
+        <div class="exercise-item" style="min-width:160px;">
+          <svg class="figure" width="160" height="130" viewBox="0 0 160 140">
+            <!-- UNCLE pushing -->
+            <g style="animation: attackerRun 2s ease-in-out infinite;">
+              <!-- Uncle head -->
+              <circle cx="22" cy="20" r="11" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <rect x="15" y="15" width="9" height="5" rx="2" fill="#222"/>
+              <rect x="25" y="15" width="9" height="5" rx="2" fill="#222"/>
+              <!-- Uncle body - gi -->
+              <rect x="14" y="31" width="20" height="30" rx="5" fill="white" stroke="#222" stroke-width="1.5"/>
+              <rect x="14" y="52" width="20" height="5" rx="2" fill="#111"/>
+              <!-- Pushing arm stretched OUT -->
+              <line x1="34" y1="40" x2="72" y2="45" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+              <circle cx="75" cy="46" r="6" fill="#FDBCB4" stroke="#222" stroke-width="1.5"/>
+              <line x1="14" y1="40" x2="5" y2="50" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+              <!-- Uncle legs running -->
+              <line x1="20" y1="61" x2="10" y2="90" stroke="#333" stroke-width="7" stroke-linecap="round"/>
+              <line x1="28" y1="61" x2="35" y2="90" stroke="#333" stroke-width="7" stroke-linecap="round"/>
+              <ellipse cx="8" cy="93" rx="7" ry="4" fill="#222"/>
+              <ellipse cx="37" cy="93" rx="7" ry="4" fill="#222"/>
+              <!-- "PUSH!" label -->
+              <text x="40" y="30" text-anchor="middle" font-size="8" fill="#f5c518" font-weight="bold">PUSH!</text>
+              <path d="M 40,32 L 65,43" stroke="#f5c518" stroke-width="1.5" stroke-dasharray="3,2"/>
+            </g>
+
+            <!-- LUCAS standing solid - not moving -->
+            <g class="stance-figure">
+              <!-- Lucas head -->
+              <circle cx="120" cy="18" r="13" fill="#FDBCB4" stroke="#222" stroke-width="2.5"/>
+              <circle cx="115" cy="15" r="2" fill="#222"/>
+              <circle cx="125" cy="15" r="2" fill="#222"/>
+              <!-- Big grin - he's not moving! -->
+              <path d="M 113,22 Q 120,28 127,22" stroke="#222" stroke-width="2" fill="none"/>
+              <!-- Body -->
+              <rect x="107" y="31" width="26" height="34" rx="6" fill="#3b82f6" stroke="#222" stroke-width="2"/>
+              <!-- Arms guarding -->
+              <line x1="107" y1="37" x2="90" y2="50" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+              <circle cx="87" cy="52" r="7" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <line x1="133" y1="37" x2="148" y2="50" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+              <circle cx="151" cy="52" r="7" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <!-- Wide legs - ROCK SOLID -->
+              <line x1="115" y1="65" x2="100" y2="105" stroke="#1e40af" stroke-width="10" stroke-linecap="round"/>
+              <line x1="125" y1="65" x2="140" y2="105" stroke="#1e40af" stroke-width="10" stroke-linecap="round"/>
+              <ellipse cx="97" cy="109" rx="11" ry="5" fill="#222"/>
+              <ellipse cx="143" cy="109" rx="11" ry="5" fill="#222"/>
+              <!-- SOLID ground lines -->
+              <line x1="87" y1="115" x2="107" y2="115" stroke="#f5c518" stroke-width="3"/>
+              <line x1="133" y1="115" x2="153" y2="115" stroke="#f5c518" stroke-width="3"/>
+              <!-- NOT MOVING! label -->
+              <text x="120" y="130" text-anchor="middle" font-size="8" fill="#4ade80" font-weight="bold">ROCK SOLID! 🪨</text>
+            </g>
+          </svg>
+          <div class="exercise-label">NOBODY MOVES YOU! 💪</div>
+        </div>
+
+      </div>
+
+      <div class="instruction-box">
+        <strong>THE SECRET WORDS:</strong>
+        🦶 FEET WIDE &nbsp;•&nbsp; 🦵 KNEES BENT &nbsp;•&nbsp; 👊 HANDS UP<br>
+        <span style="color:#4ade80; font-size:1.2em;">BE A ROCK. 🪨</span>
+      </div>
+
+      <div class="cheer">Nobody can push over a ROCK! ⚡💪</div>
+    </div>
+  </div>
+
+  <!-- ===== CARD 3: CORE POWER ===== -->
+  <div class="screen" id="screen-3">
+    <div class="card">
+      <div class="card-number">Card 3 of 9</div>
+      <div class="card-title color-blue">💪 CORE POWER! 💪</div>
+      <div class="card-subtitle">"Build your armour from the inside!"</div>
+
+      <div class="exercise-row">
+
+        <!-- Bear Crawl -->
+        <div class="exercise-item">
+          <svg class="figure crawl-figure" width="100" height="90" viewBox="0 0 100 100">
+            <!-- Crawling position - horizontal body -->
+            <!-- Head forward -->
+            <circle cx="80" cy="38" r="11" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <circle cx="76" cy="36" r="2" fill="#222"/>
+            <circle cx="83" cy="36" r="2" fill="#222"/>
+            <path d="M 75,42 Q 80,46 85,42" stroke="#222" stroke-width="1.5" fill="none"/>
+            <!-- Body horizontal -->
+            <line x1="20" y1="48" x2="70" y2="40" stroke="#fb923c" stroke-width="10" stroke-linecap="round"/>
+            <!-- Front arms (alternating) -->
+            <g class="crawl-arm-r">
+              <line x1="65" y1="42" x2="72" y2="65" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+              <ellipse cx="72" cy="68" rx="6" ry="3" fill="#222"/>
+            </g>
+            <line x1="50" y1="44" x2="42" y2="68" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+            <ellipse cx="42" cy="71" rx="6" ry="3" fill="#222"/>
+            <!-- Back legs -->
+            <g class="crawl-arm-l">
+              <line x1="28" y1="48" x2="22" y2="70" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+              <ellipse cx="21" cy="73" rx="6" ry="3" fill="#222"/>
+            </g>
+            <line x1="18" y1="50" x2="10" y2="68" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+            <ellipse cx="9" cy="71" rx="6" ry="3" fill="#222"/>
+          </svg>
+          <div class="exercise-label">BEAR CRAWL! 🐻</div>
+        </div>
+
+        <!-- Plank -->
+        <div class="exercise-item">
+          <svg class="figure plank-figure" width="110" height="80" viewBox="0 0 110 85">
+            <!-- Plank position - flat body -->
+            <!-- Head -->
+            <circle cx="90" cy="28" r="11" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <circle cx="86" cy="26" r="2" fill="#222"/>
+            <circle cx="93" cy="26" r="2" fill="#222"/>
+            <!-- Determined face -->
+            <line x1="85" y1="31" x2="95" y2="31" stroke="#222" stroke-width="1.5"/>
+            <!-- Body flat -->
+            <line x1="15" y1="45" x2="80" y2="38" stroke="#4dabf7" stroke-width="10" stroke-linecap="round"/>
+            <!-- Arms holding up -->
+            <line x1="75" y1="38" x2="78" y2="58" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+            <ellipse cx="78" cy="61" rx="6" ry="3" fill="#222"/>
+            <line x1="55" y1="41" x2="57" y2="61" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+            <ellipse cx="57" cy="64" rx="6" ry="3" fill="#222"/>
+            <!-- Legs straight back -->
+            <line x1="15" y1="45" x2="10" y2="62" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+            <ellipse cx="9" cy="65" rx="6" ry="3" fill="#222"/>
+            <line x1="22" y1="44" x2="18" y2="62" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+            <ellipse cx="17" cy="65" rx="6" ry="3" fill="#222"/>
+          </svg>
+          <div class="exercise-label">PLANK! 🪵</div>
+        </div>
+
+        <!-- Balance on one leg -->
+        <div class="exercise-item">
+          <svg class="figure balance-figure" width="70" height="130" viewBox="0 0 70 135">
+            <!-- Head -->
+            <circle cx="35" cy="18" r="13" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <circle cx="30" cy="16" r="2" fill="#222"/>
+            <circle cx="40" cy="16" r="2" fill="#222"/>
+            <path d="M 30,22 Q 35,27 40,22" stroke="#222" stroke-width="1.5" fill="none"/>
+            <!-- Body -->
+            <line x1="35" y1="31" x2="35" y2="65" stroke="#c084fc" stroke-width="8" stroke-linecap="round"/>
+            <!-- Arms out for balance -->
+            <line x1="35" y1="40" x2="8" y2="50" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+            <line x1="35" y1="40" x2="62" y2="50" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+            <!-- One leg on ground -->
+            <line x1="35" y1="65" x2="35" y2="105" stroke="#1e40af" stroke-width="8" stroke-linecap="round"/>
+            <ellipse cx="35" cy="108" rx="9" ry="5" fill="#222"/>
+            <!-- Other leg raised/bent -->
+            <line x1="35" y1="70" x2="50" y2="88" stroke="#1e40af" stroke-width="8" stroke-linecap="round"/>
+            <line x1="50" y1="88" x2="42" y2="100" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+            <!-- Balance star -->
+            <text x="62" y="40" font-size="14" fill="#f5c518">⭐</text>
+          </svg>
+          <div class="exercise-label">BALANCE! ⚖️</div>
+        </div>
+
+        <!-- Push-ups -->
+        <div class="exercise-item">
+          <svg width="100" height="110" viewBox="0 0 100 115">
+            <!-- Push-up position — low (going down) animates to high (up) -->
+            <g style="animation: pushupMove 1.2s ease-in-out infinite alternate;">
+              <!-- Head -->
+              <circle cx="82" cy="28" r="11" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <circle cx="78" cy="26" r="2" fill="#222"/>
+              <circle cx="85" cy="26" r="2" fill="#222"/>
+              <path d="M 78,32 Q 82,36 87,32" stroke="#222" stroke-width="1.5" fill="none"/>
+              <!-- Body -->
+              <line x1="18" y1="52" x2="72" y2="40" stroke="#22c55e" stroke-width="10" stroke-linecap="round"/>
+              <!-- Arms pushing -->
+              <line x1="68" y1="42" x2="70" y2="62" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+              <ellipse cx="70" cy="65" rx="6" ry="3" fill="#222"/>
+              <line x1="48" y1="46" x2="50" y2="66" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+              <ellipse cx="50" cy="69" rx="6" ry="3" fill="#222"/>
+              <!-- Legs straight -->
+              <line x1="18" y1="52" x2="12" y2="70" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+              <ellipse cx="11" cy="73" rx="6" ry="3" fill="#222"/>
+              <line x1="24" y1="50" x2="20" y2="68" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+              <ellipse cx="19" cy="71" rx="6" ry="3" fill="#222"/>
+            </g>
+            <!-- Ground line -->
+            <line x1="5" y1="75" x2="95" y2="75" stroke="#444" stroke-width="2"/>
+            <!-- Reps count -->
+            <text x="50" y="95" font-size="13" fill="#22c55e" text-anchor="middle" font-weight="bold">5 → 10 REPS</text>
+            <text x="50" y="110" font-size="11" fill="#aaa" text-anchor="middle">knees ok too!</text>
+          </svg>
+          <div class="exercise-label">PUSH-UPS! 💪</div>
+        </div>
+
+        <!-- Chin-ups with band -->
+        <div class="exercise-item">
+          <svg width="90" height="120" viewBox="0 0 90 125">
+            <!-- Bar at top -->
+            <rect x="5" y="10" width="80" height="7" rx="3" fill="#666" stroke="#444" stroke-width="1"/>
+            <!-- Band (yellow loop) -->
+            <path d="M 38,17 Q 30,55 35,85 Q 45,95 55,85 Q 60,55 52,17" fill="none" stroke="#FFD700" stroke-width="4" stroke-dasharray="6,3"/>
+            <!-- Figure hanging and pulling up -->
+            <g style="animation: chinupMove 1.4s ease-in-out infinite alternate;">
+              <!-- Hands on bar -->
+              <circle cx="38" cy="16" r="5" fill="#FDBCB4" stroke="#222" stroke-width="1.5"/>
+              <circle cx="52" cy="16" r="5" fill="#FDBCB4" stroke="#222" stroke-width="1.5"/>
+              <!-- Arms -->
+              <line x1="38" y1="21" x2="40" y2="38" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+              <line x1="52" y1="21" x2="50" y2="38" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+              <!-- Head -->
+              <circle cx="45" cy="48" r="12" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <circle cx="41" cy="46" r="2" fill="#222"/>
+              <circle cx="49" cy="46" r="2" fill="#222"/>
+              <path d="M 41,53 Q 45,57 49,53" stroke="#222" stroke-width="1.5" fill="none"/>
+              <!-- Body -->
+              <line x1="45" y1="60" x2="45" y2="88" stroke="#f97316" stroke-width="8" stroke-linecap="round"/>
+              <!-- Legs bent (knee in band) -->
+              <line x1="45" y1="88" x2="38" y2="100" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+              <line x1="38" y1="100" x2="42" y2="110" stroke="#1e40af" stroke-width="6" stroke-linecap="round"/>
+              <line x1="45" y1="88" x2="52" y2="100" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+              <line x1="52" y1="100" x2="48" y2="110" stroke="#1e40af" stroke-width="6" stroke-linecap="round"/>
+            </g>
+            <text x="45" y="122" font-size="11" fill="#FFD700" text-anchor="middle" font-weight="bold">BAND HELPS! 🟡</text>
+          </svg>
+          <div class="exercise-label">CHIN-UPS! 🏋️</div>
+        </div>
+
+        <!-- Squats -->
+        <div class="exercise-item">
+          <svg width="80" height="130" viewBox="0 0 80 135">
+            <!-- Standing position animates to squat -->
+            <g style="animation: squatMove 1.3s ease-in-out infinite alternate;">
+              <!-- Head -->
+              <circle cx="40" cy="18" r="13" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <circle cx="35" cy="16" r="2" fill="#222"/>
+              <circle cx="45" cy="16" r="2" fill="#222"/>
+              <path d="M 35,23 Q 40,28 45,23" stroke="#222" stroke-width="1.5" fill="none"/>
+              <!-- Body shortens in squat -->
+              <line x1="40" y1="31" x2="40" y2="58" stroke="#e879f9" stroke-width="9" stroke-linecap="round"/>
+              <!-- Arms out front for balance -->
+              <line x1="40" y1="42" x2="12" y2="48" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+              <line x1="40" y1="42" x2="68" y2="48" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+              <!-- Legs wide in squat -->
+              <line x1="40" y1="58" x2="20" y2="85" stroke="#1e40af" stroke-width="8" stroke-linecap="round"/>
+              <line x1="20" y1="85" x2="12" y2="100" stroke="#1e40af" stroke-width="8" stroke-linecap="round"/>
+              <ellipse cx="10" cy="103" rx="8" ry="4" fill="#222"/>
+              <line x1="40" y1="58" x2="60" y2="85" stroke="#1e40af" stroke-width="8" stroke-linecap="round"/>
+              <line x1="60" y1="85" x2="68" y2="100" stroke="#1e40af" stroke-width="8" stroke-linecap="round"/>
+              <ellipse cx="70" cy="103" rx="8" ry="4" fill="#222"/>
+            </g>
+            <!-- Ground -->
+            <line x1="5" y1="107" x2="75" y2="107" stroke="#444" stroke-width="2"/>
+            <text x="40" y="122" font-size="13" fill="#e879f9" text-anchor="middle" font-weight="bold">10 REPS</text>
+            <text x="40" y="134" font-size="10" fill="#aaa" text-anchor="middle">feet wide!</text>
+          </svg>
+          <div class="exercise-label">SQUATS! 🦵</div>
+        </div>
+
+      </div>
+
+      <div class="time-badge">⚔️ 5 MINUTES — BUILD YOUR ARMOUR! 🛡️</div>
+      <div class="cheer">Strong core = WARRIOR POWER! 💥</div>
+    </div>
+  </div>
+
+  <!-- ===== CARD 4: SPEED & AGILITY ===== -->
+  <div class="screen" id="screen-4">
+    <div class="card">
+      <div class="card-number">Card 4 of 9</div>
+      <div class="card-title color-green">⚡ SPEED &amp; AGILITY! ⚡</div>
+      <div class="card-subtitle">"Fast feet = fast brain = WARRIOR BRAIN! 🧠"</div>
+
+      <div class="exercise-row">
+
+        <!-- Jump Rope fast -->
+        <div class="exercise-item">
+          <svg class="figure" width="75" height="115" viewBox="0 0 75 120" style="overflow:visible;">
+            <g style="animation: jumpBounce 0.4s ease-in-out infinite;">
+              <circle cx="37" cy="18" r="11" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <circle cx="33" cy="16" r="1.8" fill="#222"/>
+              <circle cx="41" cy="16" r="1.8" fill="#222"/>
+              <path d="M 33,22 Q 37,26 41,22" stroke="#222" stroke-width="1.5" fill="none"/>
+              <line x1="37" y1="29" x2="37" y2="60" stroke="#22c55e" stroke-width="7" stroke-linecap="round"/>
+              <line x1="37" y1="37" x2="18" y2="52" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="16" cy="54" r="5" fill="#FDBCB4" stroke="#222" stroke-width="1.5"/>
+              <line x1="37" y1="37" x2="56" y2="52" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="58" cy="54" r="5" fill="#FDBCB4" stroke="#222" stroke-width="1.5"/>
+              <line x1="37" y1="60" x2="33" y2="88" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+              <line x1="37" y1="60" x2="41" y2="88" stroke="#333" stroke-width="6" stroke-linecap="round"/>
+              <ellipse cx="31" cy="91" rx="6" ry="3" fill="#222"/>
+              <ellipse cx="43" cy="91" rx="6" ry="3" fill="#222"/>
+            </g>
+            <path d="M 16,54 Q 37,105 58,54" stroke="#f5c518" stroke-width="2.5" fill="none" class="rope-arc" style="animation: ropeArc 0.4s ease-in-out infinite;"/>
+            <!-- Speed lines -->
+            <line x1="0" y1="30" x2="12" y2="30" stroke="#4ade80" stroke-width="2" stroke-dasharray="3,2" opacity="0.7"/>
+            <line x1="0" y1="40" x2="8" y2="40" stroke="#4ade80" stroke-width="2" stroke-dasharray="3,2" opacity="0.5"/>
+          </svg>
+          <div class="exercise-label">FAST ROPE! 2 min ⚡</div>
+        </div>
+
+        <!-- Ladder feet -->
+        <div class="exercise-item">
+          <svg class="figure ladder-figure" width="80" height="115" viewBox="0 0 80 120">
+            <!-- Ladder on ground -->
+            <rect x="20" y="85" width="40" height="25" rx="3" fill="none" stroke="rgba(245,197,24,0.5)" stroke-width="2"/>
+            <line x1="40" y1="85" x2="40" y2="110" stroke="rgba(245,197,24,0.5)" stroke-width="2"/>
+            <!-- Figure -->
+            <circle cx="40" cy="18" r="11" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <circle cx="36" cy="16" r="1.8" fill="#222"/>
+            <circle cx="44" cy="16" r="1.8" fill="#222"/>
+            <path d="M 36,22 Q 40,26 44,22" stroke="#222" stroke-width="1.5" fill="none"/>
+            <line x1="40" y1="29" x2="40" y2="62" stroke="#fb923c" stroke-width="7" stroke-linecap="round"/>
+            <line x1="40" y1="37" x2="20" y2="48" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+            <line x1="40" y1="37" x2="60" y2="48" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+            <!-- Feet in ladder -->
+            <line x1="38" y1="62" x2="30" y2="88" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+            <line x1="42" y1="62" x2="50" y2="88" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+            <ellipse cx="28" cy="91" rx="7" ry="4" fill="#fbbf24"/>
+            <ellipse cx="52" cy="91" rx="7" ry="4" fill="#fbbf24"/>
+          </svg>
+          <div class="exercise-label">LADDER FEET! 🪜</div>
+        </div>
+
+        <!-- Side Shuffle -->
+        <div class="exercise-item">
+          <svg class="figure shuffle-figure" width="75" height="115" viewBox="0 0 75 120">
+            <!-- Head -->
+            <circle cx="37" cy="18" r="11" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <circle cx="33" cy="16" r="1.8" fill="#222"/>
+            <circle cx="41" cy="16" r="1.8" fill="#222"/>
+            <path d="M 33,22 Q 37,26 41,22" stroke="#222" stroke-width="1.5" fill="none"/>
+            <!-- Body low stance -->
+            <line x1="37" y1="29" x2="37" y2="60" stroke="#4dabf7" stroke-width="7" stroke-linecap="round"/>
+            <!-- Arms out -->
+            <line x1="37" y1="37" x2="12" y2="44" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+            <line x1="37" y1="37" x2="62" y2="44" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+            <!-- Wide leg shuffle -->
+            <line x1="35" y1="60" x2="20" y2="90" stroke="#1e40af" stroke-width="8" stroke-linecap="round"/>
+            <line x1="39" y1="60" x2="54" y2="90" stroke="#1e40af" stroke-width="8" stroke-linecap="round"/>
+            <ellipse cx="17" cy="94" rx="8" ry="4" fill="#222"/>
+            <ellipse cx="57" cy="94" rx="8" ry="4" fill="#222"/>
+            <!-- Arrow showing direction -->
+            <path d="M 5,75 L 12,70 L 12,72 L 70,72 L 70,70 L 77,75 L 70,80 L 70,78 L 12,78 L 12,80 Z" fill="rgba(74,222,128,0.5)" stroke="#4ade80" stroke-width="1"/>
+          </svg>
+          <div class="exercise-label">SIDE SHUFFLE! ↔️</div>
+        </div>
+
+      </div>
+
+      <div class="time-badge">⚡ 5 MINUTES — FAST FEET, FAST BRAIN! 🧠</div>
+      <div class="cheer">Nobody can catch a WARRIOR with fast feet! 💨</div>
+    </div>
+  </div>
+
+  <!-- ===== CARD 5: BOXING ===== -->
+  <div class="screen" id="screen-5">
+    <div class="card">
+      <div class="card-number">Card 5 of 9</div>
+      <div class="card-title color-red">🥊 BOXING TIME! 🥊</div>
+      <div class="card-subtitle">"Protect yourself like a warrior!"</div>
+
+      <div class="exercise-row">
+
+        <!-- Jab -->
+        <div class="exercise-item">
+          <svg class="figure" width="80" height="120" viewBox="0 0 80 130">
+            <circle cx="40" cy="18" r="11" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <circle cx="36" cy="16" r="1.8" fill="#222"/>
+            <circle cx="44" cy="16" r="1.8" fill="#222"/>
+            <line x1="35" y1="22" x2="45" y2="22" stroke="#222" stroke-width="2" stroke-linecap="round"/>
+            <!-- Headgear -->
+            <path d="M 28,12 Q 40,4 52,12" stroke="#e63946" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <line x1="28" y1="12" x2="28" y2="22" stroke="#e63946" stroke-width="4" stroke-linecap="round"/>
+            <line x1="52" y1="12" x2="52" y2="22" stroke="#e63946" stroke-width="4" stroke-linecap="round"/>
+            <line x1="29" y1="30" x2="29" y2="20" stroke="#e63946" stroke-width="4" stroke-linecap="round"/>
+            <line x1="51" y1="30" x2="51" y2="20" stroke="#e63946" stroke-width="4" stroke-linecap="round"/>
+            <!-- Body -->
+            <line x1="40" y1="29" x2="40" y2="65" stroke="#e63946" stroke-width="8" stroke-linecap="round"/>
+            <!-- JAB arm extended -->
+            <g class="jab-arm">
+              <line x1="40" y1="38" x2="10" y2="48" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+              <circle cx="6" cy="49" r="8" fill="#e63946" stroke="#222" stroke-width="2"/>
+              <text x="6" y="53" text-anchor="middle" font-size="7" fill="white" font-weight="bold">JAB</text>
+            </g>
+            <!-- Guard arm -->
+            <line x1="40" y1="38" x2="60" y2="45" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="64" cy="46" r="8" fill="#e63946" stroke="#222" stroke-width="2"/>
+            <!-- Legs -->
+            <line x1="37" y1="65" x2="25" y2="98" stroke="#333" stroke-width="7" stroke-linecap="round"/>
+            <line x1="43" y1="65" x2="55" y2="98" stroke="#333" stroke-width="7" stroke-linecap="round"/>
+            <ellipse cx="23" cy="101" rx="7" ry="4" fill="#222"/>
+            <ellipse cx="57" cy="101" rx="7" ry="4" fill="#222"/>
+          </svg>
+          <div class="exercise-label">JAB! 🥊</div>
+        </div>
+
+        <!-- Jab-Cross -->
+        <div class="exercise-item">
+          <svg class="figure" width="90" height="120" viewBox="0 0 90 130">
+            <circle cx="45" cy="18" r="11" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <!-- Headgear -->
+            <path d="M 33,12 Q 45,4 57,12" stroke="#1e40af" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <line x1="33" y1="12" x2="33" y2="22" stroke="#1e40af" stroke-width="4" stroke-linecap="round"/>
+            <line x1="57" y1="12" x2="57" y2="22" stroke="#1e40af" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="40" cy="15" r="2" fill="#222"/>
+            <circle cx="50" cy="15" r="2" fill="#222"/>
+            <path d="M 40,22 Q 45,26 50,22" stroke="#222" stroke-width="1.5" fill="none"/>
+            <line x1="45" y1="29" x2="45" y2="65" stroke="#1e40af" stroke-width="8" stroke-linecap="round"/>
+            <!-- JAB left arm -->
+            <g class="jab-arm">
+              <line x1="45" y1="38" x2="12" y2="46" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+              <circle cx="8" cy="47" r="7" fill="#e63946" stroke="#222" stroke-width="2"/>
+            </g>
+            <!-- CROSS right arm -->
+            <g class="cross-arm">
+              <line x1="45" y1="38" x2="78" y2="44" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+              <circle cx="82" cy="45" r="7" fill="#1e40af" stroke="#222" stroke-width="2"/>
+            </g>
+            <line x1="42" y1="65" x2="30" y2="98" stroke="#333" stroke-width="7" stroke-linecap="round"/>
+            <line x1="48" y1="65" x2="60" y2="98" stroke="#333" stroke-width="7" stroke-linecap="round"/>
+            <ellipse cx="28" cy="101" rx="7" ry="4" fill="#222"/>
+            <ellipse cx="62" cy="101" rx="7" ry="4" fill="#222"/>
+            <text x="45" y="120" text-anchor="middle" font-size="8" fill="#f5c518" font-weight="bold">JAB-CROSS!</text>
+          </svg>
+          <div class="exercise-label">JAB-CROSS! 🥊🥊</div>
+        </div>
+
+        <!-- Bob and Weave -->
+        <div class="exercise-item">
+          <svg class="figure" width="100" height="125" viewBox="0 0 100 130">
+            <!-- Uncle arm swinging slowly -->
+            <g style="animation: slowBox 2.5s ease-in-out infinite; transform-origin:80px 35px; transform-box:fill-box;">
+              <circle cx="80" cy="22" r="9" fill="#FDBCB4" stroke="#222" stroke-width="1.5"/>
+              <line x1="80" y1="31" x2="80" y2="55" stroke="white" stroke-width="6" stroke-linecap="round"/>
+              <!-- Uncle arm -->
+              <line x1="80" y1="38" x2="55" y2="48" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="51" cy="49" r="6" fill="white" stroke="#222" stroke-width="1.5"/>
+              <text x="80" y="70" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.6)">UNCLE</text>
+            </g>
+            <!-- Lucas bobbing under -->
+            <g class="bob-figure">
+              <circle cx="25" cy="55" r="11" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <circle cx="21" cy="53" r="1.8" fill="#222"/>
+              <circle cx="29" cy="53" r="1.8" fill="#222"/>
+              <!-- Big grin - enjoying the dodge! -->
+              <path d="M 20,59 Q 25,64 30,59" stroke="#222" stroke-width="2" fill="none"/>
+              <line x1="25" y1="66" x2="25" y2="92" stroke="#3b82f6" stroke-width="7" stroke-linecap="round"/>
+              <line x1="25" y1="73" x2="8" y2="80" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+              <line x1="25" y1="73" x2="42" y2="80" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+              <line x1="23" y1="92" x2="14" y2="115" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+              <line x1="27" y1="92" x2="36" y2="115" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+              <ellipse cx="12" cy="118" rx="7" ry="4" fill="#222"/>
+              <ellipse cx="38" cy="118" rx="7" ry="4" fill="#222"/>
+              <text x="25" y="130" text-anchor="middle" font-size="7" fill="#4ade80" font-weight="bold">DODGE! 😄</text>
+            </g>
+          </svg>
+          <div class="exercise-label">BOB &amp; WEAVE! 🌊</div>
+        </div>
+
+        <!-- Cover up -->
+        <div class="exercise-item">
+          <svg class="figure guard-figure" width="70" height="120" viewBox="0 0 70 130">
+            <circle cx="35" cy="18" r="11" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <!-- Headgear -->
+            <path d="M 24,12 Q 35,4 46,12" stroke="#e63946" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <line x1="24" y1="12" x2="24" y2="22" stroke="#e63946" stroke-width="4" stroke-linecap="round"/>
+            <line x1="46" y1="12" x2="46" y2="22" stroke="#e63946" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="30" cy="16" r="1.8" fill="#222"/>
+            <circle cx="40" cy="16" r="1.8" fill="#222"/>
+            <!-- Tight guard - fists up covering face -->
+            <line x1="35" y1="29" x2="35" y2="68" stroke="#e63946" stroke-width="8" stroke-linecap="round"/>
+            <!-- Both arms up tight - SHELL guard -->
+            <line x1="35" y1="36" x2="18" y2="26" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="14" cy="24" r="8" fill="#e63946" stroke="#222" stroke-width="2"/>
+            <line x1="35" y1="36" x2="52" y2="26" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="56" cy="24" r="8" fill="#e63946" stroke="#222" stroke-width="2"/>
+            <!-- Legs slightly bent low -->
+            <line x1="32" y1="68" x2="22" y2="100" stroke="#333" stroke-width="8" stroke-linecap="round"/>
+            <line x1="38" y1="68" x2="48" y2="100" stroke="#333" stroke-width="8" stroke-linecap="round"/>
+            <ellipse cx="20" cy="103" rx="8" ry="4" fill="#222"/>
+            <ellipse cx="50" cy="103" rx="8" ry="4" fill="#222"/>
+            <!-- Shield symbol -->
+            <text x="35" y="120" text-anchor="middle" font-size="14" fill="#f5c518">🛡️</text>
+          </svg>
+          <div class="exercise-label">COVER UP! 🛡️</div>
+        </div>
+
+      </div>
+
+        <!-- HIGH JABS - stamina builder -->
+        <div class="exercise-item" style="flex:1.3;">
+          <svg width="80" height="130" viewBox="0 0 80 135">
+            <!-- Figure with arm punching HIGH above head -->
+            <circle cx="40" cy="22" r="11" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <path d="M 28,16 Q 40,8 52,16" stroke="#f59e0b" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <line x1="28" y1="16" x2="28" y2="26" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+            <line x1="52" y1="16" x2="52" y2="26" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="35" cy="20" r="1.8" fill="#222"/>
+            <circle cx="45" cy="20" r="1.8" fill="#222"/>
+            <path d="M 35,26 Q 40,30 45,26" stroke="#222" stroke-width="1.5" fill="none"/>
+            <!-- Body -->
+            <line x1="40" y1="33" x2="40" y2="72" stroke="#f59e0b" stroke-width="8" stroke-linecap="round"/>
+            <!-- JAB arm extended HIGH up -->
+            <g style="animation: highJabMove 0.8s ease-in-out infinite alternate;">
+              <line x1="40" y1="40" x2="18" y2="6" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+              <circle cx="14" cy="3" r="9" fill="#f59e0b" stroke="#222" stroke-width="2"/>
+              <text x="14" y="7" text-anchor="middle" font-size="7" fill="#000" font-weight="bold">JAB</text>
+            </g>
+            <!-- Guard arm also up high -->
+            <line x1="40" y1="40" x2="60" y2="10" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="64" cy="7" r="8" fill="#f59e0b" stroke="#222" stroke-width="2"/>
+            <!-- Legs -->
+            <line x1="37" y1="72" x2="26" y2="104" stroke="#333" stroke-width="7" stroke-linecap="round"/>
+            <line x1="43" y1="72" x2="54" y2="104" stroke="#333" stroke-width="7" stroke-linecap="round"/>
+            <ellipse cx="24" cy="107" rx="7" ry="4" fill="#222"/>
+            <ellipse cx="56" cy="107" rx="7" ry="4" fill="#222"/>
+            <!-- Fire emoji for effort -->
+            <text x="40" y="125" text-anchor="middle" font-size="13">🔥</text>
+          </svg>
+          <div class="exercise-label">HIGH JABS! ☝️🥊</div>
+          <div style="font-size:0.72em; color:#f59e0b; text-align:center; margin-top:4px; line-height:1.4;">hands above the head<br>× 30 reps each arm</div>
+        </div>
+
+        <!-- Hook punch -->
+        <div class="exercise-item">
+          <svg width="80" height="120" viewBox="0 0 80 130">
+            <circle cx="40" cy="18" r="11" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <path d="M 28,12 Q 40,4 52,12" stroke="#7c3aed" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <line x1="28" y1="12" x2="28" y2="22" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+            <line x1="52" y1="12" x2="52" y2="22" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="35" cy="16" r="1.8" fill="#222"/>
+            <circle cx="45" cy="16" r="1.8" fill="#222"/>
+            <path d="M 35,22 Q 40,26 45,22" stroke="#222" stroke-width="1.5" fill="none"/>
+            <line x1="40" y1="29" x2="40" y2="68" stroke="#7c3aed" stroke-width="8" stroke-linecap="round"/>
+            <!-- Hook arm swinging in arc -->
+            <g style="animation: hookSwing 1.1s ease-in-out infinite alternate; transform-origin: 40px 38px; transform-box: fill-box;">
+              <line x1="40" y1="38" x2="12" y2="32" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+              <circle cx="7" cy="30" r="9" fill="#7c3aed" stroke="#222" stroke-width="2"/>
+              <text x="7" y="34" text-anchor="middle" font-size="6" fill="white" font-weight="bold">3</text>
+            </g>
+            <!-- Guard hand -->
+            <line x1="40" y1="38" x2="62" y2="28" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="67" cy="27" r="8" fill="#7c3aed" stroke="#222" stroke-width="2"/>
+            <line x1="37" y1="68" x2="26" y2="100" stroke="#333" stroke-width="7" stroke-linecap="round"/>
+            <line x1="43" y1="68" x2="54" y2="100" stroke="#333" stroke-width="7" stroke-linecap="round"/>
+            <ellipse cx="24" cy="103" rx="7" ry="4" fill="#222"/>
+            <ellipse cx="56" cy="103" rx="7" ry="4" fill="#222"/>
+            <!-- Arc path showing hook -->
+            <path d="M 12,50 Q 5,35 12,25" fill="none" stroke="#7c3aed" stroke-width="2" stroke-dasharray="4,2"/>
+          </svg>
+          <div class="exercise-label">HOOK! 〽️</div>
+        </div>
+
+        <!-- 1-2-3 Combo board -->
+        <div class="exercise-item" style="flex:1.4; min-width:200px;">
+          <div style="background:#111; border:2px solid #FFD700; border-radius:14px; padding:14px; width:100%;">
+            <div style="text-align:center; color:#FFD700; font-size:1em; font-weight:bold; margin-bottom:10px;">⚡ COMBO CODES ⚡</div>
+            <div style="display:grid; gap:8px;">
+              <div style="background:#1a0000; border-left:4px solid #e63946; border-radius:6px; padding:7px 10px; display:flex; align-items:center; gap:10px;">
+                <span style="color:#e63946; font-size:1.4em; font-weight:900; min-width:32px;">1</span>
+                <span style="color:#fff; font-size:0.85em;">JAB — quick left hand 💨</span>
+              </div>
+              <div style="background:#000a1a; border-left:4px solid #3b82f6; border-radius:6px; padding:7px 10px; display:flex; align-items:center; gap:10px;">
+                <span style="color:#3b82f6; font-size:1.4em; font-weight:900; min-width:32px;">2</span>
+                <span style="color:#fff; font-size:0.85em;">CROSS — power right hand 💥</span>
+              </div>
+              <div style="background:#1a0033; border-left:4px solid #7c3aed; border-radius:6px; padding:7px 10px; display:flex; align-items:center; gap:10px;">
+                <span style="color:#7c3aed; font-size:1.4em; font-weight:900; min-width:32px;">3</span>
+                <span style="color:#fff; font-size:0.85em;">HOOK — left side swing 〽️</span>
+              </div>
+              <div style="background:#001a00; border-left:4px solid #22c55e; border-radius:6px; padding:7px 10px;">
+                <div style="color:#22c55e; font-size:0.8em; font-weight:bold; margin-bottom:4px;">COMBOS TO DRILL:</div>
+                <div style="color:#fff; font-size:0.82em; line-height:1.8;">
+                  <span style="color:#e63946;">1</span>-<span style="color:#3b82f6;">2</span> &nbsp;→ Jab then Cross<br>
+                  <span style="color:#e63946;">1</span>-<span style="color:#e63946;">1</span>-<span style="color:#3b82f6;">2</span> &nbsp;→ Double jab, Cross<br>
+                  <span style="color:#e63946;">1</span>-<span style="color:#3b82f6;">2</span>-<span style="color:#7c3aed;">3</span> &nbsp;→ Jab, Cross, Hook 🏆
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="exercise-label" style="margin-top:8px;">COMBOS! 🔢</div>
+        </div>
+
+      </div>
+
+      <!-- Hands always up reminder -->
+      <div style="background:linear-gradient(90deg,#3a0000,#000); border:1px solid #e63946; border-radius:10px; padding:10px 16px; margin:10px 0; text-align:center; font-size:0.9em;">
+        🛡️ <strong style="color:#e63946;">RULE #1:</strong> <span style="color:#fff;">HANDS UP AT ALL TIMES.</span> <span style="color:#aaa;">Guard never drops. Ever.</span>
+        &nbsp;&nbsp;🔥 <strong style="color:#f59e0b;">STAMINA SECRET:</strong> <span style="color:#aaa;">Train jabs HIGH above your head. Fight with hands at face. Feels effortless.</span>
+      </div>
+
+      <div class="time-badge">🥊 8 MINUTES — PROTECT YOURSELF! 🛡️</div>
+      <div class="cheer">Warriors know how to protect themselves! 💪🥊</div>
+    </div>
+  </div>
+
+
+  <!-- ===== CARD 9: FOOTWORK ===== -->
+  <div class="screen" id="screen-9">
+    <div class="card">
+      <div class="card-number">Card 9 of 9</div>
+      <div class="card-title" style="color:#00e5ff;">👟 FOOTWORK IS EVERYTHING! 👟</div>
+      <div class="card-subtitle">"Control the space. Control the fight."</div>
+
+      <div class="exercise-row">
+
+        <!-- Shuffle -->
+        <div class="exercise-item">
+          <svg width="110" height="120" viewBox="0 0 110 120">
+            <!-- Two positions showing lateral shuffle -->
+            <g style="animation: shuffleMove 0.9s ease-in-out infinite alternate;">
+              <circle cx="55" cy="18" r="12" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <circle cx="50" cy="16" r="2" fill="#222"/>
+              <circle cx="60" cy="16" r="2" fill="#222"/>
+              <path d="M 50,22 Q 55,27 60,22" stroke="#222" stroke-width="1.5" fill="none"/>
+              <line x1="55" y1="30" x2="55" y2="60" stroke="#00e5ff" stroke-width="9" stroke-linecap="round"/>
+              <line x1="55" y1="42" x2="28" y2="50" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+              <line x1="55" y1="42" x2="82" y2="50" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+              <line x1="55" y1="60" x2="35" y2="90" stroke="#1e40af" stroke-width="8" stroke-linecap="round"/>
+              <ellipse cx="33" cy="93" rx="8" ry="4" fill="#222"/>
+              <line x1="55" y1="60" x2="72" y2="90" stroke="#1e40af" stroke-width="8" stroke-linecap="round"/>
+              <ellipse cx="74" cy="93" rx="8" ry="4" fill="#222"/>
+            </g>
+            <!-- Arrows showing movement -->
+            <text x="8"  y="75" font-size="20" fill="#00e5ff">←</text>
+            <text x="85" y="75" font-size="20" fill="#00e5ff">→</text>
+            <line x1="5" y1="97" x2="105" y2="97" stroke="#333" stroke-width="2"/>
+            <text x="55" y="113" font-size="12" fill="#00e5ff" text-anchor="middle" font-weight="bold">NEVER STILL!</text>
+          </svg>
+          <div class="exercise-label">SHUFFLE! ↔️</div>
+        </div>
+
+        <!-- Pivot drill -->
+        <div class="exercise-item">
+          <svg width="100" height="120" viewBox="0 0 100 120">
+            <g style="animation: pivotSpin 1.8s linear infinite;">
+              <circle cx="50" cy="18" r="12" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <circle cx="45" cy="16" r="2" fill="#222"/>
+              <circle cx="55" cy="16" r="2" fill="#222"/>
+              <path d="M 45,22 Q 50,26 55,22" stroke="#222" stroke-width="1.5" fill="none"/>
+              <line x1="50" y1="30" x2="50" y2="60" stroke="#f97316" stroke-width="9" stroke-linecap="round"/>
+              <line x1="50" y1="42" x2="22" y2="38" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+              <line x1="50" y1="42" x2="78" y2="38" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+              <line x1="50" y1="60" x2="32" y2="88" stroke="#1e40af" stroke-width="8" stroke-linecap="round"/>
+              <ellipse cx="30" cy="91" rx="8" ry="4" fill="#222"/>
+              <line x1="50" y1="60" x2="68" y2="88" stroke="#1e40af" stroke-width="8" stroke-linecap="round"/>
+              <ellipse cx="70" cy="91" rx="8" ry="4" fill="#222"/>
+            </g>
+            <!-- Spin arrow -->
+            <path d="M 20,55 A 30,30 0 0,1 80,55" fill="none" stroke="#f97316" stroke-width="3" stroke-dasharray="6,3" marker-end="url(#arrow)"/>
+            <line x1="5" y1="95" x2="95" y2="95" stroke="#333" stroke-width="2"/>
+            <text x="50" y="110" font-size="12" fill="#f97316" text-anchor="middle" font-weight="bold">360° PIVOT!</text>
+          </svg>
+          <div class="exercise-label">PIVOT! 🔄</div>
+        </div>
+
+        <!-- L-step (step offline) -->
+        <div class="exercise-item">
+          <svg width="110" height="120" viewBox="0 0 110 120">
+            <!-- Attacker coming straight -->
+            <circle cx="20" cy="30" r="10" fill="#ff4444" stroke="#222" stroke-width="2"/>
+            <text x="16" y="34" font-size="10" fill="#fff" font-weight="bold">!</text>
+            <line x1="30" y1="30" x2="55" y2="30" stroke="#ff4444" stroke-width="3" stroke-dasharray="4,2"/>
+            <text x="38" y="24" font-size="14" fill="#ff4444">→</text>
+            <!-- Lucas stepping offline to angle -->
+            <g style="animation: lstepMove 1.5s ease-in-out infinite alternate;">
+              <circle cx="72" cy="55" r="12" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <circle cx="67" cy="53" r="2" fill="#222"/>
+              <circle cx="77" cy="53" r="2" fill="#222"/>
+              <path d="M 67,59 Q 72,64 77,59" stroke="#222" stroke-width="1.5" fill="none"/>
+              <line x1="72" y1="67" x2="72" y2="90" stroke="#00e5ff" stroke-width="9" stroke-linecap="round"/>
+              <line x1="72" y1="76" x2="50" y2="72" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+              <line x1="72" y1="76" x2="94" y2="72" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+              <line x1="72" y1="90" x2="58" y2="108" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+              <ellipse cx="56" cy="111" rx="7" ry="3" fill="#222"/>
+              <line x1="72" y1="90" x2="86" y2="108" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+              <ellipse cx="88" cy="111" rx="7" ry="3" fill="#222"/>
+            </g>
+            <!-- Step angle arrow -->
+            <path d="M 60,30 L 72,52" stroke="#00e5ff" stroke-width="2" stroke-dasharray="4,2"/>
+            <text x="48" y="50" font-size="10" fill="#00e5ff">STEP OFFLINE</text>
+          </svg>
+          <div class="exercise-label">L-STEP! 📐</div>
+        </div>
+
+        <!-- Box drill -->
+        <div class="exercise-item">
+          <svg width="110" height="120" viewBox="0 0 110 120">
+            <!-- Box corners -->
+            <rect x="15" y="15" width="80" height="80" fill="none" stroke="#FFD700" stroke-width="2" stroke-dasharray="6,3"/>
+            <circle cx="15" cy="15" r="5" fill="#FFD700"/>
+            <circle cx="95" cy="15" r="5" fill="#FFD700"/>
+            <circle cx="15" cy="95" r="5" fill="#FFD700"/>
+            <circle cx="95" cy="95" r="5" fill="#FFD700"/>
+            <!-- Lucas at centre -->
+            <g style="animation: boxMove 2s ease-in-out infinite alternate;">
+              <circle cx="55" cy="55" r="10" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+              <circle cx="51" cy="53" r="1.5" fill="#222"/>
+              <circle cx="59" cy="53" r="1.5" fill="#222"/>
+              <line x1="55" y1="65" x2="55" y2="78" stroke="#e879f9" stroke-width="7" stroke-linecap="round"/>
+              <line x1="55" y1="70" x2="42" y2="74" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+              <line x1="55" y1="70" x2="68" y2="74" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+              <line x1="55" y1="78" x2="46" y2="92" stroke="#1e40af" stroke-width="6" stroke-linecap="round"/>
+              <line x1="55" y1="78" x2="64" y2="92" stroke="#1e40af" stroke-width="6" stroke-linecap="round"/>
+            </g>
+            <text x="55" y="115" font-size="11" fill="#FFD700" text-anchor="middle" font-weight="bold">4 CORNERS!</text>
+          </svg>
+          <div class="exercise-label">BOX DRILL! 📦</div>
+        </div>
+
+      </div>
+
+      <div class="time-badge" style="background: linear-gradient(90deg,#005f6b,#004955);">👟 5 MINUTES — CONTROL THE SPACE! 🎯</div>
+      <div class="cheer" style="color:#00e5ff;">Move first. Think later. Always have an angle! ⚡</div>
+    </div>
+  </div>
+
+
+  <!-- ===== CARD 6: KICKS ===== -->
+  <div class="screen" id="screen-6">
+    <div class="card">
+      <div class="card-number">Card 6 of 9</div>
+      <div class="card-title color-orange">🦵 KICK LIKE A CHAMPION! 🦵</div>
+      <div class="card-subtitle">"Your legs are the most powerful weapons!"</div>
+
+      <div class="exercise-row">
+
+        <!-- Front Kick TEEP -->
+        <div class="exercise-item" style="min-width:140px;">
+          <svg class="figure" width="130" height="130" viewBox="0 0 130 140">
+            <!-- Lucas kicking -->
+            <circle cx="35" cy="18" r="13" fill="#FDBCB4" stroke="#222" stroke-width="2.5"/>
+            <circle cx="30" cy="15" r="2.5" fill="#222"/>
+            <circle cx="40" cy="15" r="2.5" fill="#222"/>
+            <path d="M 29,23 Q 35,28 41,23" stroke="#222" stroke-width="2" fill="none"/>
+            <line x1="35" y1="31" x2="35" y2="68" stroke="#3b82f6" stroke-width="9" stroke-linecap="round"/>
+            <!-- Arms in guard while kicking -->
+            <line x1="35" y1="40" x2="15" y2="52" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="11" cy="54" r="7" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <line x1="35" y1="40" x2="55" y2="52" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="59" cy="54" r="7" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <!-- Standing leg -->
+            <line x1="33" y1="68" x2="28" y2="108" stroke="#1e40af" stroke-width="9" stroke-linecap="round"/>
+            <ellipse cx="26" cy="112" rx="10" ry="5" fill="#222"/>
+            <!-- FRONT KICK LEG - extended out -->
+            <g class="kick-leg">
+              <line x1="37" y1="68" x2="50" y2="90" stroke="#1e40af" stroke-width="9" stroke-linecap="round"/>
+              <line x1="50" y1="90" x2="95" y2="90" stroke="#1e40af" stroke-width="9" stroke-linecap="round"/>
+              <ellipse cx="100" cy="90" rx="10" ry="6" fill="#222" stroke="#111" stroke-width="1.5"/>
+            </g>
+            <!-- Target they're kicking -->
+            <circle cx="118" cy="90" r="12" fill="none" stroke="#e63946" stroke-width="3" stroke-dasharray="5,3"/>
+            <text x="118" y="94" text-anchor="middle" font-size="12">🎯</text>
+            <!-- Power lines -->
+            <line x1="88" y1="82" x2="100" y2="78" stroke="#f5c518" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="90" y1="90" x2="104" y2="88" stroke="#f5c518" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="88" y1="98" x2="100" y2="102" stroke="#f5c518" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <div class="exercise-label">FRONT KICK — TEEP! 🦵</div>
+          <div class="instruction-box" style="font-size:0.85rem; padding:8px; margin-top:5px;">
+            <strong style="font-size:0.9em;">⚡ YOUR SUPERPOWER!</strong>
+            PUSH THEM AWAY! 👊
+          </div>
+        </div>
+
+        <!-- Roundhouse -->
+        <div class="exercise-item" style="min-width:130px;">
+          <svg class="figure" width="120" height="130" viewBox="0 0 120 140">
+            <!-- Lucas roundhouse -->
+            <circle cx="40" cy="18" r="13" fill="#FDBCB4" stroke="#222" stroke-width="2.5"/>
+            <circle cx="35" cy="15" r="2.5" fill="#222"/>
+            <circle cx="45" cy="15" r="2.5" fill="#222"/>
+            <!-- Big determined smile -->
+            <path d="M 34,23 Q 40,28 46,23" stroke="#222" stroke-width="2" fill="none"/>
+            <line x1="40" y1="31" x2="40" y2="68" stroke="#e63946" stroke-width="9" stroke-linecap="round"/>
+            <!-- Arms out for balance during kick -->
+            <line x1="40" y1="40" x2="12" y2="48" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+            <line x1="40" y1="40" x2="68" y2="48" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+            <!-- Standing leg -->
+            <line x1="38" y1="68" x2="35" y2="108" stroke="#1e40af" stroke-width="9" stroke-linecap="round"/>
+            <ellipse cx="33" cy="112" rx="10" ry="5" fill="#222"/>
+            <!-- ROUNDHOUSE LEG swinging wide -->
+            <g class="roundhouse-leg">
+              <line x1="42" y1="68" x2="55" y2="88" stroke="#1e40af" stroke-width="9" stroke-linecap="round"/>
+              <line x1="55" y1="88" x2="100" y2="78" stroke="#1e40af" stroke-width="9" stroke-linecap="round"/>
+              <ellipse cx="105" cy="76" rx="10" ry="6" fill="#222" stroke="#111" stroke-width="1.5"/>
+            </g>
+            <!-- Arc showing round motion -->
+            <path d="M 40,95 Q 85,40 105,76" stroke="rgba(245,197,24,0.4)" stroke-width="2" fill="none" stroke-dasharray="4,3"/>
+            <!-- BOOM effect -->
+            <text x="108" y="72" font-size="16" fill="#f5c518">💥</text>
+          </svg>
+          <div class="exercise-label">ROUNDHOUSE! 💥</div>
+          <div class="instruction-box" style="font-size:0.85rem; padding:8px; margin-top:5px;">
+            <strong style="font-size:0.9em;">🌀 HIP POWER!</strong>
+            SPIN &amp; SWING! 🌪️
+          </div>
+        </div>
+
+      </div>
+
+      <div class="time-badge">🦵 5 MINUTES — KICK LIKE A CHAMPION! 🏆</div>
+      <div class="cheer">Your kicks are SUPERPOWERS! 🦵⚡💥</div>
+    </div>
+  </div>
+
+  <!-- ===== CARD 7: THE BIG DRILL ===== -->
+  <div class="screen" id="screen-7">
+    <div class="card">
+      <div class="card-number">Card 7 of 9</div>
+      <div class="card-title color-star" style="font-size:clamp(1.4rem, 4.5vw, 2.5rem);">⭐ THE WARRIOR SPIN ⭐<br><span style="font-size:0.7em; color:#fff;">TRAIN THIS EVERY DAY!</span></div>
+
+      <div class="instruction-box" style="background: rgba(230,57,70,0.15); border-color: #e63946;">
+        <strong style="color:#e63946;">🚨 MOST IMPORTANT DRILL!</strong>
+        "If anyone tries to push you from behind...<br>
+        <span style="color:#4ade80; font-size:1.1em;">THIS IS WHAT YOU DO! 👊"</span>
+      </div>
+
+      <!-- THE SEQUENCE -->
+      <div class="drill-steps" style="width:100%;">
+        <div class="drill-step">
+          <div class="step-num">1</div>
+          <span>🏃 Someone comes from BEHIND...</span>
+          <svg width="50" height="40" viewBox="0 0 50 40" style="flex-shrink:0;">
+            <g class="attacker-figure">
+              <circle cx="40" cy="12" r="8" fill="#e63946" stroke="#222" stroke-width="1.5"/>
+              <line x1="40" y1="20" x2="40" y2="35" stroke="#e63946" stroke-width="5" stroke-linecap="round"/>
+              <line x1="40" y1="25" x2="28" y2="32" stroke="#e63946" stroke-width="4" stroke-linecap="round"/>
+              <line x1="40" y1="25" x2="52" y2="32" stroke="#e63946" stroke-width="4" stroke-linecap="round"/>
+              <line x1="38" y1="35" x2="32" y2="48" stroke="#333" stroke-width="5" stroke-linecap="round"/>
+              <line x1="42" y1="35" x2="48" y2="48" stroke="#333" stroke-width="5" stroke-linecap="round"/>
+              <text x="15" y="20" font-size="12" fill="#e63946">→</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="drill-step" style="border-color: #fbbf24;">
+          <div class="step-num" style="background:#fbbf24;">2</div>
+          <span>🦶 STOMP! Plant your feet WIDE &amp; LOW!</span>
+          <svg width="55" height="40" viewBox="0 0 55 45" style="flex-shrink:0;">
+            <g class="stomp-figure">
+              <circle cx="27" cy="10" r="8" fill="#FDBCB4" stroke="#222" stroke-width="1.5"/>
+              <line x1="27" y1="18" x2="27" y2="33" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/>
+              <line x1="20" y1="33" x2="8" y2="48" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+              <line x1="34" y1="33" x2="46" y2="48" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+              <ellipse cx="7" cy="50" rx="7" ry="3" fill="#222"/>
+              <ellipse cx="47" cy="50" rx="7" ry="3" fill="#222"/>
+              <!-- Stomp impact lines -->
+              <line x1="0" y1="50" x2="54" y2="50" stroke="#fbbf24" stroke-width="2" stroke-dasharray="3,2"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="drill-step" style="border-color: #4ade80;">
+          <div class="step-num" style="background:#4ade80; color:#0a1a4a;">3</div>
+          <span>🌀 SPIN FAST! Turn and face them!</span>
+          <svg width="50" height="45" viewBox="0 0 50 50" style="flex-shrink:0;">
+            <g class="spin-figure">
+              <circle cx="25" cy="12" r="8" fill="#FDBCB4" stroke="#222" stroke-width="1.5"/>
+              <line x1="25" y1="20" x2="25" y2="38" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/>
+              <line x1="25" y1="27" x2="10" y2="32" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+              <line x1="25" y1="27" x2="40" y2="32" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+              <line x1="23" y1="38" x2="15" y2="55" stroke="#1e40af" stroke-width="6" stroke-linecap="round"/>
+              <line x1="27" y1="38" x2="35" y2="55" stroke="#1e40af" stroke-width="6" stroke-linecap="round"/>
+              <!-- Spin circles -->
+              <circle cx="25" cy="28" r="18" fill="none" stroke="rgba(74,222,128,0.4)" stroke-width="2" stroke-dasharray="4,3"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="drill-step" style="border-color: #e63946;">
+          <div class="step-num" style="background:#e63946;">4</div>
+          <span>👊 HANDS UP! Guard your face!</span>
+          <svg width="50" height="45" viewBox="0 0 50 50" style="flex-shrink:0;">
+            <circle cx="25" cy="12" r="8" fill="#FDBCB4" stroke="#222" stroke-width="1.5"/>
+            <line x1="25" y1="20" x2="25" y2="38" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/>
+            <line x1="25" y1="27" x2="8" y2="18" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="5" cy="16" r="6" fill="#e63946" stroke="#222" stroke-width="1.5"/>
+            <line x1="25" y1="27" x2="42" y2="18" stroke="#FDBCB4" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="45" cy="16" r="6" fill="#e63946" stroke="#222" stroke-width="1.5"/>
+            <line x1="23" y1="38" x2="15" y2="55" stroke="#1e40af" stroke-width="6" stroke-linecap="round"/>
+            <line x1="27" y1="38" x2="35" y2="55" stroke="#1e40af" stroke-width="6" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <div class="drill-step" style="border-color: #ff0000; background: rgba(255,0,0,0.1);">
+          <div class="step-num" style="background:#ff0000;">5</div>
+          <span style="color:#ff6b6b; font-weight:bold;">📢 BIG VOICE: "STOP!!!" — LOUD AS YOU CAN!</span>
+        </div>
+
+        <div class="drill-step" style="border-color: #fb923c;">
+          <div class="step-num" style="background:#fb923c; color:#0a1a4a;">6</div>
+          <span>🦵 FRONT KICK — push them away!</span>
+          <svg width="50" height="45" viewBox="0 0 50 50" style="flex-shrink:0;">
+            <circle cx="15" cy="12" r="8" fill="#FDBCB4" stroke="#222" stroke-width="1.5"/>
+            <line x1="15" y1="20" x2="15" y2="38" stroke="#3b82f6" stroke-width="6" stroke-linecap="round"/>
+            <line x1="13" y1="38" x2="8" y2="55" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+            <g class="kick-leg">
+              <line x1="17" y1="38" x2="22" y2="50" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+              <line x1="22" y1="50" x2="48" y2="45" stroke="#1e40af" stroke-width="7" stroke-linecap="round"/>
+              <ellipse cx="50" cy="44" rx="6" ry="4" fill="#222"/>
+            </g>
+            <text x="38" y="35" font-size="12">💥</text>
+          </svg>
+        </div>
+
+        <div class="drill-step" style="border-color: #4ade80; background: rgba(74,222,128,0.1);">
+          <div class="step-num" style="background:#4ade80; color:#0a1a4a;">7</div>
+          <span style="color:#4ade80; font-weight:bold;">🏆 WALK AWAY TALL! You are SAFE! You WIN!</span>
+          <span style="font-size:1.4rem;">😤💪⭐</span>
+        </div>
+      </div>
+
+      <!-- STOP EXPLOSION -->
+      <div class="stop-text">⚡ "STOP!!!" ⚡</div>
+
+      <div class="cheer" style="color:#f5c518;">TRAIN THIS EVERY SINGLE DAY! 🔁⭐</div>
+    </div>
+  </div>
+
+  <!-- ===== CARD 8: COOL DOWN ===== -->
+  <div class="screen" id="screen-8">
+    <div class="card">
+      <div class="card-number">Card 8 of 9</div>
+      <div class="card-title color-star">🌟 COOL DOWN 🌟</div>
+      <div class="card-subtitle">"Warriors train hard AND rest smart!"</div>
+
+      <div class="exercise-row" style="align-items:flex-start;">
+
+        <!-- Slow Shadow Boxing -->
+        <div class="exercise-item">
+          <svg class="figure shake-figure" width="80" height="120" viewBox="0 0 80 130">
+            <circle cx="40" cy="18" r="11" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+            <circle cx="36" cy="16" r="1.8" fill="#222"/>
+            <circle cx="44" cy="16" r="1.8" fill="#222"/>
+            <!-- Relaxed smile -->
+            <path d="M 35,23 Q 40,28 45,23" stroke="#222" stroke-width="2" fill="none"/>
+            <line x1="40" y1="29" x2="40" y2="65" stroke="#a78bfa" stroke-width="7" stroke-linecap="round"/>
+            <!-- Slow jab -->
+            <g class="slow-jab">
+              <line x1="40" y1="38" x2="15" y2="48" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+              <circle cx="11" cy="49" r="7" fill="#a78bfa" stroke="#222" stroke-width="1.5"/>
+            </g>
+            <line x1="40" y1="38" x2="62" y2="46" stroke="#FDBCB4" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="66" cy="47" r="7" fill="#a78bfa" stroke="#222" stroke-width="1.5"/>
+            <line x1="38" y1="65" x2="28" y2="100" stroke="#555" stroke-width="7" stroke-linecap="round"/>
+            <line x1="42" y1="65" x2="52" y2="100" stroke="#555" stroke-width="7" stroke-linecap="round"/>
+            <ellipse cx="26" cy="103" rx="7" ry="4" fill="#333"/>
+            <ellipse cx="54" cy="103" rx="7" ry="4" fill="#333"/>
+          </svg>
+          <div class="exercise-label">SLOW BOXING 🥊<br><span style="font-size:0.8em; color:#aaa;">Breathe deep...</span></div>
+        </div>
+
+        <!-- Lucas and Uncle Fist Bump FINAL -->
+        <div class="exercise-item" style="min-width:180px;">
+          <div style="position:relative; height:140px; display:flex; align-items:flex-end; justify-content:center; gap:0;">
+
+            <!-- Lucas final -->
+            <div style="display:flex; flex-direction:column; align-items:center; gap:5px;" class="bump-l">
+              <svg class="figure" width="70" height="115" viewBox="0 0 70 125">
+                <circle cx="35" cy="16" r="12" fill="#FDBCB4" stroke="#222" stroke-width="2"/>
+                <circle cx="30" cy="13" r="2" fill="#222"/>
+                <circle cx="40" cy="13" r="2" fill="#222"/>
+                <!-- BIG proud smile -->
+                <path d="M 28,20 Q 35,27 42,20" stroke="#222" stroke-width="2.5" fill="none"/>
+                <!-- Little cheek dots - proud face -->
+                <circle cx="28" cy="20" r="3" fill="rgba(255,150,150,0.5)"/>
+                <circle cx="42" cy="20" r="3" fill="rgba(255,150,150,0.5)"/>
+                <line x1="35" y1="28" x2="35" y2="62" stroke="#3b82f6" stroke-width="8" stroke-linecap="round"/>
+                <!-- Fist bump arm extended right -->
+                <line x1="35" y1="37" x2="58" y2="50" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+                <circle cx="62" cy="52" r="8" fill="#f5c518" stroke="#222" stroke-width="2"/>
+                <line x1="35" y1="37" x2="15" y2="46" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+                <line x1="33" y1="62" x2="22" y2="95" stroke="#1e40af" stroke-width="8" stroke-linecap="round"/>
+                <line x1="37" y1="62" x2="48" y2="95" stroke="#1e40af" stroke-width="8" stroke-linecap="round"/>
+                <ellipse cx="20" cy="98" rx="8" ry="5" fill="#222"/>
+                <ellipse cx="50" cy="98" rx="8" ry="5" fill="#222"/>
+              </svg>
+              <div style="font-size:0.75rem; color:#f5c518; font-weight:bold; text-align:center;">LUCAS 🧒</div>
+            </div>
+
+            <!-- BUMP STAR -->
+            <div class="bump-star" style="position:absolute; top:30px; left:50%; transform:translateX(-50%); font-size:2rem;">✨</div>
+
+            <!-- Uncle final -->
+            <div style="display:flex; flex-direction:column; align-items:center; gap:5px;" class="bump-r">
+              <svg class="figure" width="70" height="130" viewBox="0 0 70 135">
+                <circle cx="35" cy="18" r="13" fill="#FDBCB4" stroke="#222" stroke-width="2.5"/>
+                <rect x="27" y="13" width="8" height="5" rx="2" fill="#222"/>
+                <rect x="37" y="13" width="8" height="5" rx="2" fill="#222"/>
+                <!-- Uncle big proud smile -->
+                <path d="M 27,25 Q 35,32 43,25" stroke="#222" stroke-width="2.5" fill="none"/>
+                <rect x="24" y="31" width="22" height="32" rx="6" fill="white" stroke="#222" stroke-width="2"/>
+                <rect x="24" y="55" width="22" height="5" rx="2" fill="#111"/>
+                <!-- Fist bump arm extended left -->
+                <line x1="24" y1="40" x2="8" y2="52" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+                <circle cx="4" cy="54" r="8" fill="#f5c518" stroke="#222" stroke-width="2"/>
+                <line x1="46" y1="40" x2="62" y2="48" stroke="#FDBCB4" stroke-width="7" stroke-linecap="round"/>
+                <line x1="31" y1="63" x2="18" y2="100" stroke="#333" stroke-width="9" stroke-linecap="round"/>
+                <line x1="39" y1="63" x2="52" y2="100" stroke="#333" stroke-width="9" stroke-linecap="round"/>
+                <ellipse cx="15" cy="104" rx="9" ry="5" fill="#222"/>
+                <ellipse cx="55" cy="104" rx="9" ry="5" fill="#222"/>
+              </svg>
+              <div style="font-size:0.75rem; color:#f5c518; font-weight:bold; text-align:center;">UNCLE 🥋</div>
+            </div>
+
+          </div>
+          <div class="exercise-label">TEAM FIST BUMP! 🤜🤛</div>
+        </div>
+
+        <!-- Gold Star -->
+        <div class="exercise-item">
+          <span class="gold-star-big">⭐</span>
+          <div class="exercise-label" style="text-align:center; margin-top:10px;">YOU EARNED IT!<br>🌟 STAR WARRIOR 🌟</div>
+        </div>
+
+      </div>
+
+      <div class="instruction-box" style="background: rgba(74,222,128,0.1); border-color: #4ade80;">
+        <strong style="color:#4ade80;">🌟 WARRIOR TRUTH:</strong>
+        WARRIORS TRAIN. WARRIORS REST.<br>
+        <span style="color:#f5c518;">SEE YOU TOMORROW, CHAMPION! 🏆</span>
+      </div>
+
+      <button class="btn-nav" style="font-size:clamp(1.1rem,3vw,1.6rem); padding:15px 40px; border-radius:30px; min-width:auto;" onclick="goToFinal()">
+        FINISH TRAINING! 🏆
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== FINAL SCREEN ===== -->
+  <div class="screen" id="screen-final">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:20px; padding-bottom:40px; text-align:center;">
+
+      <div class="trophy-big">🏆</div>
+      <div class="complete-title">TRAINING COMPLETE,<br>WARRIOR! 🏆</div>
+
+      <div class="stars-row">
+        <span class="star-item">⭐</span>
+        <span class="star-item">⭐</span>
+        <span class="star-item">⭐</span>
+        <span class="star-item">⭐</span>
+        <span class="star-item">⭐</span>
+      </div>
+
+      <!-- Final pair standing tall -->
+      <div class="final-pair">
+        <!-- Lucas tall and proud -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+          <div style="animation: bounceChar 1s ease-in-out infinite alternate;">
+            <svg width="90" height="140" viewBox="0 0 90 150">
+              <!-- Glow around Lucas -->
+              <circle cx="45" cy="75" r="50" fill="rgba(245,197,24,0.1)"/>
+              <circle cx="45" cy="20" r="15" fill="#FDBCB4" stroke="#222" stroke-width="2.5"/>
+              <!-- HUGE proud smile -->
+              <path d="M 36,25 Q 45,33 54,25" stroke="#222" stroke-width="2.5" fill="none"/>
+              <circle cx="36" cy="20" r="3" fill="#222"/>
+              <circle cx="54" cy="20" r="3" fill="#222"/>
+              <!-- Rosy cheeks - proud! -->
+              <circle cx="34" cy="26" r="4" fill="rgba(255,150,150,0.5)"/>
+              <circle cx="56" cy="26" r="4" fill="rgba(255,150,150,0.5)"/>
+              <!-- Body - warrior blue with gold trim -->
+              <rect x="30" y="35" width="30" height="40" rx="8" fill="#3b82f6" stroke="#f5c518" stroke-width="3"/>
+              <text x="45" y="52" text-anchor="middle" font-size="6" fill="#f5c518" font-weight="bold">WARRIOR</text>
+              <text x="45" y="62" text-anchor="middle" font-size="5" fill="#fff">LUCAS</text>
+              <!-- Arms raised VICTORY -->
+              <line x1="30" y1="45" x2="10" y2="28" stroke="#FDBCB4" stroke-width="8" stroke-linecap="round"/>
+              <circle cx="8" cy="26" r="7" fill="#f5c518" stroke="#222" stroke-width="2"/>
+              <line x1="60" y1="45" x2="80" y2="28" stroke="#FDBCB4" stroke-width="8" stroke-linecap="round"/>
+              <circle cx="82" cy="26" r="7" fill="#f5c518" stroke="#222" stroke-width="2"/>
+              <!-- Legs wide proud stance -->
+              <line x1="40" y1="75" x2="25" y2="118" stroke="#1e40af" stroke-width="10" stroke-linecap="round"/>
+              <line x1="50" y1="75" x2="65" y2="118" stroke="#1e40af" stroke-width="10" stroke-linecap="round"/>
+              <ellipse cx="22" cy="122" rx="11" ry="6" fill="#222"/>
+              <ellipse cx="68" cy="122" rx="11" ry="6" fill="#222"/>
+              <!-- Gold belt -->
+              <rect x="30" y="65" width="30" height="6" rx="3" fill="#f5c518" stroke="#8b6914" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div style="font-size:1rem; color:#f5c518; font-weight:bold;">LUCAS 🧒<br>THE WARRIOR</div>
+        </div>
+
+        <!-- VS / PLUS symbol -->
+        <div style="font-size:2.5rem; color:#f5c518; font-weight:bold; padding-bottom:50px; animation: titlePulse 1.5s ease-in-out infinite;">+</div>
+
+        <!-- Uncle tall and proud -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+          <div style="animation: bounceChar 1s ease-in-out 0.5s infinite alternate;">
+            <svg width="90" height="155" viewBox="0 0 90 165">
+              <!-- Glow -->
+              <circle cx="45" cy="82" r="55" fill="rgba(245,197,24,0.08)"/>
+              <circle cx="45" cy="22" r="16" fill="#FDBCB4" stroke="#222" stroke-width="2.5"/>
+              <!-- Sunglasses - cool uncle -->
+              <rect x="33" y="17" width="11" height="7" rx="3" fill="#111"/>
+              <rect x="46" y="17" width="11" height="7" rx="3" fill="#111"/>
+              <line x1="44" y1="20" x2="46" y2="20" stroke="#111" stroke-width="2"/>
+              <!-- Big proud smile -->
+              <path d="M 35,30 Q 45,37 55,30" stroke="#222" stroke-width="2.5" fill="none"/>
+              <!-- Gi with gold belt = black belt  -->
+              <rect x="28" y="38" width="29" height="42" rx="7" fill="white" stroke="#222" stroke-width="2"/>
+              <!-- Lapels -->
+              <path d="M 42,38 L 33,65 L 42,60 L 51,65 L 42,38" fill="#ddd" stroke="#222" stroke-width="1.5"/>
+              <!-- BLACK BELT -->
+              <rect x="28" y="70" width="29" height="7" rx="3" fill="#111" stroke="#f5c518" stroke-width="2"/>
+              <text x="42" y="77" text-anchor="middle" font-size="5" fill="#f5c518" font-weight="bold">SENSEI</text>
+              <!-- Arms raised in victory -->
+              <line x1="28" y1="48" x2="8" y2="32" stroke="#FDBCB4" stroke-width="8" stroke-linecap="round"/>
+              <circle cx="6" cy="30" r="7" fill="#f5c518" stroke="#222" stroke-width="2"/>
+              <line x1="57" y1="48" x2="77" y2="32" stroke="#FDBCB4" stroke-width="8" stroke-linecap="round"/>
+              <circle cx="79" cy="30" r="7" fill="#f5c518" stroke="#222" stroke-width="2"/>
+              <!-- Legs -->
+              <line x1="38" y1="80" x2="22" y2="128" stroke="#111" stroke-width="11" stroke-linecap="round"/>
+              <line x1="52" y1="80" x2="68" y2="128" stroke="#111" stroke-width="11" stroke-linecap="round"/>
+              <ellipse cx="19" cy="133" rx="12" ry="6" fill="#111"/>
+              <ellipse cx="71" cy="133" rx="12" ry="6" fill="#111"/>
+            </svg>
+          </div>
+          <div style="font-size:1rem; color:#f5c518; font-weight:bold;">UNCLE 🥋<br>THE SENSEI</div>
+        </div>
+      </div>
+
+      <div class="unbeatable">Lucas + Uncle — UNBEATABLE TEAM! 💪🏆</div>
+
+      <button class="btn-start" onclick="restartProgram()" style="font-size:clamp(1rem, 3vw, 1.5rem); padding:14px 35px;">
+        🔁 TRAIN AGAIN!
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== CONFETTI CONTAINER ===== -->
+<div id="confetti-container" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:150; overflow:hidden;"></div>
+
+<script>
+  // ===== STATE =====
+  let currentScreen = 'intro';
+  let currentCard = 0;
+  const TOTAL_CARDS = 9;
+
+  // ===== STAR FIELD GENERATION =====
+  (function generateStars() {
+    const field = document.getElementById('starfield');
+    for (let i = 0; i < 80; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      const size = Math.random() * 3 + 1;
+      star.style.cssText = `
+        width: ${size}px; height: ${size}px;
+        left: ${Math.random() * 100}%;
+        top: ${Math.random() * 100}%;
+        animation-delay: ${Math.random() * 3}s;
+        animation-duration: ${Math.random() * 2 + 1.5}s;
+      `;
+      field.appendChild(star);
+    }
+  })();
+
+  // ===== NAVIGATION =====
+  function showScreen(screenId, direction) {
+    // Hide all screens
+    const allScreens = document.querySelectorAll('.screen');
+    allScreens.forEach(s => {
+      if (s.classList.contains('active')) {
+        s.classList.remove('active');
+        s.classList.add(direction === 'forward' ? 'exit-left' : 'exit-right');
+        setTimeout(() => s.classList.remove('exit-left', 'exit-right'), 500);
+      }
+    });
+
+    // Show target screen
+    setTimeout(() => {
+      const target = document.getElementById(screenId);
+      if (target) target.classList.add('active');
+    }, 100);
+  }
+
+  function startProgram() {
+    currentCard = 1;
+    showScreen('screen-1', 'forward');
+    showNavBar();
+    updateNavBar();
+    document.getElementById('screen-intro').classList.remove('active');
+    setTimeout(() => {
+      document.getElementById('screen-1').classList.add('active');
+    }, 150);
+  }
+
+  function showNavBar() {
+    const nav = document.getElementById('nav-bar');
+    nav.style.display = 'flex';
+    buildProgressDots();
+  }
+
+  function buildProgressDots() {
+    const container = document.getElementById('progress-dots');
+    container.innerHTML = '';
+    for (let i = 1; i <= TOTAL_CARDS; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (i === currentCard ? ' active' : '');
+      dot.onclick = () => goToCard(i);
+      container.appendChild(dot);
+    }
+  }
+
+  function updateNavBar() {
+    const dots = document.querySelectorAll('.dot');
+    dots.forEach((d, i) => {
+      d.classList.toggle('active', i + 1 === currentCard);
+    });
+    document.getElementById('progress-label').textContent = `Card ${currentCard} of ${TOTAL_CARDS}`;
+    document.getElementById('btn-back').disabled = currentCard === 1;
+    document.getElementById('btn-next').textContent = currentCard === TOTAL_CARDS ? 'FINISH 🏆' : 'NEXT ▶';
+  }
+
+  function goToCard(n) {
+    const dir = n > currentCard ? 'forward' : 'backward';
+    const oldScreen = document.getElementById('screen-' + currentCard);
+    const newScreen = document.getElementById('screen-' + n);
+
+    if (oldScreen) {
+      oldScreen.classList.remove('active');
+      oldScreen.classList.add(dir === 'forward' ? 'exit-left' : 'exit-right');
+      setTimeout(() => oldScreen.classList.remove('exit-left', 'exit-right'), 500);
+    }
+
+    currentCard = n;
+    updateNavBar();
+
+    setTimeout(() => {
+      if (newScreen) newScreen.classList.add('active');
+    }, 150);
+  }
+
+  function nextCard() {
+    if (currentCard < TOTAL_CARDS) {
+      goToCard(currentCard + 1);
+    } else {
+      goToFinal();
+    }
+  }
+
+  function prevCard() {
+    if (currentCard > 1) {
+      goToCard(currentCard - 1);
+    }
+  }
+
+  function goToFinal() {
+    // Hide nav
+    document.getElementById('nav-bar').style.display = 'none';
+
+    // Hide current card
+    const currentEl = document.getElementById('screen-' + currentCard);
+    if (currentEl) {
+      currentEl.classList.remove('active');
+      currentEl.classList.add('exit-left');
+      setTimeout(() => currentEl.classList.remove('exit-left'), 500);
+    }
+
+    // Show final
+    setTimeout(() => {
+      document.getElementById('screen-final').classList.add('active');
+      launchConfetti();
+    }, 150);
+  }
+  function restartProgram() {
+    // Hide final
+    document.getElementById('screen-final').classList.remove('active');
+    stopConfetti();
+
+    // Back to intro
+    setTimeout(() => {
+      document.getElementById('screen-intro').classList.add('active');
+      currentCard = 0;
+    }, 150);
+  }
+
+  // ===== CONFETTI =====
+  let confettiInterval = null;
+  const confettiColors = ['#f5c518', '#e63946', '#4ade80', '#4dabf7', '#c084fc', '#fb923c', '#fff'];
+
+  function launchConfetti() {
+    const container = document.getElementById('confetti-container');
+    container.style.display = 'block';
+    container.innerHTML = '';
+
+    function createPiece() {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.cssText = `
+        left: ${Math.random() * 100}%;
+        background: ${confettiColors[Math.floor(Math.random() * confettiColors.length)]};
+        animation-duration: ${Math.random() * 2 + 2}s;
+        animation-delay: ${Math.random() * 0.5}s;
+        width: ${Math.random() * 8 + 6}px;
+        height: ${Math.random() * 10 + 8}px;
+        border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+        opacity: ${Math.random() * 0.5 + 0.5};
+      `;
+      container.appendChild(piece);
+      setTimeout(() => piece.remove(), 4000);
+    }
+
+    // Initial burst
+    for (let i = 0; i < 60; i++) {
+      setTimeout(createPiece, i * 30);
+    }
+
+    // Keep going
+    confettiInterval = setInterval(() => {
+      for (let i = 0; i < 8; i++) {
+        setTimeout(createPiece, i * 80);
+      }
+    }, 800);
+
+    // Stop after 8 seconds
+    setTimeout(stopConfetti, 8000);
+  }
+
+  function stopConfetti() {
+    if (confettiInterval) {
+      clearInterval(confettiInterval);
+      confettiInterval = null;
+    }
+    document.getElementById('confetti-container').style.display = 'none';
+  }
+
+  // ===== KEYBOARD NAVIGATION =====
+  document.addEventListener('keydown', (e) => {
+    if (currentScreen === 'intro' || currentCard === 0) return;
+    if (e.key === 'ArrowRight' || e.key === ' ') nextCard();
+    if (e.key === 'ArrowLeft') prevCard();
+  });
+
+  // ===== TOUCH SWIPE SUPPORT =====
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+
+  document.addEventListener('touchend', (e) => {
+    if (currentCard === 0) return;
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 60) {
+      if (diff > 0) nextCard();
+      else prevCard();
+    }
+  }, { passive: true });
+</script>
+</body>
+</html>
