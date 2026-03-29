@@ -280,6 +280,47 @@ textarea, select {
 }
 .log-date { font-size: 12px; font-weight: 800; color: var(--gold-dark); margin-bottom: 4px; }
 .log-notes { font-size: 14px; font-weight: 700; color: #7a9abf; line-height: 1.5; }
+.log-strength { display: flex; gap: 12px; margin-top: 6px; }
+.log-strength-chip {
+  background: #0a1020; border: 1px solid var(--border);
+  border-radius: 8px; padding: 4px 10px;
+  font-size: 13px; font-weight: 800; color: var(--gold);
+}
+.log-strength-pb { color: #ff6b35; font-size: 11px; font-weight: 900; margin-left: 4px; }
+
+/* STRENGTH BLOCK */
+.strength-block {
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.strength-row {
+  display: flex; align-items: center; gap: 12px;
+  background: #06090f; border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px 14px; margin-bottom: 10px;
+}
+.strength-icon { font-size: 26px; flex-shrink: 0; }
+.strength-info { flex: 1; }
+.strength-name { font-size: 13px; font-weight: 900; color: #4a6aaf; letter-spacing: 1.5px; }
+.strength-target-line { font-size: 15px; font-weight: 800; color: #888; margin-top: 2px; }
+.strength-target-line .last-val { color: #555; }
+.strength-target-line .arrow { color: #333; margin: 0 4px; }
+.strength-target-line .target-val { color: var(--gold); font-size: 18px; }
+.strength-input-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; flex-shrink: 0; }
+.strength-num-input {
+  width: 64px; background: #0c1525; border: 2px solid var(--border);
+  border-radius: 10px; color: var(--gold); padding: 8px 6px;
+  font-family: 'Nunito', Arial, sans-serif; font-size: 22px; font-weight: 900;
+  text-align: center; outline: none; -webkit-appearance: none; appearance: none;
+  -moz-appearance: textfield;
+}
+.strength-num-input:focus { border-color: var(--gold); box-shadow: var(--glow-gold); }
+.strength-num-input::placeholder { color: #333; font-size: 16px; }
+.strength-lbl { font-size: 10px; font-weight: 800; color: #3a5a8f; letter-spacing: 1px; }
+.pb-badge {
+  display: inline-block; background: linear-gradient(135deg,#ff6b35,#c84400);
+  color: #fff; font-size: 10px; font-weight: 900; letter-spacing: 1px;
+  padding: 2px 7px; border-radius: 6px; margin-left: 6px; vertical-align: middle;
+}
 
 /* LEGENDS */
 .legend-card {
@@ -548,6 +589,40 @@ textarea, select {
   <div class="session-form">
     <div class="sec" style="margin-top:0">TODAY'S WORKOUT</div>
     <div id="session-checklist"></div>
+
+    <!-- STRENGTH TRACKER -->
+    <div class="strength-block">
+      <label class="form-label">💪 STRENGTH BLOCK</label>
+
+      <div class="strength-row">
+        <div class="strength-icon">💪</div>
+        <div class="strength-info">
+          <div class="strength-name">PUSHUPS</div>
+          <div class="strength-target-line" id="pushup-target-line">
+            <span class="last-val">—</span>
+          </div>
+        </div>
+        <div class="strength-input-wrap">
+          <input class="strength-num-input" type="number" id="pushup-count" min="0" max="999" placeholder="0">
+          <div class="strength-lbl">DONE TODAY</div>
+        </div>
+      </div>
+
+      <div class="strength-row">
+        <div class="strength-icon">🦵</div>
+        <div class="strength-info">
+          <div class="strength-name">SQUATS</div>
+          <div class="strength-target-line" id="squat-target-line">
+            <span class="last-val">—</span>
+          </div>
+        </div>
+        <div class="strength-input-wrap">
+          <input class="strength-num-input" type="number" id="squat-count" min="0" max="999" placeholder="0">
+          <div class="strength-lbl">DONE TODAY</div>
+        </div>
+      </div>
+    </div>
+
     <label class="form-label" style="margin-top:14px;">NOTES</label>
     <textarea id="session-notes" rows="2" placeholder="How did Lucas go today? 💙🥊"></textarea>
     <select id="session-rating">
@@ -881,24 +956,110 @@ function saveSession() {
   const rating = parseInt(document.getElementById('session-rating').value);
   const isoDate = new Date().toISOString().split('T')[0];
   const dateLabel = new Date().toLocaleDateString('en-AU', {weekday:'short',day:'numeric',month:'short'});
-  ws.log.unshift({ date: dateLabel, isoDate, notes, rating, checks: [...sessionChecks] });
+
+  const pushups = parseInt(document.getElementById('pushup-count').value) || 0;
+  const squats = parseInt(document.getElementById('squat-count').value) || 0;
+
+  const pushPB = getStrengthPB('pushups');
+  const squatPB = getStrengthPB('squats');
+  const newPushPB = pushups > 0 && pushups > pushPB;
+  const newSquatPB = squats > 0 && squats > squatPB;
+
+  ws.log.unshift({ date: dateLabel, isoDate, notes, rating, checks: [...sessionChecks], pushups, squats });
   ws.xp += 10;
-  saveWS(); updateXP(); updateStreaks(); renderHistory();
+  if (newPushPB || newSquatPB) ws.xp += 5; // bonus XP for PB
+  saveWS(); updateXP(); updateStreaks(); renderHistory(); renderStrengthTargets();
   sessionChecks = WORKOUT.map(() => false);
   renderSessionChecklist();
   document.getElementById('session-notes').value = '';
-  showToast('🥊 SESSION LOGGED! +10 XP');
+  document.getElementById('pushup-count').value = '';
+  document.getElementById('squat-count').value = '';
+
+  if (newPushPB && newSquatPB) {
+    showToast('🏆 DOUBLE PB!! PUSHUPS + SQUATS! +15 XP 🔥');
+  } else if (newPushPB) {
+    showToast('🏆 NEW PUSHUP RECORD! WARRIOR! +15 XP');
+  } else if (newSquatPB) {
+    showToast('🏆 NEW SQUAT RECORD! WARRIOR! +15 XP');
+  } else {
+    showToast('🥊 SESSION LOGGED! +10 XP');
+  }
 }
 
 function renderHistory() {
   const el = document.getElementById('session-history');
   if (!ws.log.length) { el.innerHTML = '<div style="text-align:center;padding:30px;color:#333;font-weight:700;">No sessions yet — let\'s go! 🥊</div>'; return; }
   const stars = n => '⭐'.repeat(n)+'☆'.repeat(5-n);
-  el.innerHTML = ws.log.map(l => `
+  const pushPB = getStrengthPB('pushups');
+  const squatPB = getStrengthPB('squats');
+  el.innerHTML = ws.log.map(l => {
+    const hasStrength = l.pushups || l.squats;
+    const pPB = l.pushups && l.pushups >= pushPB ? '<span class="log-strength-pb">PB!</span>' : '';
+    const sPB = l.squats && l.squats >= squatPB ? '<span class="log-strength-pb">PB!</span>' : '';
+    const strengthLine = hasStrength ? `
+      <div class="log-strength">
+        ${l.pushups ? `<div class="log-strength-chip">💪 ${l.pushups} pushups${pPB}</div>` : ''}
+        ${l.squats ? `<div class="log-strength-chip">🦵 ${l.squats} squats${sPB}</div>` : ''}
+      </div>` : '';
+    return `
     <div class="session-log-card">
       <div class="log-date">${l.date} · ${stars(l.rating)}</div>
-      <div class="log-notes">${l.notes || '—'}</div>
-    </div>`).join('');
+      ${strengthLine}
+      <div class="log-notes" style="margin-top:${hasStrength?'6':'0'}px">${l.notes || '—'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── STRENGTH TRACKER ─────────────────────────────────────────────────────────
+function getLastStrength() {
+  for (const entry of ws.log) {
+    if (entry.pushups != null || entry.squats != null) return entry;
+  }
+  return null;
+}
+
+function getStrengthPB(field) {
+  let pb = 0;
+  for (const entry of ws.log) {
+    const v = parseInt(entry[field] || 0);
+    if (v > pb) pb = v;
+  }
+  return pb;
+}
+
+function renderStrengthTargets() {
+  const last = getLastStrength();
+  const pushPB = getStrengthPB('pushups');
+  const squatPB = getStrengthPB('squats');
+
+  const lastPush = last ? parseInt(last.pushups || 0) : null;
+  const lastSquat = last ? parseInt(last.squats || 0) : null;
+
+  const targetPush = lastPush != null ? lastPush + 2 : 5;
+  const targetSquat = lastSquat != null ? lastSquat + 2 : 10;
+
+  // Pushup line
+  const pLine = document.getElementById('pushup-target-line');
+  if (lastPush != null) {
+    const pbTag = targetPush > pushPB ? ' <span class="pb-badge">NEW PB?</span>' : '';
+    pLine.innerHTML = `<span class="last-val">Last: <b>${lastPush}</b></span><span class="arrow">→</span><span class="target-val">Target: ${targetPush}</span>${pbTag}`;
+  } else {
+    pLine.innerHTML = `<span class="last-val" style="color:#4a6aaf;">First time — do your best! 💙</span>`;
+  }
+  // Pre-fill with target
+  const pInput = document.getElementById('pushup-count');
+  if (!pInput.value) pInput.placeholder = targetPush;
+
+  // Squat line
+  const sLine = document.getElementById('squat-target-line');
+  if (lastSquat != null) {
+    const pbTag = targetSquat > squatPB ? ' <span class="pb-badge">NEW PB?</span>' : '';
+    sLine.innerHTML = `<span class="last-val">Last: <b>${lastSquat}</b></span><span class="arrow">→</span><span class="target-val">Target: ${targetSquat}</span>${pbTag}`;
+  } else {
+    sLine.innerHTML = `<span class="last-val" style="color:#4a6aaf;">First time — do your best! 💙</span>`;
+  }
+  const sInput = document.getElementById('squat-count');
+  if (!sInput.value) sInput.placeholder = targetSquat;
 }
 
 // ── TABS ──────────────────────────────────────────────────────────────────────
@@ -908,7 +1069,7 @@ function switchTab(btn, id) {
   btn.classList.add('active');
   document.getElementById(id).classList.add('active');
   if (id === 'tab-skills') renderSkills();
-  if (id === 'tab-session') { updateStreaks(); renderHistory(); renderSessionChecklist(); }
+  if (id === 'tab-session') { updateStreaks(); renderHistory(); renderSessionChecklist(); renderStrengthTargets(); }
 }
 
 // ── TOAST ─────────────────────────────────────────────────────────────────────
