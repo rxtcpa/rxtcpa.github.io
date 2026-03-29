@@ -353,6 +353,48 @@ body::before {
   margin-bottom: 16px; transition: all 0.2s;
 }
 .back-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── DAILY FOOTWORK ────────────────────────── */
+.daily-drill {
+  background: linear-gradient(135deg, #050e1a, #0a1828);
+  border: 1px solid var(--blue);
+  border-left: 4px solid var(--blue);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 12px 0 4px;
+  box-shadow: 0 0 12px rgba(68,153,255,0.2);
+}
+.daily-drill-header {
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--blue);
+  font-weight: 900;
+  margin-bottom: 5px;
+}
+.daily-drill-move {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.daily-drill-detail {
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.daily-drill-rule {
+  display: inline-block;
+  background: rgba(68,153,255,0.15);
+  color: var(--blue);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-top: 6px;
+  text-transform: uppercase;
+}
 </style>
 </head>
 <body>
@@ -393,6 +435,12 @@ body::before {
       <span class="day-chevron">▼</span>
     </div>
     <div class="day-sessions">
+      <div class="daily-drill">
+        <div class="daily-drill-header">👣 Daily Footwork Ritual — Do This Before Anything Else</div>
+        <div class="daily-drill-move">SHUFFLE — Forward & Back</div>
+        <div class="daily-drill-detail">3 steps forward, 3 steps back. x10. Feet NEVER cross. Weight on balls of feet, not heels. Stay low, stay ready.</div>
+        <span class="daily-drill-rule">⚡ Rule #1: Never cross your feet. Ever.</span>
+      </div>
       <div class="session-grid">
         <div class="session-card" id="s-1-1" onclick="toggleSession('1-1')">
           <div class="session-time">🌅 8:30 AM</div>
@@ -449,6 +497,12 @@ body::before {
       <span class="day-chevron">▼</span>
     </div>
     <div class="day-sessions">
+      <div class="daily-drill">
+        <div class="daily-drill-header">👣 Daily Footwork Ritual — Do This Before Anything Else</div>
+        <div class="daily-drill-move">SHUFFLE + STANCE PLANT</div>
+        <div class="daily-drill-detail">Shuffle 3 steps → plant feet into warrior stance → hold 5 seconds → shuffle again. x8. The shuffle gets you there. The stance plants you like a rock.</div>
+        <span class="daily-drill-rule">⚡ Rule #2: Move fast, land stable.</span>
+      </div>
       <div class="session-grid">
         <div class="session-card" id="s-2-1" onclick="toggleSession('2-1')">
           <div class="session-time">🌅 8:30 AM</div>
@@ -505,6 +559,12 @@ body::before {
       <span class="day-chevron">▼</span>
     </div>
     <div class="day-sessions">
+      <div class="daily-drill">
+        <div class="daily-drill-header">👣 Daily Footwork Ritual — Do This Before Anything Else</div>
+        <div class="daily-drill-move">SHUFFLE + PIVOT</div>
+        <div class="daily-drill-detail">Shuffle 3 steps → plant lead foot → pivot body 180° to face the other direction. x10 each side. This is how you stop someone getting behind you.</div>
+        <span class="daily-drill-rule">⚡ Rule #3: Always face the threat.</span>
+      </div>
       <div class="session-grid">
         <div class="session-card" id="s-3-1" onclick="toggleSession('3-1')">
           <div class="session-time">🌅 8:30 AM</div>
@@ -561,6 +621,12 @@ body::before {
       <span class="day-chevron">▼</span>
     </div>
     <div class="day-sessions">
+      <div class="daily-drill">
+        <div class="daily-drill-header">👣 Daily Footwork Ritual — Do This Before Anything Else</div>
+        <div class="daily-drill-move">THE L-STEP — Step Offline</div>
+        <div class="daily-drill-detail">Someone walks straight at you — step 45° to the LEFT (offline). They go straight past. Reset. Step 45° RIGHT. x10 each side. The L-step means their punch misses and you're beside them.</div>
+        <span class="daily-drill-rule">⚡ Rule #4: Don't be where they aim.</span>
+      </div>
       <div class="session-grid">
         <div class="session-card" id="s-4-1" onclick="toggleSession('4-1')">
           <div class="session-time">🌅 8:30 AM</div>
@@ -617,6 +683,12 @@ body::before {
       <span class="day-chevron">▼</span>
     </div>
     <div class="day-sessions">
+      <div class="daily-drill">
+        <div class="daily-drill-header">👣 Daily Footwork Ritual — Do This Before Anything Else</div>
+        <div class="daily-drill-move">BUD/S MOVEMENT — All Directions 60 sec</div>
+        <div class="daily-drill-detail">Uncle calls: FORWARD / BACK / LEFT / RIGHT / PIVOT. Lucas shuffles instantly in that direction. Non-stop for 60 seconds. No crossing feet. React without thinking. This is the SEAL agility test.</div>
+        <span class="daily-drill-rule">⚡ Rule #5: React first. Think second.</span>
+      </div>
       <div class="session-grid">
         <div class="session-card" id="s-5-1" onclick="toggleSession('5-1')">
           <div class="session-time">🌅 8:30 AM</div>
@@ -673,6 +745,12 @@ body::before {
       <span class="day-chevron">▼</span>
     </div>
     <div class="day-sessions">
+      <div class="daily-drill">
+        <div class="daily-drill-header">👣 Daily Footwork Ritual — Do This Before Anything Else</div>
+        <div class="daily-drill-move">SHUFFLE + PIVOT + L-STEP Circuit</div>
+        <div class="daily-drill-detail">Full circuit x3: Shuffle forward → L-step left → shuffle back → pivot → L-step right. One smooth flow. No pausing between moves. Uncle watches feet — not once do they cross.</div>
+        <span class="daily-drill-rule">⚡ Rule #6: Movement is a weapon.</span>
+      </div>
       <div class="session-grid">
         <div class="session-card" id="s-6-1" onclick="toggleSession('6-1')">
           <div class="session-time">🌅 8:30 AM</div>
@@ -729,6 +807,12 @@ body::before {
       <span class="day-chevron">▼</span>
     </div>
     <div class="day-sessions">
+      <div class="daily-drill">
+        <div class="daily-drill-header">👣 Daily Footwork Ritual — Do This Before Anything Else</div>
+        <div class="daily-drill-move">MIRROR DRILL — Match Uncle</div>
+        <div class="daily-drill-detail">Uncle moves slowly in any direction. Lucas mirrors him — same direction, same speed, same distance kept. If Uncle closes distance, Lucas shuffles back. If Uncle steps left, Lucas steps left. 2 min. Eyes on Uncle's chest, not his feet.</div>
+        <span class="daily-drill-rule">⚡ Rule #7: Watch the chest, not the feet. Chest tells you everything.</span>
+      </div>
       <div class="session-grid">
         <div class="session-card" id="s-7-1" onclick="toggleSession('7-1')">
           <div class="session-time">🌅 8:30 AM</div>
@@ -791,6 +875,12 @@ body::before {
       <span class="day-chevron">▼</span>
     </div>
     <div class="day-sessions">
+      <div class="daily-drill">
+        <div class="daily-drill-header">👣 Daily Footwork Ritual — Do This Before Anything Else</div>
+        <div class="daily-drill-move">ORBIT — Circle the Opponent</div>
+        <div class="daily-drill-detail">Uncle stands still. Lucas circles him clockwise x3 full circles, then anti-clockwise x3. Feet shuffle throughout — never cross. This is how fighters control angle. Never stand directly in front.</div>
+        <span class="daily-drill-rule">⚡ Rule #8: Control the angle. Never stand straight in front.</span>
+      </div>
       <div class="session-grid">
         <div class="session-card" id="s-8-1" onclick="toggleSession('8-1')">
           <div class="session-time">🌅 8:30 AM</div>
@@ -846,6 +936,12 @@ body::before {
       <span class="day-chevron">▼</span>
     </div>
     <div class="day-sessions">
+      <div class="daily-drill">
+        <div class="daily-drill-header">👣 Daily Footwork Ritual — Do This Before Anything Else</div>
+        <div class="daily-drill-move">FOOTWORK DAY — Full Session Focus</div>
+        <div class="daily-drill-detail">Today is all footwork — no separate warm-up needed. Every session today is movement. Pay attention to where your feet are at ALL TIMES.</div>
+        <span class="daily-drill-rule">⚡ Rule #9: Footwork is the foundation of everything.</span>
+      </div>
       <div class="session-grid">
         <div class="session-card" id="s-9-1" onclick="toggleSession('9-1')">
           <div class="session-time">🌅 8:30 AM</div>
@@ -902,6 +998,12 @@ body::before {
       <span class="day-chevron">▼</span>
     </div>
     <div class="day-sessions">
+      <div class="daily-drill">
+        <div class="daily-drill-header">👣 Daily Footwork Ritual — Do This Before Anything Else</div>
+        <div class="daily-drill-move">CUT-OFF ANGLE — Uncle Walks, Lucas Steps Offline</div>
+        <div class="daily-drill-detail">Uncle walks straight toward Lucas. Lucas waits until the last 2 steps — then L-steps offline (45°). Uncle walks past. Reset. x10. This is the school scenario. Don't back up. Step OFFLINE. Let them walk into empty space.</div>
+        <span class="daily-drill-rule">⚡ Rule #10: Don't retreat. Redirect.</span>
+      </div>
       <div class="session-grid">
         <div class="session-card" id="s-10-1" onclick="toggleSession('10-1')">
           <div class="session-time">🌅 8:30 AM</div>
@@ -957,6 +1059,12 @@ body::before {
       <span class="day-chevron">▼</span>
     </div>
     <div class="day-sessions">
+      <div class="daily-drill">
+        <div class="daily-drill-header">👣 Daily Footwork Ritual — Do This Before Anything Else</div>
+        <div class="daily-drill-move">FULL SEQUENCE FOOTWORK — Everything at Once</div>
+        <div class="daily-drill-detail">Shuffle → pivot → L-step → orbit 3 steps → L-step other side. One continuous flow x5. No stopping. This is every footwork skill combined. By now it should feel natural.</div>
+        <span class="daily-drill-rule">⚡ Rule #11: Movement becomes automatic. Trust it.</span>
+      </div>
       <div class="session-grid">
         <div class="session-card" id="s-11-1" onclick="toggleSession('11-1')">
           <div class="session-time">🌅 8:30 AM</div>
@@ -1013,6 +1121,12 @@ body::before {
       <span class="day-chevron">▼</span>
     </div>
     <div class="day-sessions">
+      <div class="daily-drill">
+        <div class="daily-drill-header">👣 Daily Footwork Ritual — Do This Before Anything Else</div>
+        <div class="daily-drill-move">DON'T GET CORNERED — Uncle Traps, Lucas Escapes</div>
+        <div class="daily-drill-detail">Uncle slowly herds Lucas toward a corner using body position. Lucas must use footwork ONLY to escape before getting cornered. No punching. If back touches a wall = trapped. If Lucas escapes = wins. x5. In school: always know your exit.</div>
+        <span class="daily-drill-rule">⚡ Rule #12: Awareness + footwork = never trapped.</span>
+      </div>
       <div class="session-grid">
         <div class="session-card" id="s-12-1" onclick="toggleSession('12-1')">
           <div class="session-time">🌅 8:30 AM</div>
@@ -1069,6 +1183,12 @@ body::before {
       <span class="day-chevron">▼</span>
     </div>
     <div class="day-sessions">
+      <div class="daily-drill">
+        <div class="daily-drill-header">👣 Daily Footwork Ritual — Do This Before Anything Else</div>
+        <div class="daily-drill-move">SCHOOL SCENARIO — Real Positioning</div>
+        <div class="daily-drill-detail">Walk through the exact school moment: bully approaches. Lucas does NOT back into wall. Checks exit. Stands side-on (smaller target). When bully gets too close — L-step offline, combo, step back, voice. Run the footwork part of this scenario x5 before any striking.</div>
+        <span class="daily-drill-rule">⚡ Rule #13: Position before punching. Always.</span>
+      </div>
       <div class="session-grid">
         <div class="session-card" id="s-13-1" onclick="toggleSession('13-1')">
           <div class="session-time">🌅 8:30 AM</div>
@@ -1125,6 +1245,12 @@ body::before {
       <span class="day-chevron">▼</span>
     </div>
     <div class="day-sessions">
+      <div class="daily-drill">
+        <div class="daily-drill-header">👣 Daily Footwork Ritual — Do This Before Anything Else</div>
+        <div class="daily-drill-move">GRADUATION — Your Footwork, Your Choice</div>
+        <div class="daily-drill-detail">2 minutes of free footwork — Lucas moves however he wants. Shuffle, pivot, L-step, orbit, all of it. This is 14 days of work. Uncle watches silently. That movement is not the same as Day 1. It never will be again.</div>
+        <span class="daily-drill-rule">⚡ Final Rule: A warrior always knows where his feet are.</span>
+      </div>
       <div class="session-grid">
         <div class="session-card" id="s-14-1" onclick="toggleSession('14-1')">
           <div class="session-time">🌅 9:00 AM</div>
