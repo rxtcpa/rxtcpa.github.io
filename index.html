@@ -3,18 +3,89 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lucas Apps</title>
+<title>Lucas — Warrior HQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap" rel="stylesheet">
 <style>
-body { background:#05080f; font-family:'Arial',sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; margin:0; gap:16px; padding:20px; }
-a { display:block; width:100%; max-width:360px; padding:20px; border-radius:16px; text-decoration:none; font-size:18px; font-weight:900; text-align:center; }
-.blue { background:#0a1828; border:2px solid #4499ff; color:#4499ff; }
-.gold { background:#0c1a08; border:2px solid #f5c518; color:#f5c518; }
-.cop  { background:#1a3a6a; border:2px solid #fff; color:#fff; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #05080f;
+  font-family: 'Nunito', Arial, sans-serif;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 24px; gap: 14px;
+}
+h1 {
+  color: #f5c518; font-size: 26px; font-weight: 900;
+  letter-spacing: 2px; text-align: center;
+  text-shadow: 0 0 20px rgba(245,197,24,0.5);
+  margin-bottom: 4px;
+}
+.sub { color: #3a5a8f; font-size: 13px; font-weight: 800; letter-spacing: 3px; margin-bottom: 10px; text-align:center; }
+a {
+  display: flex; align-items: center; gap: 16px;
+  width: 100%; max-width: 420px;
+  padding: 20px 22px; border-radius: 18px;
+  text-decoration: none; font-size: 18px; font-weight: 900;
+  transition: transform 0.15s;
+}
+a:active { transform: scale(0.97); }
+.icon { font-size: 36px; flex-shrink: 0; }
+.label { flex: 1; }
+.label-title { font-size: 18px; font-weight: 900; }
+.label-sub { font-size: 12px; font-weight: 700; opacity: 0.7; margin-top: 3px; }
+
+.gold  { background: linear-gradient(135deg,#0c1808,#1a280a); border: 2px solid #f5c518; color: #f5c518; }
+.blue  { background: linear-gradient(135deg,#080e1a,#0d1828); border: 2px solid #4499ff; color: #4499ff; }
+.red   { background: linear-gradient(135deg,#180808,#280a0a); border: 2px solid #e63946; color: #e63946; }
+.cop   { background: linear-gradient(135deg,#0a1428,#102040); border: 2px solid #60a5fa; color: #60a5fa; }
+.movie { background: linear-gradient(135deg,#120820,#1a0a28); border: 2px solid #a855f7; color: #a855f7; }
+.play  { background: linear-gradient(135deg,#0a1408,#0d1f0a); border: 2px solid #2ec96e; color: #2ec96e; }
 </style>
 </head>
 <body>
-<a class="blue" href="lucas-mission.html">🪖 Spartan Mission</a>
-<a class="gold" href="warrior-training.html">🥊 Warrior Training</a>
-<a class="cop"  href="officer-rex.html">👮 Officer Rex</a>
+<h1>🥊 LUCAS WARRIOR HQ</h1>
+<div class="sub">REINHARD FAMILY — TRAINING SYSTEM</div>
+
+<a class="movie" href="LUCAS-WARRIOR-CODE.html">
+  <div class="icon">🎬</div>
+  <div class="label">
+    <div class="label-title">THE WARRIOR CODE</div>
+    <div class="label-sub">Bruce Lee · Goggins · Sun Tzu · The Oath</div>
+  </div>
+</a>
+
+<a class="gold" href="warrior-training.html">
+  <div class="icon">🥊</div>
+  <div class="label">
+    <div class="label-title">WARRIOR TRAINING</div>
+    <div class="label-sub">Combos · Drills · Warrior Spin · Skills</div>
+  </div>
+</a>
+
+<a class="blue" href="lucas-mission.html">
+  <div class="icon">🪖</div>
+  <div class="label">
+    <div class="label-title">SPARTAN MISSION</div>
+    <div class="label-sub">Self Defence · CIA Skills · XP Tracker</div>
+  </div>
+</a>
+
+<a class="play" href="WARRIOR-PLAYLIST.html">
+  <div class="icon">📺</div>
+  <div class="label">
+    <div class="label-title">WARRIOR PLAYLIST</div>
+    <div class="label-sub">Training videos — watch before you train</div>
+  </div>
+</a>
+
+<a class="cop" href="officer-rex.html">
+  <div class="icon">👮</div>
+  <div class="label">
+    <div class="label-title">OFFICER REX</div>
+    <div class="label-sub">Lucas's screen guardian</div>
+  </div>
+</a>
+
 </body>
 </html>
