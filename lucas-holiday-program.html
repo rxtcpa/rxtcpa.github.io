@@ -354,6 +354,52 @@ body::before {
 }
 .back-btn:hover { border-color: var(--gold); color: var(--gold); }
 
+/* ── TARGET MAP ───────────────────────────── */
+.target-map {
+  background: linear-gradient(135deg, #0f0505, #1a0808);
+  border: 2px solid var(--red);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 0 16px rgba(230,57,70,0.2);
+}
+.target-map-title {
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--red);
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+.target-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 9px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid rgba(230,57,70,0.15);
+}
+.target-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.target-icon { font-size: 1.2rem; width: 28px; flex-shrink: 0; text-align: center; margin-top: 1px; }
+.target-info { flex: 1; }
+.target-name { font-size: 0.85rem; font-weight: 900; color: var(--text); }
+.target-how { font-size: 0.68rem; color: var(--gold); font-weight: 700; margin: 1px 0; }
+.target-why { font-size: 0.67rem; color: var(--muted); line-height: 1.4; }
+.target-priority {
+  font-size: 0.55rem; font-weight: 900; letter-spacing: 1px;
+  padding: 2px 7px; border-radius: 20px; text-transform: uppercase;
+  white-space: nowrap; flex-shrink: 0; align-self: center;
+}
+.target-priority.p1 { background: rgba(230,57,70,0.25); color: var(--red); }
+.target-priority.p2 { background: rgba(245,197,24,0.2); color: var(--gold); }
+.target-priority.p3 { background: rgba(68,153,255,0.2); color: var(--blue); }
+.target-rule {
+  font-size: 0.65rem; font-weight: 800; color: var(--red);
+  margin-top: 10px; padding-top: 8px;
+  border-top: 1px solid rgba(230,57,70,0.2);
+  text-align: center; letter-spacing: 0.5px;
+}
+
 /* ── STANDING ORDER ───────────────────────── */
 .standing-order {
   background: linear-gradient(135deg, #1a0800, #2a0e00);
@@ -907,6 +953,56 @@ body::before {
     </div>
   </div>
 
+  <!-- TARGET MAP -->
+  <div class="target-map">
+    <div class="target-map-title">🎯 Week 2 Target Map — One Good Strike Ends It</div>
+
+    <div class="target-row">
+      <div class="target-icon">👃</div>
+      <div class="target-info">
+        <div class="target-name">NOSE</div>
+        <div class="target-how">Palm heel strike or tight jab · 1 or 2</div>
+        <div class="target-why">Instant involuntary response — eyes water, vision blurs, pain reflex makes them flinch back. Doesn't need much force. Most fights end here.</div>
+      </div>
+      <span class="target-priority p1">Primary</span>
+    </div>
+
+    <div class="target-row">
+      <div class="target-icon">🫁</div>
+      <div class="target-info">
+        <div class="target-name">SOLAR PLEXUS</div>
+        <div class="target-how">Sharp cross or 1-2 · aim just below the chest, above belly button</div>
+        <div class="target-why">Knocks the wind out — diaphragm spasms, they can't breathe for several seconds. Can't fight when you can't breathe. Especially effective on kids with less muscle.</div>
+      </div>
+      <span class="target-priority p1">Primary</span>
+    </div>
+
+    <div class="target-row">
+      <div class="target-icon">🫦</div>
+      <div class="target-info">
+        <div class="target-name">CHIN / JAW</div>
+        <div class="target-how">Cross (2) or hook (3) · clean contact</div>
+        <div class="target-why">Head snaps back, blood rushes from brain, immediate disorientation and dizziness. Classic fight-stopper. Requires clean contact — the 1-2-3 combo sets this up.</div>
+      </div>
+      <span class="target-priority p2">Secondary</span>
+    </div>
+
+    <div class="target-row">
+      <div class="target-icon">🦵</div>
+      <div class="target-info">
+        <div class="target-name">SHIN</div>
+        <div class="target-how">Teep / push kick · or hard stamp to lower shin</div>
+        <div class="target-why">Sharp shin pain creates instant distance. Not a fight-ender alone — but combined with the combo it backs them up hard and creates the space to step back into ready position.</div>
+      </div>
+      <span class="target-priority p3">Support</span>
+    </div>
+
+    <div class="target-rule">
+      ❌ Never: Temple · Throat · Back of head · Someone on the ground<br>
+      ✅ One strike. Right target. Step back. Ready position. Done.
+    </div>
+  </div>
+
   <!-- DAY 8 -->
   <div class="day-card" id="day-8" data-day="8">
     <div class="day-header" onclick="toggleDay(8)">
@@ -930,8 +1026,8 @@ body::before {
         <div class="session-card" id="s-8-1" onclick="toggleSession('8-1')">
           <div class="session-time">🌅 8:30 AM</div>
           <div class="session-type learn">🧠 LEARN</div>
-          <div class="session-focus">Why Double Jab? The Feint</div>
-          <div class="session-detail">"The first jab tests. The second jab confuses. The cross ENDS it." The 1-1-2 makes someone block twice then BANG. Uncle demos slow x5. Lucas counts the punches: 1-1-2, 1-1-2. Say it rhythmically.</div>
+          <div class="session-focus">Why Double Jab? The Feint + Target Mapping</div>
+          <div class="session-detail">"The first jab tests distance. The second jab makes him flinch or block. The cross lands on a face that's no longer ready." Where does the cross land? NOSE or CHIN. First jab = range-finder, not a fight-ender. The 1-1-2 cross is the weapon — it needs a target. Uncle points to his own nose: "Right here. Every time." x5 slow with Uncle's finger on the target. Then x5 normal speed aiming at the nose.</div>
           <span class="session-duration">15 min</span><span class="session-xp">+10 XP</span>
         </div>
         <div class="session-card" id="s-8-2" onclick="toggleSession('8-2')">
@@ -1053,8 +1149,8 @@ body::before {
         <div class="session-card" id="s-10-1" onclick="toggleSession('10-1')">
           <div class="session-time">🌅 8:30 AM</div>
           <div class="session-type learn">🧠 LEARN</div>
-          <div class="session-focus">The Full Combo 1-2-3</div>
-          <div class="session-detail">1-2-3: Jab straight, Cross straight, Hook swings around. "The jab opens the door. The cross goes through it. The hook closes it behind you." Demo x5 at normal speed. Lucas says it with Uncle as he throws it: "JAB-CROSS-HOOK."</div>
+          <div class="session-focus">The Full Combo 1-2-3 — Every Punch Has a Target</div>
+          <div class="session-detail">1 = Jab → NOSE (range finder, forces flinch or guard). 2 = Cross → NOSE or CHIN (the power shot — lands while he's recovering from the jab). 3 = Hook → CHIN or JAW (the closer — head snaps). If the 1 and 2 land clean, the fight may already be over before the 3. But the 3 is there if needed. "Every punch goes somewhere. Throwing at nothing is wasted energy." Uncle points to each target as he names it. x5 slow, pointing to target, then x5 normal speed.</div>
           <span class="session-duration">15 min</span><span class="session-xp">+10 XP</span>
         </div>
         <div class="session-card" id="s-10-2" onclick="toggleSession('10-2')">
@@ -1067,8 +1163,8 @@ body::before {
         <div class="session-card" id="s-10-3" onclick="toggleSession('10-3')">
           <div class="session-time">🌤️ 2:00 PM</div>
           <div class="session-type bag">💥 BAG</div>
-          <div class="session-focus">1-2-3 on the Bag + All Combos</div>
-          <div class="session-detail">Round 1: 1-2-3 x12. Round 2: Uncle calls any combo (1-2, 1-1-2, or 1-2-3) — Lucas executes on bag. Round 3: Lucas chooses. This is the first FREE round — no instruction, just fight.</div>
+          <div class="session-focus">Target Practice — Aim for the Zone</div>
+          <div class="session-detail">Put a small piece of tape or mark on the bag at nose height and at solar plexus height. Round 1: 1-2-3 x10 — every jab and cross aims at the nose mark. Round 2: 1-2 x10 aiming at the solar plexus mark — the cross drives INTO it. Round 3: Uncle calls "NOSE" or "WIND" — Lucas throws the right combo at the right height. Hitting nothing at full speed is a habit. Hitting a target at 70% speed is a skill.</div>
           <span class="session-duration">20 min</span><span class="session-xp">+20 XP</span>
         </div>
         <div class="session-card" id="s-10-4" onclick="toggleSession('10-4')">
@@ -1239,7 +1335,7 @@ body::before {
           <div class="session-time">🌅 8:30 AM</div>
           <div class="session-type learn">🎬 SLOW MOTION × 7</div>
           <div class="session-focus">Build the Sequence — Bare Hands, Slow Motion × 7</div>
-          <div class="session-detail">No gloves. Uncle narrates every step. Step 1: Bully approaches — hands up, stance, eyes. ALWAYS. Step 2: L-step offline. Step 3: PALM HEEL STRIKE to Uncle's open palm (controlled) — wrist locked, fingers back, drive through. Or tight jab — wrist straight, knuckle flat. Uncle confirms wrist is locked before next step. Step 4: Uncle goes down. Step 5: STOP. Step back. Hands up. Stance. Eyes. READY. Step 6: Voice — exact words. Step 7: Hold. Walk. × 7 slow motion. No gloves means every wrist position is visible. Uncle corrects instantly.</div>
+          <div class="session-detail">No gloves. Uncle narrates every step. Step 1: Bully approaches — hands up, stance, eyes. ALWAYS. Step 2: L-step offline. Step 3: PALM HEEL or tight jab — TARGET IS THE NOSE. Wrist locked, fingers back, drive the heel of the palm to where the nose is. Uncle holds his palm at nose height as the target. One clean strike. That's it. Step 4: Uncle "goes down." Step 5: STOP. Step back. Hands up. Stance. Eyes locked. READY. Step 6: Voice — exact words. Step 7: Hold ready. Walk away. × 7 slow. One strike. Right target. Done.</div>
           <span class="session-duration">20 min</span><span class="session-xp">+15 XP</span>
         </div>
         <div class="session-card" id="s-13-2" onclick="toggleSession('13-2')">
