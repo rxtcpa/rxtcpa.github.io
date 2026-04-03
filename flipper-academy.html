@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Flipper Academy">
+<meta name="theme-color" content="#0a0a0a">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<title>🐬 FLIPPER ACADEMY</title>
+<style>
+:root {
+  --orange: #ff6b00;
+  --orange-bright: #ff8c33;
+  --orange-dark: #cc4400;
+  --green: #00ff88;
+  --green-dim: #00cc66;
+  --blue: #00aaff;
+  --red: #ff3355;
+  --bg: #0a0a0a;
+  --card: #111111;
+  --card2: #161616;
+  --border: #222222;
+  --text: #cccccc;
+  --glow-orange: 0 0 20px rgba(255,107,0,0.5);
+  --glow-green: 0 0 16px rgba(0,255,136,0.4);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--bg);
+  font-family: 'Nunito', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,255,136,0.01) 3px, rgba(0,255,136,0.01) 4px);
+  pointer-events: none; z-index: 9999;
+}
+
+/* HEADER */
+.header {
+  background: linear-gradient(180deg, #0f0f0f 0%, var(--bg) 100%);
+  border-bottom: 2px solid var(--orange);
+  box-shadow: var(--glow-orange);
+  padding: 16px 20px 14px;
+  text-align: center;
+  position: sticky; top: 0; z-index: 100;
+}
+
+.header-badge { font-size: 10px; letter-spacing: 4px; color: var(--orange-dark); font-weight: 800; margin-bottom: 4px; }
+.dolphin { font-size: 40px; filter: drop-shadow(0 0 12px var(--orange)); margin-bottom: 2px; display: block; }
+.header h1 { font-size: 28px; font-weight: 900; color: var(--orange); letter-spacing: 3px; text-shadow: var(--glow-orange); }
+.header-sub { font-size: 11px; color: #444; letter-spacing: 3px; font-weight: 800; margin-top: 2px; }
+
+/* XP BAR */
+.xp-section {
+  background: var(--card); border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+}
+.xp-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.xp-title { font-size: 11px; font-weight: 900; letter-spacing: 2px; color: var(--orange); }
+.xp-val { font-size: 13px; font-weight: 900; color: var(--orange-bright); font-family: 'Share Tech Mono', monospace; }
+.xp-bar { background: #1a1a1a; border-radius: 3px; height: 8px; overflow: hidden; border: 1px solid var(--border); }
+.xp-fill { height: 100%; background: linear-gradient(90deg, var(--orange-dark), var(--orange-bright)); box-shadow: var(--glow-orange); transition: width 0.8s; }
+.rank-row { display: flex; justify-content: space-between; margin-top: 6px; }
+.rank-tag { font-size: 10px; font-weight: 900; letter-spacing: 1px; padding: 3px 10px; border-radius: 3px; border: 1px solid var(--border); color: #555; }
+.rank-tag.active { border-color: var(--orange); color: var(--orange); background: rgba(255,107,0,0.1); }
+
+/* WEEK TABS */
+.weeks { display: flex; gap: 6px; padding: 14px 16px 0; overflow-x: auto; scrollbar-width: none; }
+.weeks::-webkit-scrollbar { display: none; }
+.week-btn {
+  flex: 0 0 auto; padding: 8px 14px; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--card);
+  color: #444; font-family: 'Nunito', sans-serif;
+  font-size: 12px; font-weight: 900; cursor: pointer;
+  transition: all 0.2s; white-space: nowrap; position: relative;
+}
+.week-btn.active { border-color: var(--orange); color: var(--orange); background: rgba(255,107,0,0.08); box-shadow: var(--glow-orange); }
+.week-btn.completed { border-color: var(--green-dim); color: var(--green-dim); }
+.week-btn.locked { opacity: 0.4; cursor: not-allowed; }
+.lock-icon { font-size: 10px; position: absolute; top: -4px; right: -4px; }
+
+/* PANELS */
+.panel { display: none; padding: 16px; }
+.panel.active { display: block; }
+
+/* SECTION HEADER */
+.sec-title {
+  font-size: 11px; font-weight: 900; letter-spacing: 3px;
+  color: var(--orange-dark); margin-bottom: 12px;
+  border-left: 3px solid var(--orange); padding-left: 10px;
+}
+
+/* GOAL CARD */
+.goal-card {
+  background: linear-gradient(135deg, #0f0f0f, #141414);
+  border: 1px solid var(--orange); border-radius: 10px;
+  padding: 14px 16px; margin-bottom: 14px;
+  box-shadow: var(--glow-orange);
+}
+.goal-label { font-size: 10px; letter-spacing: 3px; color: var(--orange); font-weight: 900; margin-bottom: 6px; }
+.goal-text { font-size: 14px; font-weight: 700; color: #ddd; line-height: 1.5; }
+
+/* STEP CARDS */
+.step-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; margin-bottom: 10px; overflow: hidden;
+  transition: border-color 0.2s;
+}
+.step-card.done { border-color: var(--green-dim); }
+
+.step-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; cursor: pointer;
+}
+.step-num {
+  width: 32px; height: 32px; border-radius: 6px;
+  border: 2px solid var(--orange); color: var(--orange);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 900; flex-shrink: 0;
+  font-family: 'Share Tech Mono', monospace;
+  transition: all 0.2s;
+}
+.step-card.done .step-num { border-color: var(--green); color: var(--green); background: rgba(0,255,136,0.1); }
+.step-info { flex: 1; }
+.step-title { font-size: 15px; font-weight: 900; color: #fff; }
+.step-sub { font-size: 11px; color: var(--orange); font-weight: 700; margin-top: 2px; }
+.step-card.done .step-title { color: var(--green-dim); }
+.step-check {
+  width: 28px; height: 28px; border-radius: 6px;
+  border: 2px solid var(--border); background: transparent;
+  cursor: pointer; display: flex; align-items: center;
+  justify-content: center; font-size: 16px; color: transparent;
+  transition: all 0.2s; flex-shrink: 0;
+}
+.step-check.done { background: var(--green); border-color: var(--green); color: #000; }
+
+.step-body { display: none; padding: 0 16px 16px; }
+.step-card.open .step-body { display: block; }
+
+/* INSTRUCTIONS */
+.instruction {
+  display: flex; gap: 10px; padding: 8px 0;
+  border-bottom: 1px solid var(--border); font-size: 13px;
+  font-weight: 700; color: #bbb; line-height: 1.5;
+}
+.instruction:last-child { border-bottom: none; }
+.inst-num {
+  width: 22px; height: 22px; border-radius: 4px;
+  background: rgba(255,107,0,0.15); border: 1px solid var(--orange-dark);
+  color: var(--orange); font-size: 11px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px; font-family: 'Share Tech Mono', monospace;
+}
+
+/* CODE BLOCK */
+.code-block {
+  background: #0d0d0d; border: 1px solid var(--border);
+  border-left: 3px solid var(--green); border-radius: 6px;
+  padding: 10px 14px; margin: 10px 0;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px; color: var(--green-dim); line-height: 1.6;
+}
+
+/* TABLE */
+.btn-table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+.btn-table th { font-size: 10px; letter-spacing: 2px; color: var(--orange-dark); font-weight: 900; text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--border); }
+.btn-table td { font-size: 13px; font-weight: 700; padding: 8px 10px; border-bottom: 1px solid #1a1a1a; color: #ccc; }
+.btn-table td:first-child { font-family: 'Share Tech Mono', monospace; color: var(--orange-bright); }
+.btn-table tr:last-child td { border-bottom: none; }
+
+/* MENU LIST */
+.menu-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.menu-item:last-child { border-bottom: none; }
+.menu-num { font-family: 'Share Tech Mono', monospace; font-size: 13px; color: var(--orange); font-weight: 900; width: 24px; flex-shrink: 0; }
+.menu-name { font-size: 14px; font-weight: 900; color: #fff; flex: 1; }
+.menu-desc { font-size: 11px; color: #555; margin-top: 2px; }
+
+/* ALERT */
+.alert {
+  background: rgba(255,107,0,0.06); border: 1px solid var(--orange-dark);
+  border-radius: 8px; padding: 12px 14px; margin: 10px 0;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.alert-icon { font-size: 18px; flex-shrink: 0; }
+.alert-text { font-size: 13px; font-weight: 700; color: #cc9; line-height: 1.4; }
+.alert-text strong { color: var(--orange-bright); }
+
+/* EXERCISE CARD */
+.exercise {
+  background: linear-gradient(135deg, #0d1a0d, #0a120a);
+  border: 1px solid var(--green-dim); border-radius: 10px;
+  padding: 14px 16px; margin: 12px 0;
+  box-shadow: var(--glow-green);
+}
+.ex-label { font-size: 10px; letter-spacing: 3px; color: var(--green-dim); font-weight: 900; margin-bottom: 8px; }
+.ex-text { font-size: 14px; font-weight: 700; color: #cdc; line-height: 1.5; }
+
+/* HOMEWORK */
+.homework {
+  background: rgba(0,170,255,0.05); border: 1px solid #004466;
+  border-radius: 10px; padding: 14px 16px; margin: 12px 0;
+}
+.hw-label { font-size: 10px; letter-spacing: 3px; color: var(--blue); font-weight: 900; margin-bottom: 8px; }
+.hw-text { font-size: 14px; font-weight: 700; color: #aac; line-height: 1.5; }
+
+/* WEEK LOCKED */
+.locked-panel {
+  text-align: center; padding: 60px 30px;
+}
+.lock-big { font-size: 60px; margin-bottom: 16px; }
+.lock-title { font-size: 20px; font-weight: 900; color: #444; margin-bottom: 8px; }
+.lock-sub { font-size: 13px; color: #333; font-weight: 700; }
+
+/* COMPLETE BANNER */
+.complete-banner {
+  background: linear-gradient(135deg, #0d1a0d, #0a120a);
+  border: 2px solid var(--green); border-radius: 12px;
+  padding: 20px; text-align: center; margin: 16px 0;
+  box-shadow: var(--glow-green); display: none;
+}
+.complete-banner.show { display: block; }
+.cb-icon { font-size: 40px; margin-bottom: 8px; }
+.cb-title { font-size: 20px; font-weight: 900; color: var(--green); }
+.cb-sub { font-size: 13px; color: #8a8; margin-top: 4px; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-badge">🐬 HAK5 · UNLEASHED · FIELD OPS</div>
+  <span class="dolphin">🐬</span>
+  <h1>FLIPPER ACADEMY</h1>
+  <div class="header-sub">ADAM REINHARD · OPERATOR TRAINING PROGRAM</div>
+</div>
+
+<!-- XP BAR -->
+<div class="xp-section">
+  <div class="xp-row">
+    <span class="xp-title">⚡ OPERATOR LEVEL</span>
+    <span class="xp-val" id="xp-display">0 / 180 XP</span>
+  </div>
+  <div class="xp-bar"><div class="xp-fill" id="xp-bar" style="width:0%"></div></div>
+  <div class="rank-row">
+    <span class="rank-tag active" id="rank-0">RECRUIT</span>
+    <span class="rank-tag" id="rank-1">OPERATOR</span>
+    <span class="rank-tag" id="rank-2">FIELD AGENT</span>
+    <span class="rank-tag" id="rank-3">SPECIALIST</span>
+    <span class="rank-tag" id="rank-4">ELITE</span>
+    <span class="rank-tag" id="rank-5">PRO</span>
+  </div>
+</div>
+
+<!-- WEEK TABS -->
+<div class="weeks">
+  <button class="week-btn active" id="wtab-1" onclick="showWeek(1)">W1 · ORIENTATION</button>
+  <button class="week-btn locked" id="wtab-2" onclick="showWeek(2)">🔒 W2 · SUB-GHZ</button>
+  <button class="week-btn locked" id="wtab-3" onclick="showWeek(3)">🔒 W3 · NFC/RFID</button>
+  <button class="week-btn locked" id="wtab-4" onclick="showWeek(4)">🔒 W4 · INFRARED</button>
+  <button class="week-btn locked" id="wtab-5" onclick="showWeek(5)">🔒 W5 · BAD USB</button>
+  <button class="week-btn locked" id="wtab-6" onclick="showWeek(6)">🔒 W6 · GPIO+WiFi</button>
+</div>
+
+<!-- ===== WEEK 1 ===== -->
+<div class="panel active" id="panel-1">
+
+  <div style="padding-top:16px;">
+  <div class="goal-card">
+    <div class="goal-label">🎯 WEEK 1 MISSION OBJECTIVE</div>
+    <div class="goal-text">Know every button, every menu, every capability. Navigate the Flipper blind. Complete all 5 steps to unlock Week 2.</div>
+  </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step-card" id="s1">
+    <div class="step-header" onclick="toggleStep('s1')">
+      <div class="step-num">01</div>
+      <div class="step-info">
+        <div class="step-title">POWER ON</div>
+        <div class="step-sub">First boot sequence</div>
+      </div>
+      <div class="step-check" id="chk-s1" onclick="event.stopPropagation(); markDone('s1', 30)"></div>
+    </div>
+    <div class="step-body">
+      <div class="instruction"><div class="inst-num">1</div>Hold the <strong style="color:var(--orange)">Back button</strong> (left side of device) for 3 seconds</div>
+      <div class="instruction"><div class="inst-num">2</div>Watch the dolphin boot animation — that's your mascot 🐬</div>
+      <div class="instruction"><div class="inst-num">3</div>First boot will ask for language + region — set both to your preference</div>
+      <div class="instruction"><div class="inst-num">4</div>You're in. Home screen shows the dolphin + date/time</div>
+      <div class="alert">
+        <div class="alert-icon">⚡</div>
+        <div class="alert-text"><strong>To power off:</strong> hold the Back button for 3 seconds from anywhere. Flipper will ask to confirm.</div>
+      </div>
+      <div class="exercise">
+        <div class="ex-label">✅ COMPLETE WHEN</div>
+        <div class="ex-text">Flipper is on, home screen visible, dolphin present. Tap the ✓ button above.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-card" id="s2">
+    <div class="step-header" onclick="toggleStep('s2')">
+      <div class="step-num">02</div>
+      <div class="step-info">
+        <div class="step-title">THE 5 BUTTONS</div>
+        <div class="step-sub">Muscle memory — drill these until automatic</div>
+      </div>
+      <div class="step-check" id="chk-s2" onclick="event.stopPropagation(); markDone('s2', 30)"></div>
+    </div>
+    <div class="step-body">
+      <div class="alert">
+        <div class="alert-icon">🔑</div>
+        <div class="alert-text">Everything on the Flipper is controlled with just 5 buttons. Master these and you master the device.</div>
+      </div>
+      <table class="btn-table">
+        <tr><th>BUTTON</th><th>FUNCTION</th></tr>
+        <tr><td>◀ BACK</td><td>Go back one level / Hold = power off</td></tr>
+        <tr><td>▲ UP</td><td>Scroll up / increase value</td></tr>
+        <tr><td>▼ DOWN</td><td>Scroll down / decrease value</td></tr>
+        <tr><td>◀ LEFT / ▶ RIGHT</td><td>Navigate menus left/right</td></tr>
+        <tr><td>⚪ OK (centre)</td><td>Select / confirm / execute</td></tr>
+      </table>
+      <div class="exercise">
+        <div class="ex-label">✅ DRILL</div>
+        <div class="ex-text">Navigate: OK → Back → OK → Back. Do this 10 times until your thumb moves without thinking.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-card" id="s3">
+    <div class="step-header" onclick="toggleStep('s3')">
+      <div class="step-num">03</div>
+      <div class="step-info">
+        <div class="step-title">THE MAIN MENU</div>
+        <div class="step-sub">All 9 capabilities — navigate every one</div>
+      </div>
+      <div class="step-check" id="chk-s3" onclick="event.stopPropagation(); markDone('s3', 30)"></div>
+    </div>
+    <div class="step-body">
+      <div class="instruction"><div class="inst-num">1</div>From home screen, press <strong style="color:var(--orange)">OK</strong> to open the main menu</div>
+      <div class="instruction"><div class="inst-num">2</div>Navigate into EACH item below. Don't do anything — just open, read, go back.</div>
+      <br>
+      <div class="menu-item">
+        <div class="menu-num">1</div>
+        <div><div class="menu-name">Sub-GHz</div><div class="menu-desc">RF signals — garage doors, remotes, car key fobs</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-num">2</div>
+        <div><div class="menu-name">125 kHz RFID</div><div class="menu-desc">Old building access cards + key fobs</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-num">3</div>
+        <div><div class="menu-name">NFC</div><div class="menu-desc">Contactless bank cards, hotel keys, phone taps</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-num">4</div>
+        <div><div class="menu-name">Infrared</div><div class="menu-desc">Every TV/aircon/stereo remote ever made</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-num">5</div>
+        <div><div class="menu-name">iButton</div><div class="menu-desc">Old Dallas/DS1990A building key systems</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-num">6</div>
+        <div><div class="menu-name">Bad USB</div><div class="menu-desc">Keystroke injection — Flipper appears as a keyboard</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-num">7</div>
+        <div><div class="menu-name">GPIO</div><div class="menu-desc">Hardware pins — connect modules + sensors</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-num">8</div>
+        <div><div class="menu-name">Apps</div><div class="menu-desc">Community-built tools (grows with firmware)</div></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-num">9</div>
+        <div><div class="menu-name">Settings</div><div class="menu-desc">Bluetooth, display, firmware update, everything else</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step-card" id="s4">
+    <div class="step-header" onclick="toggleStep('s4')">
+      <div class="step-num">04</div>
+      <div class="step-info">
+        <div class="step-title">UPDATE FIRMWARE</div>
+        <div class="step-sub">Critical — do this before anything else</div>
+      </div>
+      <div class="step-check" id="chk-s4" onclick="event.stopPropagation(); markDone('s4', 30)"></div>
+    </div>
+    <div class="step-body">
+      <div class="alert">
+        <div class="alert-icon">🔴</div>
+        <div class="alert-text"><strong>Do this before ANY capture or signal work.</strong> New Flippers ship with old firmware. Stock firmware is also feature-limited. We'll upgrade to Unleashed firmware later for full power.</div>
+      </div>
+      <div class="instruction"><div class="inst-num">1</div>Download <strong style="color:var(--orange)">Flipper Mobile App</strong> on your iPhone (it's in the App Store)</div>
+      <div class="instruction"><div class="inst-num">2</div>On Flipper: Settings → Bluetooth → enable it</div>
+      <div class="instruction"><div class="inst-num">3</div>Open the mobile app → pair with your Flipper</div>
+      <div class="instruction"><div class="inst-num">4</div>App will offer a firmware update → accept it</div>
+      <div class="instruction"><div class="inst-num">5</div>Wait 2–3 minutes. Flipper reboots. Done.</div>
+      <div class="code-block">
+Settings → Bluetooth → ON
+→ Open Flipper App on iPhone
+→ Pair device
+→ Update firmware when prompted
+      </div>
+      <div class="exercise">
+        <div class="ex-label">✅ COMPLETE WHEN</div>
+        <div class="ex-text">Firmware updated, Flipper rebooted, version number visible in Settings → System.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step-card" id="s5">
+    <div class="step-header" onclick="toggleStep('s5')">
+      <div class="step-num">05</div>
+      <div class="step-info">
+        <div class="step-title">FIRST CAPTURE — IR</div>
+        <div class="step-sub">Capture 3 real IR signals from your environment</div>
+      </div>
+      <div class="step-check" id="chk-s5" onclick="event.stopPropagation(); markDone('s5', 30)"></div>
+    </div>
+    <div class="step-body">
+      <div class="alert">
+        <div class="alert-icon">💡</div>
+        <div class="alert-text">Infrared is the easiest starting point. Every TV, aircon, and set-top box in your home is a target. The Flipper's IR sensor is on the <strong>top edge</strong>.</div>
+      </div>
+      <div class="instruction"><div class="inst-num">1</div>Flipper → <strong style="color:var(--orange)">Infrared</strong> → <strong style="color:var(--orange)">Learn New Remote</strong></div>
+      <div class="instruction"><div class="inst-num">2</div>Point your TV/aircon remote at the TOP of the Flipper</div>
+      <div class="instruction"><div class="inst-num">3</div>Press a button on the remote — Flipper shows "Signal captured"</div>
+      <div class="instruction"><div class="inst-num">4</div>Give it a name: "TV Power", "Aircon Off", etc.</div>
+      <div class="instruction"><div class="inst-num">5</div>Now point Flipper at the TV and press OK — it fires the signal</div>
+      <div class="instruction"><div class="inst-num">6</div>Repeat with 2 more remotes</div>
+      <div class="exercise">
+        <div class="ex-label">🎯 TARGET: 3 CAPTURES</div>
+        <div class="ex-text">TV remote · Aircon remote · Any third device (set-top box, soundbar, projector). Save all three. Test that each fires correctly.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOMEWORK -->
+  <div class="homework">
+    <div class="hw-label">📋 WEEK 1 HOMEWORK</div>
+    <div class="hw-text">Without looking at the Flipper — recite all 9 menu items from memory in order. Check yourself. Repeat until instant recall. This is your foundation — everything else builds on knowing these 9.</div>
+  </div>
+
+  <!-- COMPLETE BANNER -->
+  <div class="complete-banner" id="w1-complete">
+    <div class="cb-icon">🔓</div>
+    <div class="cb-title">WEEK 1 COMPLETE</div>
+    <div class="cb-sub">+150 XP · Week 2 Sub-GHz unlocked · You are now: OPERATOR</div>
+  </div>
+
+</div>
+
+<!-- ===== WEEK 2 ===== -->
+<div class="panel" id="panel-2">
+  <div class="locked-panel" id="w2-locked">
+    <div class="lock-big">🔒</div>
+    <div class="lock-title">WEEK 2 — SUB-GHz</div>
+    <div class="lock-sub">Complete all 5 steps in Week 1 to unlock</div>
+  </div>
+  <div id="w2-content" style="display:none; padding-top:16px;">
+    <div class="goal-card">
+      <div class="goal-label">🎯 WEEK 2 MISSION OBJECTIVE</div>
+      <div class="goal-text">Read, capture, and replay a real RF signal. Frequencies: 433MHz, 315MHz, 868MHz. Your garage remote, key fob, or any RF device.</div>
+    </div>
+    <div class="step-card" id="s6">
+      <div class="step-header" onclick="toggleStep('s6')">
+        <div class="step-num">01</div>
+        <div class="step-info"><div class="step-title">FREQUENCY BASICS</div><div class="step-sub">Know what you're targeting before you point</div></div>
+        <div class="step-check" id="chk-s6" onclick="event.stopPropagation(); markDone('s6', 5)"></div>
+      </div>
+      <div class="step-body">
+        <table class="btn-table">
+          <tr><th>FREQUENCY</th><th>USED FOR</th></tr>
+          <tr><td>433 MHz</td><td>Garage doors, car remotes, alarms (most common in AU)</td></tr>
+          <tr><td>315 MHz</td><td>Older US car key fobs</td></tr>
+          <tr><td>868 MHz</td><td>European home automation, smart meters</td></tr>
+          <tr><td>915 MHz</td><td>US IoT devices</td></tr>
+        </table>
+        <div class="alert"><div class="alert-icon">⚡</div><div class="alert-text"><strong>Your garage remote is almost certainly 433 MHz.</strong> Most Australian RF devices are.</div></div>
+      </div>
+    </div>
+    <div class="step-card" id="s7">
+      <div class="step-header" onclick="toggleStep('s7')">
+        <div class="step-num">02</div>
+        <div class="step-info"><div class="step-title">INSTALL UNLEASHED FIRMWARE</div><div class="step-sub">Unlock all frequencies + hidden features</div></div>
+        <div class="step-check" id="chk-s7" onclick="event.stopPropagation(); markDone('s7', 5)"></div>
+      </div>
+      <div class="step-body">
+        <div class="instruction"><div class="inst-num">1</div>On iPhone: open <strong style="color:var(--orange)">Flipper Mobile App</strong></div>
+        <div class="instruction"><div class="inst-num">2</div>Go to <strong style="color:var(--orange)">Firmware</strong> tab → select <strong style="color:var(--orange)">Unleashed</strong></div>
+        <div class="instruction"><div class="inst-num">3</div>Install — takes 3 minutes</div>
+        <div class="instruction"><div class="inst-num">4</div>Flipper reboots — dolphin animation, then menu looks the same</div>
+        <div class="alert"><div class="alert-icon">🔓</div><div class="alert-text">Unleashed removes regional frequency locks. You now have access to ALL Sub-GHz bands, not just the ones Flipper locked for your region.</div></div>
+      </div>
+    </div>
+    <div class="step-card" id="s8">
+      <div class="step-header" onclick="toggleStep('s8')">
+        <div class="step-num">03</div>
+        <div class="step-info"><div class="step-title">READ MODE — PASSIVE SCAN</div><div class="step-sub">Listen for RF signals without transmitting</div></div>
+        <div class="step-check" id="chk-s8" onclick="event.stopPropagation(); markDone('s8', 5)"></div>
+      </div>
+      <div class="step-body">
+        <div class="code-block">Sub-GHz → Read → (select frequency or Auto)
+→ Press any RF remote nearby
+→ Watch Flipper detect and decode it</div>
+        <div class="instruction"><div class="inst-num">1</div>Sub-GHz → <strong style="color:var(--orange)">Read</strong></div>
+        <div class="instruction"><div class="inst-num">2</div>Select <strong style="color:var(--orange)">433.92 MHz AM270</strong> (default AU garage)</div>
+        <div class="instruction"><div class="inst-num">3</div>Press your garage remote button — Flipper shows the signal data</div>
+        <div class="instruction"><div class="inst-num">4</div>See: protocol name, frequency, bit count, raw data</div>
+      </div>
+    </div>
+    <div class="step-card" id="s9">
+      <div class="step-header" onclick="toggleStep('s9')">
+        <div class="step-num">04</div>
+        <div class="step-info"><div class="step-title">CAPTURE + SAVE</div><div class="step-sub">Record the signal permanently</div></div>
+        <div class="step-check" id="chk-s9" onclick="event.stopPropagation(); markDone('s9', 5)"></div>
+      </div>
+      <div class="step-body">
+        <div class="code-block">Sub-GHz → Read RAW → Start
+→ Press remote button
+→ Stop → Save → name it</div>
+        <div class="instruction"><div class="inst-num">1</div>Sub-GHz → <strong style="color:var(--orange)">Read RAW</strong> (captures the raw signal, no decoding needed)</div>
+        <div class="instruction"><div class="inst-num">2</div>Press Start, then press your remote</div>
+        <div class="instruction"><div class="inst-num">3</div>Press Stop → Save → name it clearly ("Garage Door Open")</div>
+        <div class="alert"><div class="alert-icon">⚠️</div><div class="alert-text">Only capture signals for devices you own or have explicit permission to test. This is your gear, your property — that's fully legal.</div></div>
+      </div>
+    </div>
+    <div class="step-card" id="s10">
+      <div class="step-header" onclick="toggleStep('s10')">
+        <div class="step-num">05</div>
+        <div class="step-info"><div class="step-title">REPLAY THE SIGNAL</div><div class="step-sub">Transmit the captured signal back</div></div>
+        <div class="step-check" id="chk-s10" onclick="event.stopPropagation(); markDone('s10', 10)"></div>
+      </div>
+      <div class="step-body">
+        <div class="code-block">Sub-GHz → Saved → select your file
+→ Send / Emulate
+→ Watch it work</div>
+        <div class="instruction"><div class="inst-num">1</div>Sub-GHz → <strong style="color:var(--orange)">Saved</strong></div>
+        <div class="instruction"><div class="inst-num">2</div>Select your saved capture</div>
+        <div class="instruction"><div class="inst-num">3</div>Press <strong style="color:var(--orange)">Send</strong></div>
+        <div class="instruction"><div class="inst-num">4</div>Your garage door opens. Flipper is now the remote.</div>
+        <div class="exercise">
+          <div class="ex-label">🎯 FIELD TEST</div>
+          <div class="ex-text">Walk to your garage. Open the door using ONLY the Flipper. Your original remote stays in your pocket. This is the moment it clicks.</div>
+        </div>
+      </div>
+    </div>
+    <div class="complete-banner" id="w2-complete">
+      <div class="cb-icon">🔓</div>
+      <div class="cb-title">WEEK 2 COMPLETE</div>
+      <div class="cb-sub">+30 XP · Week 3 NFC/RFID unlocked · You are now: FIELD AGENT</div>
+    </div>
+  </div>
+</div>
+
+<!-- WEEKS 3-6: LOCKED PLACEHOLDERS -->
+<div class="panel" id="panel-3">
+  <div class="locked-panel"><div class="lock-big">🔒</div><div class="lock-title">WEEK 3 — NFC/RFID</div><div class="lock-sub">Read + emulate access cards, hotel keys, NFC tags<br><br>Complete Week 2 to unlock</div></div>
+</div>
+<div class="panel" id="panel-4">
+  <div class="locked-panel"><div class="lock-big">🔒</div><div class="lock-title">WEEK 4 — INFRARED</div><div class="lock-sub">Control every IR device without its remote<br><br>Complete Week 3 to unlock</div></div>
+</div>
+<div class="panel" id="panel-5">
+  <div class="locked-panel"><div class="lock-big">🔒</div><div class="lock-title">WEEK 5 — BAD USB</div><div class="lock-sub">Keystroke injection · DuckyScript · Automation<br><br>Complete Week 4 to unlock</div></div>
+</div>
+<div class="panel" id="panel-6">
+  <div class="locked-panel"><div class="lock-big">🔒</div><div class="lock-title">WEEK 6 — GPIO + WiFi MODULE</div><div class="lock-sub">Hardware connections · WiFi scanning · Evil Portal<br><br>Complete Week 5 to unlock</div></div>
+</div>
+
+<div style="height:40px;"></div>
+
+<script>
+// STATE
+const XP_PER_STEP = { s1:30, s2:30, s3:30, s4:30, s5:30, s6:5, s7:5, s8:5, s9:5, s10:10 };
+const TOTAL_XP = 180;
+const RANKS = ['RECRUIT','OPERATOR','FIELD AGENT','SPECIALIST','ELITE','PRO'];
+const RANK_THRESHOLDS = [0, 30, 60, 100, 140, 180];
+
+let state = JSON.parse(localStorage.getItem('flipper_state') || '{"done":{},"week":1}');
+
+function saveState() { localStorage.setItem('flipper_state', JSON.stringify(state)); }
+
+function calcXP() {
+  return Object.values(state.done).reduce((sum, v) => v ? (sum + (XP_PER_STEP[Object.keys(state.done).find(k => state.done[k] === v)] || 0)) : sum, 0);
+}
+
+function getTotalXP() {
+  let xp = 0;
+  for (const [k, v] of Object.entries(state.done)) { if (v && XP_PER_STEP[k]) xp += XP_PER_STEP[k]; }
+  return xp;
+}
+
+function getRank(xp) {
+  let rank = 0;
+  for (let i = 0; i < RANK_THRESHOLDS.length; i++) { if (xp >= RANK_THRESHOLDS[i]) rank = i; }
+  return rank;
+}
+
+function updateXP() {
+  const xp = getTotalXP();
+  const rank = getRank(xp);
+  document.getElementById('xp-display').textContent = xp + ' / ' + TOTAL_XP + ' XP';
+  document.getElementById('xp-bar').style.width = (xp / TOTAL_XP * 100) + '%';
+  for (let i = 0; i < 6; i++) {
+    const el = document.getElementById('rank-' + i);
+    el.classList.toggle('active', i === rank);
+  }
+}
+
+function markDone(stepId, xp) {
+  state.done[stepId] = !state.done[stepId];
+  saveState();
+  const card = document.getElementById(stepId);
+  const chk = document.getElementById('chk-' + stepId);
+  card.classList.toggle('done', state.done[stepId]);
+  chk.classList.toggle('done', state.done[stepId]);
+  chk.textContent = state.done[stepId] ? '✓' : '';
+  updateXP();
+  checkWeekCompletion();
+}
+
+function checkWeekCompletion() {
+  // Week 1 complete?
+  const w1Steps = ['s1','s2','s3','s4','s5'];
+  const w1Done = w1Steps.every(s => state.done[s]);
+  if (w1Done) {
+    document.getElementById('w1-complete').classList.add('show');
+    unlockWeek(2);
+  }
+  // Week 2 complete?
+  const w2Steps = ['s6','s7','s8','s9','s10'];
+  const w2Done = w2Steps.every(s => state.done[s]);
+  if (w2Done) {
+    document.getElementById('w2-complete').classList.add('show');
+    unlockWeek(3);
+  }
+}
+
+function unlockWeek(num) {
+  const btn = document.getElementById('wtab-' + num);
+  if (btn && btn.classList.contains('locked')) {
+    btn.classList.remove('locked');
+    btn.classList.add('completed');
+    const labels = { 2:'W2 · SUB-GHZ', 3:'W3 · NFC/RFID', 4:'W4 · INFRARED', 5:'W5 · BAD USB', 6:'W6 · GPIO+WiFi' };
+    btn.textContent = '🔓 ' + (labels[num] || 'W' + num);
+    // Show week content if week 2
+    if (num === 2) {
+      document.getElementById('w2-locked').style.display = 'none';
+      document.getElementById('w2-content').style.display = 'block';
+    }
+  }
+}
+
+function toggleStep(id) {
+  document.querySelectorAll('.step-card.open').forEach(c => { if (c.id !== id) c.classList.remove('open'); });
+  document.getElementById(id).classList.toggle('open');
+}
+
+function showWeek(num) {
+  const btn = document.getElementById('wtab-' + num);
+  if (btn.classList.contains('locked')) return;
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.week-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + num).classList.add('active');
+  btn.classList.add('active');
+}
+
+// RESTORE STATE ON LOAD
+document.addEventListener('DOMContentLoaded', () => {
+  for (const [stepId, done] of Object.entries(state.done)) {
+    if (done) {
+      const card = document.getElementById(stepId);
+      const chk = document.getElementById('chk-' + stepId);
+      if (card) card.classList.add('done');
+      if (chk) { chk.classList.add('done'); chk.textContent = '✓'; }
+    }
+  }
+  updateXP();
+  checkWeekCompletion();
+
+  // Auto-open first incomplete step
+  const allSteps = ['s1','s2','s3','s4','s5'];
+  for (const s of allSteps) {
+    if (!state.done[s]) { document.getElementById(s)?.classList.add('open'); break; }
+  }
+});
+</script>
+</body>
+</html>
