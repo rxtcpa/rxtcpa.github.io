@@ -1155,9 +1155,9 @@ function updateFormsProgress() {
 
 // RESTORE STATE ON LOAD
 document.addEventListener('DOMContentLoaded', function() {
-  // Restore board
-  const savedBoard = localStorage.getItem('lucas_board');
-  if (savedBoard) selectBoard(savedBoard);
+  // Restore board — default to SD-RGB
+  const savedBoard = localStorage.getItem('lucas_board') || 'sdrgb';
+  selectBoard(savedBoard);
 
   // Restore checks
   for (let i = 1; i <= 13; i++) {
