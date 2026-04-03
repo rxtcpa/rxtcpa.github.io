@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>⚔️ Lucas Lightsaber Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue: #4fc3f7;
+  --green: #69f0ae;
+  --red: #ff5252;
+  --purple: #ce93d8;
+  --gold: #FFD700;
+  --orange: #ffb300;
+  --bg: #030712;
+  --card: #0d1117;
+  --border: rgba(255,255,255,0.08);
+  --text: #e8eaf6;
+  --muted: #7986cb;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Nunito', Arial, sans-serif;
+  min-height: 100vh;
+  padding-bottom: 120px;
+}
+
+/* HOME BUTTON */
+.home-btn {
+  position: fixed; top: 12px; left: 12px; z-index: 9999;
+  background: rgba(0,0,0,0.8); color: var(--gold);
+  font-size: 16px; font-weight: 900; padding: 9px 16px;
+  border-radius: 30px; border: 2px solid var(--gold);
+  text-decoration: none; letter-spacing: 1px;
+}
+
+/* HEADER */
+header {
+  background: linear-gradient(180deg, #0a0020 0%, #030712 100%);
+  border-bottom: 3px solid var(--blue);
+  padding: 60px 20px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(79,195,247,0.15) 0%, transparent 70%);
+}
+.saber-icon { font-size: 52px; margin-bottom: 8px; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{text-shadow:0 0 20px rgba(79,195,247,0.8)} 50%{text-shadow:0 0 40px rgba(79,195,247,1),0 0 80px rgba(79,195,247,0.4)} }
+header h1 { font-size: 28px; font-weight: 900; color: var(--blue); letter-spacing: 2px; text-shadow: 0 0 20px rgba(79,195,247,0.6); }
+header p { color: var(--muted); font-size: 13px; font-weight: 700; letter-spacing: 3px; margin-top: 4px; }
+
+/* TABS */
+.tabs {
+  display: flex; overflow-x: auto; gap: 0;
+  background: #0a0f1a;
+  border-bottom: 2px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 0 0 auto; padding: 14px 18px;
+  font-size: 12px; font-weight: 900; letter-spacing: 1px;
+  color: var(--muted); cursor: pointer; white-space: nowrap;
+  border-bottom: 3px solid transparent; transition: all 0.2s;
+  background: none; border-top: none; border-left: none; border-right: none;
+}
+.tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+/* PANELS */
+.panel { display: none; padding: 20px 16px; max-width: 600px; margin: 0 auto; }
+.panel.active { display: block; }
+
+/* CARDS */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+.card-title {
+  font-size: 17px; font-weight: 900; margin-bottom: 6px;
+}
+.card-sub { font-size: 12px; color: var(--muted); font-weight: 700; margin-bottom: 12px; }
+.card-body { font-size: 14px; line-height: 1.7; color: #b0bec5; }
+
+/* FORM CARDS */
+.form-card {
+  border-radius: 20px; padding: 20px; margin-bottom: 16px;
+  cursor: pointer; transition: transform 0.15s;
+}
+.form-card:active { transform: scale(0.98); }
+.form-num { font-size: 11px; font-weight: 900; letter-spacing: 2px; opacity: 0.7; margin-bottom: 4px; }
+.form-name { font-size: 20px; font-weight: 900; margin-bottom: 2px; }
+.form-subtitle { font-size: 12px; font-weight: 700; opacity: 0.8; margin-bottom: 10px; }
+.form-user { font-size: 12px; font-weight: 800; }
+.form-detail { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1); }
+.form-detail.open { display: block; }
+.drill-item { display: flex; gap: 10px; margin-bottom: 8px; font-size: 13px; }
+.drill-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; margin-top: 6px; }
+
+/* FORM COLORS */
+.f1 { background: linear-gradient(135deg,#0d1f35,#0a3050); border: 1px solid rgba(79,195,247,0.3); color: #4fc3f7; }
+.f2 { background: linear-gradient(135deg,#1a0d35,#2a0950); border: 1px solid rgba(206,147,216,0.3); color: #ce93d8; }
+.f3 { background: linear-gradient(135deg,#0d2010,#0a3520); border: 1px solid rgba(105,240,174,0.3); color: #69f0ae; }
+.f4 { background: linear-gradient(135deg,#351a0d,#503a09); border: 1px solid rgba(255,179,0,0.3); color: #ffb300; }
+.f5 { background: linear-gradient(135deg,#350d0d,#500a0a); border: 1px solid rgba(255,82,82,0.3); color: #ff5252; }
+.f6 { background: linear-gradient(135deg,#1a200d,#2a3510); border: 1px solid rgba(200,230,100,0.3); color: #c8e664; }
+.f7 { background: linear-gradient(135deg,#200d35,#350940); border: 1px solid rgba(255,100,200,0.3); color: #ff64c8; }
+
+/* DRILL TIMER */
+.timer-display {
+  text-align: center;
+  background: #080f1a;
+  border-radius: 20px;
+  padding: 30px 20px;
+  margin-bottom: 16px;
+  border: 2px solid var(--blue);
+}
+.timer-time { font-size: 72px; font-weight: 900; color: var(--blue); font-variant-numeric: tabular-nums; line-height: 1; }
+.timer-label { font-size: 14px; color: var(--muted); font-weight: 800; letter-spacing: 2px; margin-top: 8px; }
+.timer-btns { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+.btn {
+  padding: 12px 24px; border-radius: 50px;
+  font-size: 14px; font-weight: 900; letter-spacing: 1px;
+  cursor: pointer; border: 2px solid; transition: all 0.2s;
+  font-family: 'Nunito', Arial, sans-serif;
+}
+.btn-blue { background: rgba(79,195,247,0.15); color: var(--blue); border-color: var(--blue); }
+.btn-gold { background: rgba(255,215,0,0.15); color: var(--gold); border-color: var(--gold); }
+.btn-red { background: rgba(255,82,82,0.15); color: var(--red); border-color: var(--red); }
+.btn-green { background: rgba(105,240,174,0.15); color: var(--green); border-color: var(--green); }
+.btn:active { transform: scale(0.96); }
+
+/* SABER CONTROLS */
+.control-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.control-row:last-child { border: none; }
+.hold-badge {
+  background: rgba(255,215,0,0.15); color: var(--gold);
+  border: 1px solid var(--gold); border-radius: 20px;
+  padding: 3px 10px; font-size: 10px; font-weight: 900;
+  letter-spacing: 1px; white-space: nowrap; flex-shrink: 0;
+}
+.hold-badge.tap { background: rgba(79,195,247,0.15); color: var(--blue); border-color: var(--blue); }
+.hold-badge.h1 { background: rgba(105,240,174,0.15); color: var(--green); border-color: var(--green); }
+.hold-badge.h2 { background: rgba(255,179,0,0.15); color: var(--orange); border-color: var(--orange); }
+.hold-badge.h3 { background: rgba(255,82,82,0.15); color: var(--red); border-color: var(--red); }
+.hold-badge.h5 { background: rgba(206,147,216,0.15); color: var(--purple); border-color: var(--purple); }
+.control-text { font-size: 13px; font-weight: 800; flex: 1; }
+.control-note { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* GESTURE ROW */
+.gesture-card {
+  background: rgba(255,255,255,0.03); border-radius: 12px;
+  padding: 12px 14px; margin-bottom: 8px;
+  border: 1px solid var(--border);
+  font-size: 13px; font-weight: 800;
+}
+.gesture-how { color: var(--blue); font-size: 11px; margin-top: 3px; font-weight: 700; }
+
+/* WEEK PROGRAM */
+.week-card {
+  background: var(--card); border-radius: 16px;
+  margin-bottom: 12px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.week-header {
+  padding: 14px 16px; font-weight: 900; font-size: 15px;
+  display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer;
+}
+.week-body { padding: 0 16px 14px; display: none; }
+.week-body.open { display: block; }
+.day-item {
+  display: flex; gap: 12px; padding: 10px 0;
+  border-bottom: 1px solid var(--border); align-items: flex-start;
+}
+.day-item:last-child { border: none; }
+.day-num { font-size: 11px; font-weight: 900; color: var(--muted); min-width: 40px; padding-top: 2px; }
+.day-content { flex: 1; }
+.day-title { font-size: 14px; font-weight: 900; }
+.day-desc { font-size: 12px; color: #90a4ae; margin-top: 3px; }
+.day-xp { font-size: 11px; color: var(--gold); font-weight: 900; margin-top: 4px; }
+
+/* XP tracker */
+.xp-bar-wrap { background: rgba(255,255,255,0.05); border-radius: 20px; height: 10px; margin: 10px 0; overflow: hidden; }
+.xp-bar { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--blue), var(--purple)); transition: width 0.5s; }
+.rank-display { text-align: center; padding: 20px; }
+.rank-title { font-size: 28px; font-weight: 900; color: var(--gold); }
+.rank-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+/* SECTION LABEL */
+.section-label {
+  font-size: 11px; font-weight: 900; letter-spacing: 3px;
+  color: var(--muted); margin: 20px 0 10px;
+  text-transform: uppercase;
+}
+.badge-on { background: rgba(105,240,174,0.15); color: var(--green); border-color: var(--green); }
+.badge-off { background: rgba(255,179,0,0.15); color: var(--orange); border-color: var(--orange); }
+</style>
+</head>
+<body>
+
+<a href="https://rxtcpa.github.io" class="home-btn">🏠 HOME</a>
+
+<header>
+  <div class="saber-icon">⚔️</div>
+  <h1>LIGHTSABER ACADEMY</h1>
+  <p>LUCAS REINHARD // UNCLE'S TRAINING</p>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('forms',this)">⚔️ THE 7 FORMS</button>
+  <button class="tab" onclick="switchTab('drills',this)">🎯 DAILY DRILLS</button>
+  <button class="tab" onclick="switchTab('saber',this)">💡 SABER CONTROLS</button>
+  <button class="tab" onclick="switchTab('program',this)">📅 PROGRAM</button>
+  <button class="tab" onclick="switchTab('rank',this)">🏆 MY RANK</button>
+</div>
+
+<!-- ═══ FORMS ═══ -->
+<div class="panel active" id="panel-forms">
+
+  <div class="card" style="background:linear-gradient(135deg,#080f1a,#0a1428);border:1px solid rgba(79,195,247,0.2);margin-bottom:20px;">
+    <div style="font-size:13px;color:var(--blue);font-weight:900;letter-spacing:1px;margin-bottom:6px;">📖 THE JEDI CODE</div>
+    <div style="font-size:14px;line-height:1.8;color:#b0bec5;font-style:italic;">
+      "There is no emotion, there is peace.<br>
+      There is no ignorance, there is knowledge.<br>
+      There is no passion, there is serenity.<br>
+      There is no chaos, there is harmony.<br>
+      There is no death, there is the Force."
+    </div>
+  </div>
+
+  <div class="section-label">Tap any form to see drills</div>
+
+  <!-- Form I -->
+  <div class="form-card f1" onclick="toggleForm(this)">
+    <div class="form-num">FORM I</div>
+    <div class="form-name">SHII-CHO ⚡</div>
+    <div class="form-subtitle">The Determination Form — WHERE EVERY JEDI STARTS</div>
+    <div class="form-user">👤 Luke Skywalker · Kit Fisto</div>
+    <div class="form-detail">
+      <div class="drill-item"><div class="drill-dot"></div><div>Wide sweeping strikes — cut through the air in big arcs</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Block from 6 angles: head / left shoulder / right shoulder / left hip / right hip / legs</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Practice all 6 cuts in sequence every day until automatic</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Two hands on the saber — powerful grip</div></div>
+      <div style="margin-top:12px;padding:10px;background:rgba(0,0,0,0.3);border-radius:10px;font-size:12px;color:#90a4ae;">
+        🎯 DRILL: Stand still — cut left, cut right, cut down-left, cut down-right, overhead, thrust. Repeat × 20.
+      </div>
+    </div>
+  </div>
+
+  <!-- Form II -->
+  <div class="form-card f2" onclick="toggleForm(this)">
+    <div class="form-num">FORM II</div>
+    <div class="form-name">MAKASHI 👑</div>
+    <div class="form-subtitle">The Contention Form — ELEGANT DUELLING</div>
+    <div class="form-user">👤 Count Dooku</div>
+    <div class="form-detail">
+      <div class="drill-item"><div class="drill-dot"></div><div>One-handed grip — precise, controlled, elegant</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Small circular footwork — always moving, never still</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Thrust attacks over slashes — point the tip at your opponent</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Parry and riposte — block then immediately counter-attack</div></div>
+      <div style="margin-top:12px;padding:10px;background:rgba(0,0,0,0.3);border-radius:10px;font-size:12px;color:#90a4ae;">
+        🎯 DRILL: Step forward → thrust → step back → parry left → parry right → thrust again. × 15.
+      </div>
+    </div>
+  </div>
+
+  <!-- Form III -->
+  <div class="form-card f3" onclick="toggleForm(this)">
+    <div class="form-num">FORM III</div>
+    <div class="form-name">SORESU 🛡️</div>
+    <div class="form-subtitle">The Resilience Form — THE ULTIMATE DEFENCE</div>
+    <div class="form-user">👤 Obi-Wan Kenobi</div>
+    <div class="form-detail">
+      <div class="drill-item"><div class="drill-dot"></div><div>Keep the blade CLOSE to your body — tight guard</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Small movements — never overextend or leave yourself open</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Deflect and redirect — use their power against them</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Patience — wait for the perfect counter-attack moment</div></div>
+      <div style="margin-top:12px;padding:10px;background:rgba(0,0,0,0.3);border-radius:10px;font-size:12px;color:#90a4ae;">
+        🎯 DRILL: Stand still — block all 6 angles with the smallest movement possible. Feet don't move. × 20.
+      </div>
+    </div>
+  </div>
+
+  <!-- Form IV -->
+  <div class="form-card f4" onclick="toggleForm(this)">
+    <div class="form-num">FORM IV</div>
+    <div class="form-name">ATARU 🌪️</div>
+    <div class="form-subtitle">The Aggression Form — ACROBATIC & EXPLOSIVE</div>
+    <div class="form-user">👤 Yoda · Qui-Gon Jinn</div>
+    <div class="form-detail">
+      <div class="drill-item"><div class="drill-dot"></div><div>Wide spinning attacks — never stop moving</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Spinning 180° strikes — spin and cut in one move</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Jumps and flips — use the whole space around you</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Fast and explosive — speed is your weapon</div></div>
+      <div style="margin-top:12px;padding:10px;background:rgba(0,0,0,0.3);border-radius:10px;font-size:12px;color:#90a4ae;">
+        🎯 DRILL: Spin 360° → strike as you complete the spin → step forward → jump → overhead cut on landing. × 10.
+      </div>
+    </div>
+  </div>
+
+  <!-- Form V -->
+  <div class="form-card f5" onclick="toggleForm(this)">
+    <div class="form-num">FORM V</div>
+    <div class="form-name">DJEM SO 💥</div>
+    <div class="form-subtitle">The Perseverance Form — POWER & AGGRESSION</div>
+    <div class="form-user">👤 Anakin Skywalker · Luke Skywalker</div>
+    <div class="form-detail">
+      <div class="drill-item"><div class="drill-dot"></div><div>Heavy overhead strikes — put your whole body into every cut</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Turn defence into offence — block then immediately strike harder</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Advance always — never retreat, always press forward</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Two hands — maximum power on every strike</div></div>
+      <div style="margin-top:12px;padding:10px;background:rgba(0,0,0,0.3);border-radius:10px;font-size:12px;color:#90a4ae;">
+        🎯 DRILL: Powerful overhead cut → block → IMMEDIATE power counter-strike → advance one step. × 15.
+      </div>
+    </div>
+  </div>
+
+  <!-- Form VI -->
+  <div class="form-card f6" onclick="toggleForm(this)">
+    <div class="form-num">FORM VI</div>
+    <div class="form-name">NIMAN ⚖️</div>
+    <div class="form-subtitle">The Moderation Form — BALANCED MASTER</div>
+    <div class="form-user">👤 Ki-Adi-Mundi</div>
+    <div class="form-detail">
+      <div class="drill-item"><div class="drill-dot"></div><div>Mix all the other forms together — no pattern to read</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>No weaknesses — no single strongest technique</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Adapt to your opponent — switch forms mid-fight</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Only for experienced Jedi — must know Forms I–V first</div></div>
+      <div style="margin-top:12px;padding:10px;background:rgba(0,0,0,0.3);border-radius:10px;font-size:12px;color:#90a4ae;">
+        🎯 DRILL: 5 Shii-Cho cuts → 3 Makashi thrusts → 3 Soresu blocks → 2 Djem So power strikes. Smooth flow. × 5.
+      </div>
+    </div>
+  </div>
+
+  <!-- Form VII -->
+  <div class="form-card f7" onclick="toggleForm(this)">
+    <div class="form-num">FORM VII</div>
+    <div class="form-name">VAAPAD ⚡💜</div>
+    <div class="form-subtitle">The Ferocity Form — THE MOST DANGEROUS</div>
+    <div class="form-user">👤 Mace Windu · Darth Maul</div>
+    <div class="form-detail">
+      <div class="drill-item"><div class="drill-dot"></div><div>Unpredictable attacks — no rhythm, no pattern</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Relentless — never stop attacking, give no breathing room</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>Broken timing — strike when NOT expected</div></div>
+      <div class="drill-item"><div class="drill-dot"></div><div>⚠️ Only for true masters — requires complete control of mind</div></div>
+      <div style="margin-top:12px;padding:10px;background:rgba(0,0,0,0.3);border-radius:10px;font-size:12px;color:#90a4ae;">
+        🎯 DRILL: Strike fast → pause unexpectedly → strike again → change direction → pause → explosive combo. × 8.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ DRILLS ═══ -->
+<div class="panel" id="panel-drills">
+
+  <div class="timer-display">
+    <div class="timer-time" id="timer-display">02:00</div>
+    <div class="timer-label" id="timer-label">READY TO TRAIN</div>
+    <div class="timer-btns">
+      <button class="btn btn-blue" onclick="startTimer(120,'SHII-CHO CUTS')">⚡ 2 MIN</button>
+      <button class="btn btn-gold" onclick="startTimer(180,'FORM DRILL')">⚡ 3 MIN</button>
+      <button class="btn btn-green" onclick="startTimer(300,'FULL DRILL')">⚡ 5 MIN</button>
+      <button class="btn btn-red" onclick="stopTimer()">⏹ STOP</button>
+    </div>
+  </div>
+
+  <div class="section-label">Today's Mission Drills</div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--blue);">🥇 Drill 1 — The Foundation Cuts</div>
+    <div class="card-sub">FORM I · SHII-CHO · 2 MINUTES</div>
+    <div class="card-body">
+      Stand in wide stance. Both hands on saber.<br><br>
+      Cut <strong>LEFT</strong> → <strong>RIGHT</strong> → <strong>DOWN-LEFT</strong> → <strong>DOWN-RIGHT</strong> → <strong>OVERHEAD</strong> → <strong>THRUST</strong><br><br>
+      That's one full sequence. Do it 20 times without stopping. Say the direction OUT LOUD as you cut.
+    </div>
+    <button class="btn btn-blue" style="margin-top:12px;width:100%;" onclick="startTimer(120,'FOUNDATION CUTS')">▶ START 2 MIN TIMER</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--green);">🛡️ Drill 2 — The Obi-Wan Block</div>
+    <div class="card-sub">FORM III · SORESU · 2 MINUTES</div>
+    <div class="card-body">
+      Stand still — feet don't move at all.<br><br>
+      Block all 6 angles with the SMALLEST movement possible. Blade stays close. Tight guard.<br><br>
+      Imagine lightsabers coming at you. Block each one perfectly. Be like Obi-Wan.
+    </div>
+    <button class="btn btn-green" style="margin-top:12px;width:100%;" onclick="startTimer(120,'OBI-WAN BLOCKS')">▶ START 2 MIN TIMER</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--orange);">🌪️ Drill 3 — The Yoda Spin</div>
+    <div class="card-sub">FORM IV · ATARU · 3 MINUTES</div>
+    <div class="card-body">
+      Spin 180° → cut as you complete the spin → step forward → spin again.<br><br>
+      Keep moving the whole time. Fast feet, fast blade.<br><br>
+      <strong>"Fast feet = fast brain = Warrior Brain!"</strong> 🧠
+    </div>
+    <button class="btn btn-gold" style="margin-top:12px;width:100%;" onclick="startTimer(180,'YODA SPIN')">▶ START 3 MIN TIMER</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--red);">💥 Drill 4 — Anakin's Power Strike</div>
+    <div class="card-sub">FORM V · DJEM SO · 2 MINUTES</div>
+    <div class="card-body">
+      Overhead cut with MAXIMUM POWER → land → immediately cut again.<br><br>
+      Two hands. Full strength. Advance one step with every strike.<br><br>
+      This is how Anakin defeated Count Dooku. Pure power.
+    </div>
+    <button class="btn btn-red" style="margin-top:12px;width:100%;" onclick="startTimer(120,'POWER STRIKES')">▶ START 2 MIN TIMER</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--gold);">⚔️ Drill 5 — The Warrior Spin (Saber Edition)</div>
+    <div class="card-sub">UNCLE'S METHOD · DAILY NON-NEGOTIABLE</div>
+    <div class="card-body">
+      Someone approaches you from behind:<br><br>
+      1. STOMP back foot hard 🦶<br>
+      2. SPIN to face them<br>
+      3. HANDS UP — warrior stance<br>
+      4. Look them in the eye. Say <strong>"STOP!"</strong><br><br>
+      This is THE drill. Do it every single session.
+    </div>
+    <button class="btn btn-gold" style="margin-top:12px;width:100%;" onclick="startTimer(60,'WARRIOR SPIN')">▶ START 1 MIN TIMER</button>
+  </div>
+
+</div>
+
+<!-- ═══ SABER CONTROLS ═══ -->
+<div class="panel" id="panel-saber">
+
+  <div class="card" style="border-color:rgba(79,195,247,0.3);">
+    <div class="card-title" style="color:var(--blue);">🔵 SD-RGB SABER — 1 BUTTON</div>
+
+    <div class="section-label" style="margin-top:8px;">⚫ BLADE OFF (STANDBY MODE)</div>
+
+    <div class="control-row">
+      <div class="hold-badge badge-off">HOLD</div>
+      <div>
+        <div class="control-text">Enter Standby Mode</div>
+        <div class="control-note">Hold until button light turns ON</div>
+      </div>
+    </div>
+    <div class="control-row">
+      <div class="hold-badge tap">TAP</div>
+      <div><div class="control-text">Power ON the blade</div></div>
+    </div>
+    <div class="control-row">
+      <div class="hold-badge h1">1 SEC</div>
+      <div><div class="control-text">🔊 Volume Adjust</div></div>
+    </div>
+    <div class="control-row">
+      <div class="hold-badge h2">2 SEC</div>
+      <div><div class="control-text">🎵 Switch Sound Font</div></div>
+    </div>
+    <div class="control-row">
+      <div class="hold-badge h3">3 SEC</div>
+      <div><div class="control-text">✨ Switch Blade Effects</div></div>
+    </div>
+
+    <div class="section-label" style="margin-top:14px;">🔵 BLADE ON</div>
+
+    <div class="control-row">
+      <div class="hold-badge tap">TAP</div>
+      <div><div class="control-text">💥 Blaster Effect</div></div>
+    </div>
+    <div class="control-row">
+      <div class="hold-badge h1">1 SEC</div>
+      <div><div class="control-text">⚡ Lock-Up (clash effect)</div></div>
+    </div>
+    <div class="control-row">
+      <div class="hold-badge h2">2 SEC</div>
+      <div>
+        <div class="control-text">🌈 Change Colour</div>
+        <div class="control-note">Then TAP to cycle through colours</div>
+      </div>
+    </div>
+    <div class="control-row">
+      <div class="hold-badge h3">3 SEC</div>
+      <div><div class="control-text">⚡ FOC Toggle (flash on clash)</div></div>
+    </div>
+    <div class="control-row">
+      <div class="hold-badge h5">5 SEC</div>
+      <div><div class="control-text">🔴 Power OFF</div></div>
+    </div>
+
+    <div class="section-label" style="margin-top:14px;">🤸 GESTURES</div>
+
+    <div class="gesture-card">
+      Change Colour (Blade ON)
+      <div class="gesture-how">👇 Point blade DOWN + hold button + twist hilt</div>
+    </div>
+    <div class="gesture-card">
+      Switch Sound Font
+      <div class="gesture-how">👆 Point blade UP + hold button + twist hilt</div>
+    </div>
+    <div class="gesture-card">
+      Twist ON / OFF
+      <div class="gesture-how">Just twist the saber (no button needed!)</div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:rgba(255,179,0,0.3);margin-top:4px;">
+    <div class="card-title" style="color:var(--orange);">🟡 SN PRO SABER — 1 BUTTON</div>
+
+    <div class="section-label" style="margin-top:8px;">⚫ BLADE OFF</div>
+
+    <div class="control-row">
+      <div class="hold-badge badge-off">HOLD</div>
+      <div><div class="control-text">Wake up saber → hear "Power On"</div></div>
+    </div>
+    <div class="control-row">
+      <div class="hold-badge tap">TAP</div>
+      <div><div class="control-text">Power ON the blade</div></div>
+    </div>
+    <div class="control-row">
+      <div class="hold-badge h1">1 SEC</div>
+      <div>
+        <div class="control-text">🔊 Volume (3 levels)</div>
+        <div class="control-note">Cycles: LOW → MED → HIGH</div>
+      </div>
+    </div>
+    <div class="control-row">
+      <div class="hold-badge h2">2 SEC</div>
+      <div><div class="control-text">✨ Change Blade Style</div></div>
+    </div>
+    <div class="control-row">
+      <div class="hold-badge h3">3 SEC</div>
+      <div><div class="control-text">💡 Change Ignition Effects</div></div>
+    </div>
+    <div class="control-row">
+      <div class="hold-badge" style="background:rgba(206,147,216,0.15);color:var(--purple);border-color:var(--purple);">4 SEC</div>
+      <div><div class="control-text">🎵 Change Sound Font</div></div>
+    </div>
+
+    <div class="section-label" style="margin-top:14px;">🟡 BLADE ON</div>
+
+    <div class="control-row">
+      <div class="hold-badge tap">TAP</div>
+      <div><div class="control-text">💥 Blaster Effect</div></div>
+    </div>
+    <div class="control-row">
+      <div class="hold-badge h1">1 SEC</div>
+      <div><div class="control-text">⚡ Lock-Up</div></div>
+    </div>
+    <div class="control-row">
+      <div class="hold-badge h2">2 SEC</div>
+      <div><div class="control-text">🌈 Change Colour</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ PROGRAM ═══ -->
+<div class="panel" id="panel-program">
+
+  <div class="card" style="background:linear-gradient(135deg,#0a1428,#080f1a);border-color:rgba(79,195,247,0.3);text-align:center;padding:24px;">
+    <div style="font-size:36px;margin-bottom:8px;">⚔️</div>
+    <div style="font-size:20px;font-weight:900;color:var(--blue);">4-WEEK JEDI PROGRAM</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:4px;font-weight:800;">LUCAS REINHARD // UNCLE'S METHOD</div>
+    <div style="font-size:13px;color:#b0bec5;margin-top:12px;line-height:1.7;">
+      Train every day. Even 10 minutes counts.<br>A Jedi never skips training.
+    </div>
+  </div>
+
+  <div class="week-card">
+    <div class="week-header" style="color:var(--blue);" onclick="toggleWeek(this)">
+      ⚡ WEEK 1 — Build the Foundation <span>▾</span>
+    </div>
+    <div class="week-body open">
+      <div class="day-item"><div class="day-num">DAY 1</div><div class="day-content"><div class="day-title">Learn Shii-Cho (Form I)</div><div class="day-desc">All 6 cuts. Say the direction out loud. 20 sequences.</div><div class="day-xp">+20 XP</div></div></div>
+      <div class="day-item"><div class="day-num">DAY 2</div><div class="day-content"><div class="day-title">Form I + Warrior Spin</div><div class="day-desc">20 cut sequences + 10 Warrior Spins</div><div class="day-xp">+25 XP</div></div></div>
+      <div class="day-item"><div class="day-num">DAY 3</div><div class="day-content"><div class="day-title">Learn Soresu (Form III)</div><div class="day-desc">Block all 6 angles. Feet don't move. 20 reps.</div><div class="day-xp">+20 XP</div></div></div>
+      <div class="day-item"><div class="day-num">DAY 4</div><div class="day-content"><div class="day-title">Form I + Form III combo</div><div class="day-desc">10 attack sequences → 10 defence sequences → repeat</div><div class="day-xp">+30 XP</div></div></div>
+      <div class="day-item"><div class="day-num">DAY 5</div><div class="day-content"><div class="day-title">Learn Makashi (Form II)</div><div class="day-desc">Step-lunge-thrust. Circular footwork. 15 reps.</div><div class="day-xp">+25 XP</div></div></div>
+      <div class="day-item"><div class="day-num">DAY 6</div><div class="day-content"><div class="day-title">Forms I + II + III</div><div class="day-desc">Full flow through all three. 10 min.</div><div class="day-xp">+35 XP</div></div></div>
+      <div class="day-item"><div class="day-num">DAY 7</div><div class="day-content"><div class="day-title">⭐ WEEK 1 REVIEW + FREE SPAR</div><div class="day-desc">Show Uncle everything you've learned. Earn your first rank.</div><div class="day-xp">+50 XP</div></div></div>
+    </div>
+  </div>
+
+  <div class="week-card">
+    <div class="week-header" style="color:var(--orange);" onclick="toggleWeek(this)">
+      🌪️ WEEK 2 — Speed & Power <span>▾</span>
+    </div>
+    <div class="week-body">
+      <div class="day-item"><div class="day-num">DAY 8</div><div class="day-content"><div class="day-title">Learn Ataru (Form IV)</div><div class="day-desc">Spinning 180° cuts. Move constantly. 10 reps.</div><div class="day-xp">+30 XP</div></div></div>
+      <div class="day-item"><div class="day-num">DAY 9</div><div class="day-content"><div class="day-title">Ataru speed drill</div><div class="day-desc">Spin faster each time. 3 min timer. Don't stop.</div><div class="day-xp">+35 XP</div></div></div>
+      <div class="day-item"><div class="day-num">DAY 10</div><div class="day-content"><div class="day-title">Learn Djem So (Form V)</div><div class="day-desc">Overhead power cuts. Advance every strike. 15 reps.</div><div class="day-xp">+30 XP</div></div></div>
+      <div class="day-item"><div class="day-num">DAY 11</div><div class="day-content"><div class="day-title">Power strike combo</div><div class="day-desc">3 power cuts → 1 spin (Ataru) → 2 blocks (Soresu) → repeat</div><div class="day-xp">+40 XP</div></div></div>
+      <div class="day-item"><div class="day-num">DAY 12</div><div class="day-content"><div class="day-title">Full speed drill — 5 min</div><div class="day-desc">All forms, full speed. No stopping.</div><div class="day-xp">+45 XP</div></div></div>
+      <div class="day-item"><div class="day-num">DAY 13</div><div class="day-content"><div class="day-title">Partner training with Uncle</div><div class="day-desc">Uncle attacks, Lucas defends. Switch.</div><div class="day-xp">+50 XP</div></div></div>
+      <div class="day-item"><div class="day-num">DAY 14</div><div class="day-content"><div class="day-title">⭐ WEEK 2 SPAR</div><div class="day-desc">Full duel. Use what you know. Earn Padawan rank.</div><div class="day-xp">+60 XP</div></div></div>
+    </div>
+  </div>
+
+  <div class="week-card">
+    <div class="week-header" style="color:var(--green);" onclick="toggleWeek(this)">
+      🏆 WEEK 3 — Master Combinations <span>▾</span>
+    </div>
+    <div class="week-body">
+      <div class="day-item"><div class="day-num">DAY 15</div><div class="day-content"><div class="day-title">Learn Niman (Form VI)</div><div class="day-desc">Mix all forms. No pattern. Surprise yourself.</div><div class="day-xp">+40 XP</div></div></div>
+      <div class="day-item"><div class="day-num">DAY 16-21</div><div class="day-content"><div class="day-title">Combination mastery</div><div class="day-desc">Build your own signature combo. Perfect it over 6 days.</div><div class="day-xp">+50 XP/day</div></div></div>
+    </div>
+  </div>
+
+  <div class="week-card">
+    <div class="week-header" style="color:var(--purple);" onclick="toggleWeek(this)">
+      ⚡ WEEK 4 — Become a Knight <span>▾</span>
+    </div>
+    <div class="week-body">
+      <div class="day-item"><div class="day-num">DAY 22-27</div><div class="day-content"><div class="day-title">Free training — your choice</div><div class="day-desc">Train whatever feels weak. Fix your gaps.</div><div class="day-xp">+50 XP/day</div></div></div>
+      <div class="day-item"><div class="day-num">DAY 28</div><div class="day-content"><div class="day-title">🏆 KNIGHT TRIAL</div><div class="day-desc">Uncle judges. Show all 7 forms. Earn your rank. This is the day.</div><div class="day-xp">+200 XP</div></div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ RANK ═══ -->
+<div class="panel" id="panel-rank">
+
+  <div class="rank-display">
+    <div style="font-size:60px;" id="rank-icon">🌱</div>
+    <div class="rank-title" id="rank-name">YOUNGLINGS</div>
+    <div class="rank-sub" id="rank-sub">Just beginning the journey</div>
+    <div style="margin:20px 0 8px;font-size:12px;color:var(--muted);font-weight:900;">XP PROGRESS</div>
+    <div class="xp-bar-wrap"><div class="xp-bar" id="xp-bar" style="width:0%"></div></div>
+    <div style="font-size:14px;font-weight:900;color:var(--blue);margin-top:8px;" id="xp-display">0 XP</div>
+  </div>
+
+  <div class="section-label">Add XP from Today's Training</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
+    <button class="btn btn-blue" onclick="addXP(20)">+20 XP<br><span style="font-size:10px;font-weight:700;">Quick Drill</span></button>
+    <button class="btn btn-gold" onclick="addXP(35)">+35 XP<br><span style="font-size:10px;font-weight:700;">Full Session</span></button>
+    <button class="btn btn-green" onclick="addXP(50)">+50 XP<br><span style="font-size:10px;font-weight:700;">Partner Training</span></button>
+    <button class="btn btn-red" onclick="addXP(100)">+100 XP<br><span style="font-size:10px;font-weight:700;">Epic Session!</span></button>
+  </div>
+
+  <div class="section-label">Jedi Ranks</div>
+  <div id="ranks-list"></div>
+
+</div>
+
+<script>
+// ── TABS ──
+function switchTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── FORMS ──
+function toggleForm(card) {
+  const detail = card.querySelector('.form-detail');
+  detail.classList.toggle('open');
+}
+
+// ── WEEKS ──
+function toggleWeek(header) {
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+  header.querySelector('span').textContent = body.classList.contains('open') ? '▴' : '▾';
+}
+
+// ── TIMER ──
+let timerInterval = null, timerSecs = 0;
+function startTimer(secs, label) {
+  stopTimer();
+  timerSecs = secs;
+  document.getElementById('timer-label').textContent = label;
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timerSecs--;
+    updateTimerDisplay();
+    if (timerSecs <= 0) {
+      clearInterval(timerInterval);
+      document.getElementById('timer-label').textContent = '✅ DRILL COMPLETE!';
+      document.getElementById('timer-display').style.color = 'var(--green)';
+      if (navigator.vibrate) navigator.vibrate([200,100,200]);
+    }
+  }, 1000);
+  document.getElementById('timer-display').style.color = 'var(--blue)';
+  switchTab('drills', document.querySelector('.tab:nth-child(2)'));
+}
+function stopTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  document.getElementById('timer-display').style.color = 'var(--blue)';
+  document.getElementById('timer-label').textContent = 'READY TO TRAIN';
+}
+function updateTimerDisplay() {
+  const m = Math.floor(timerSecs / 60), s = timerSecs % 60;
+  document.getElementById('timer-display').textContent =
+    String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+// ── XP & RANKS ──
+const RANKS = [
+  {name:'YOUNGLINGS',icon:'🌱',sub:'Just beginning the journey',min:0,max:100},
+  {name:'PADAWAN',icon:'🎓',sub:'Learning the ways of the Force',min:100,max:300},
+  {name:'JEDI KNIGHT',icon:'⚔️',sub:'A true warrior of the Force',min:300,max:600},
+  {name:'JEDI MASTER',icon:'🏆',sub:'One of the greatest Jedi',min:600,max:1000},
+  {name:'JEDI GRAND MASTER',icon:'🌟',sub:'The most powerful Jedi alive',min:1000,max:9999},
+];
+
+let xp = parseInt(localStorage.getItem('ls-xp')||'0');
+
+function getRank(x) { return RANKS.find(r => x < r.max) || RANKS[RANKS.length-1]; }
+
+function updateRankDisplay() {
+  const rank = getRank(xp);
+  const next = RANKS.find(r => r.min > rank.min) || rank;
+  const pct = rank.max < 9999 ? Math.min(100, ((xp-rank.min)/(rank.max-rank.min))*100) : 100;
+  document.getElementById('rank-icon').textContent = rank.icon;
+  document.getElementById('rank-name').textContent = rank.name;
+  document.getElementById('rank-sub').textContent = rank.sub;
+  document.getElementById('xp-bar').style.width = pct + '%';
+  document.getElementById('xp-display').textContent = xp + ' XP' + (rank.max < 9999 ? ` → ${rank.max} XP for ${next.name}` : '');
+}
+
+function addXP(amount) {
+  xp += amount;
+  localStorage.setItem('ls-xp', xp);
+  updateRankDisplay();
+  switchTab('rank', document.querySelectorAll('.tab')[4]);
+  // Flash
+  document.getElementById('xp-display').style.color = 'var(--gold)';
+  setTimeout(() => document.getElementById('xp-display').style.color = 'var(--blue)', 1000);
+}
+
+function buildRanksList() {
+  const el = document.getElementById('ranks-list');
+  el.innerHTML = RANKS.map(r => {
+    const unlocked = xp >= r.min;
+    return `<div class="card" style="opacity:${unlocked?1:0.4};display:flex;align-items:center;gap:14px;padding:14px 16px;">
+      <div style="font-size:32px;">${r.icon}</div>
+      <div>
+        <div style="font-weight:900;font-size:15px;color:${unlocked?'var(--gold)':'var(--muted)'};">${r.name}</div>
+        <div style="font-size:12px;color:#90a4ae;">${r.sub}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">Requires ${r.min} XP${unlocked?' ✅':''}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// INIT
+updateRankDisplay();
+buildRanksList();
+</script>
+
+</body>
+</html>
