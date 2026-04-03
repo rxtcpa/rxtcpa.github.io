@@ -7,6 +7,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Flipper Academy">
 <meta name="theme-color" content="#0a0a0a">
+<link rel="apple-touch-icon" href="/icons/flipper-icon-180.png">
+<link rel="manifest" href="/flipper-manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <title>🐬 FLIPPER ACADEMY</title>
 <style>
@@ -702,6 +704,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!state.done[s]) { document.getElementById(s)?.classList.add('open'); break; }
   }
 });
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
 </script>
 </body>
 </html>

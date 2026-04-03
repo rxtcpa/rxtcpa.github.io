@@ -1,7 +1,7 @@
 // Lucas Warrior HQ — Service Worker
 // Caches everything on first load. Works 100% offline after that.
 
-const CACHE = 'lucas-hq-v1';
+const CACHE = 'lucas-hq-v2';
 
 const PAGES = [
   '/index.html',
@@ -13,9 +13,14 @@ const PAGES = [
   '/LUCAS-WARRIOR-CODE.html',
   '/officer-rex.html',
   '/lightsaber-training.html',
+  '/flipper-academy.html',
   '/manifest.json',
+  '/flipper-manifest.json',
   '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  '/icons/icon-512.png',
+  '/icons/flipper-icon-180.png',
+  '/icons/flipper-icon-192.png',
+  '/icons/flipper-icon-512.png'
 ];
 
 // Install: cache all pages immediately
