@@ -3,26 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>LUCAS BOXING 🥊 AGE 7</title>
+<title>🐉 LUCAS BOXING — DRAGON BALL Z 🐉</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --blue:#0a1a4a;--gold:#f5c518;--red:#e63946;--green:#22c55e;
-  --cyan:#00e5ff;--orange:#ff8c00;--purple:#a855f7;
+  --orange:#FF6B00;--blue:#1A3A7A;--gold:#FFD700;--cyan:#00E5FF;
+  --red:#FF1744;--purple:#AA00FF;--green:#00E676;--dark:#0A0A1A;
+  --ki-yellow:#FFEB3B;--ki-blue:#00BCD4;--ssj-gold:#FFD54F;
+  --scouter-green:#76FF03;
 }
 body{
-  font-family:'Comic Sans MS','Chalkboard SE',cursive;
-  background:var(--blue);color:#fff;min-height:100vh;
+  font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;
+  background:var(--dark);color:#fff;min-height:100vh;
   overflow:hidden;user-select:none;-webkit-user-select:none;
   -webkit-tap-highlight-color:transparent;
 }
 
-/* ===== STARFIELD ===== */
-.stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
-.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle 2s infinite alternate}
-@keyframes twinkle{0%{opacity:.2;transform:scale(1)}100%{opacity:1;transform:scale(1.4)}}
+/* ===== KI PARTICLE BACKGROUND ===== */
+.ki-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
+.ki-particle{position:absolute;border-radius:50%;filter:blur(1px);animation:kiFloat linear infinite}
+@keyframes kiFloat{
+  0%{transform:translateY(100vh) scale(0);opacity:0}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{transform:translateY(-20vh) scale(1.5);opacity:0}
+}
 
-/* ===== APP CONTAINER ===== */
+/* ===== AURA EFFECT ===== */
+.aura{position:relative}
+.aura::before{
+  content:'';position:absolute;inset:-8px;border-radius:inherit;
+  background:conic-gradient(from 0deg,transparent,var(--ki-yellow),transparent,var(--orange),transparent);
+  animation:auraRotate 3s linear infinite;opacity:.3;z-index:-1;filter:blur(12px)
+}
+@keyframes auraRotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* ===== APP ===== */
 #app{position:relative;z-index:1;width:100vw;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
 
 /* ===== SCREENS ===== */
@@ -30,70 +46,202 @@ body{
 .screen.active{opacity:1;transform:scale(1);pointer-events:all}
 
 /* ===== CARDS ===== */
-.card{background:linear-gradient(145deg,#1a2e7a,#0d1f5c);border:4px solid var(--gold);border-radius:28px;padding:20px 24px;width:min(95vw,780px);max-height:92vh;overflow-y:auto;box-shadow:0 0 40px rgba(245,197,24,.4),0 10px 40px rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;gap:12px;scrollbar-width:none}
+.card{
+  background:linear-gradient(145deg,rgba(26,58,122,.9),rgba(10,10,26,.95));
+  border:3px solid var(--orange);border-radius:24px;padding:20px;
+  width:min(95vw,780px);max-height:92vh;overflow-y:auto;
+  box-shadow:0 0 30px rgba(255,107,0,.3),0 0 60px rgba(255,107,0,.1);
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  scrollbar-width:none;position:relative
+}
 .card::-webkit-scrollbar{display:none}
 
-.card-title{font-size:clamp(1.5rem,5vw,2.8rem);font-weight:bold;text-align:center;line-height:1.1;text-shadow:2px 2px 0 rgba(0,0,0,.5)}
-.card-sub{font-size:clamp(.95rem,2.5vw,1.3rem);text-align:center;color:#cde;font-style:italic}
+.card-title{font-size:clamp(1.5rem,5vw,2.8rem);font-weight:900;text-align:center;line-height:1.1;text-transform:uppercase;letter-spacing:2px}
+.card-sub{font-size:clamp(.9rem,2.2vw,1.2rem);text-align:center;color:var(--cyan);font-weight:600}
+
+/* ===== SCOUTER (POWER LEVEL) ===== */
+.scouter{
+  background:linear-gradient(135deg,#0D2818,#1B5E20);
+  border:3px solid var(--scouter-green);border-radius:16px;
+  padding:12px 24px;display:flex;align-items:center;gap:12px;
+  box-shadow:0 0 20px rgba(118,255,3,.3);width:100%
+}
+.scouter-label{color:var(--scouter-green);font-size:clamp(.8rem,2vw,1rem);font-weight:700;text-transform:uppercase}
+.scouter-value{
+  font-family:'Courier New',monospace;font-size:clamp(1.5rem,5vw,2.5rem);
+  font-weight:900;color:var(--scouter-green);
+  text-shadow:0 0 10px var(--scouter-green);letter-spacing:3px
+}
+.scouter-scan{animation:scouter-blink .5s ease infinite alternate}
+@keyframes scouter-blink{from{opacity:.7}to{opacity:1}}
 
 /* ===== TIME BADGE ===== */
-.time-badge{background:linear-gradient(135deg,var(--red),#c1121f);border:3px solid var(--gold);border-radius:20px;padding:10px 28px;font-size:clamp(1.2rem,3.5vw,1.8rem);font-weight:bold;text-shadow:2px 2px 0 rgba(0,0,0,.4);box-shadow:0 4px 15px rgba(230,57,70,.5);animation:pulse 1.5s ease-in-out infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+.time-badge{
+  background:linear-gradient(135deg,var(--red),#B71C1C);
+  border:3px solid var(--orange);border-radius:16px;padding:10px 24px;
+  font-size:clamp(1.1rem,3vw,1.6rem);font-weight:800;
+  text-shadow:2px 2px 0 rgba(0,0,0,.5);
+  box-shadow:0 0 20px rgba(255,23,68,.4);text-transform:uppercase
+}
 
 /* ===== EXERCISE GRID ===== */
 .ex-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;width:100%}
-.ex-item{background:rgba(255,255,255,.08);border:2px solid rgba(245,197,24,.3);border-radius:18px;padding:14px 10px;min-width:130px;flex:1;max-width:180px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:transform .2s,border-color .2s}
-.ex-item:active{transform:scale(.95);border-color:var(--gold)}
-.ex-icon{font-size:2.8rem;line-height:1}
-.ex-label{font-size:clamp(.85rem,2.2vw,1.1rem);font-weight:bold;text-align:center;color:var(--gold)}
-.ex-detail{font-size:clamp(.7rem,1.8vw,.9rem);text-align:center;color:#aac}
+.ex-item{
+  background:linear-gradient(145deg,rgba(255,107,0,.1),rgba(255,107,0,.05));
+  border:2px solid rgba(255,107,0,.4);border-radius:16px;padding:14px 10px;
+  min-width:130px;flex:1;max-width:180px;display:flex;flex-direction:column;
+  align-items:center;gap:6px;transition:all .2s
+}
+.ex-item:active{transform:scale(.95);border-color:var(--orange);box-shadow:0 0 20px rgba(255,107,0,.5)}
+.ex-icon{font-size:2.6rem;line-height:1}
+.ex-label{font-size:clamp(.85rem,2.2vw,1.05rem);font-weight:800;text-align:center;color:var(--orange);text-transform:uppercase}
+.ex-detail{font-size:clamp(.7rem,1.8vw,.85rem);text-align:center;color:#9AB}
+
+/* ===== ROUND LABELS ===== */
+.round-badge{
+  display:inline-block;padding:4px 12px;border-radius:8px;
+  font-size:clamp(.7rem,1.8vw,.85rem);font-weight:800;text-transform:uppercase;
+  letter-spacing:1px
+}
 
 /* ===== COMBO DISPLAY ===== */
-.combo-display{background:rgba(0,0,0,.4);border:3px solid var(--gold);border-radius:20px;padding:20px;width:100%;text-align:center}
-.combo-name{font-size:clamp(1.3rem,4vw,2rem);color:var(--gold);font-weight:bold;margin-bottom:8px}
-.combo-punches{font-size:clamp(2rem,8vw,4rem);letter-spacing:8px;text-shadow:0 0 20px rgba(245,197,24,.6);margin:10px 0;min-height:60px}
-.combo-words{font-size:clamp(1rem,3vw,1.4rem);color:var(--cyan)}
-.combo-btn{font-family:inherit;font-size:clamp(1.2rem,3.5vw,1.8rem);font-weight:bold;background:linear-gradient(135deg,var(--red),#b91c1c);color:#fff;border:3px solid var(--gold);border-radius:50px;padding:14px 40px;cursor:pointer;margin-top:12px;box-shadow:0 4px 15px rgba(230,57,70,.5);transition:transform .15s}
+.combo-display{
+  background:radial-gradient(ellipse at center,rgba(255,107,0,.15),rgba(0,0,0,.6));
+  border:3px solid var(--orange);border-radius:20px;padding:20px;width:100%;text-align:center;
+  position:relative;overflow:hidden
+}
+.combo-name{font-size:clamp(1.2rem,3.5vw,1.8rem);color:var(--gold);font-weight:900;text-transform:uppercase;letter-spacing:2px}
+.combo-punches{
+  font-size:clamp(2.5rem,10vw,5rem);letter-spacing:8px;
+  text-shadow:0 0 30px var(--orange),0 0 60px rgba(255,107,0,.4);
+  margin:10px 0;min-height:60px;font-weight:900
+}
+.combo-words{font-size:clamp(.9rem,2.5vw,1.2rem);color:var(--cyan);font-weight:600}
+.combo-btn{
+  font-family:inherit;font-size:clamp(1.1rem,3vw,1.6rem);font-weight:900;
+  background:linear-gradient(135deg,var(--orange),#E65100);color:#fff;
+  border:3px solid var(--gold);border-radius:50px;padding:14px 36px;
+  cursor:pointer;margin-top:12px;text-transform:uppercase;letter-spacing:2px;
+  box-shadow:0 0 20px rgba(255,107,0,.5),0 4px 0 #BF360C;transition:transform .15s
+}
 .combo-btn:active{transform:scale(.95)}
 
-/* ===== TIMER ===== */
-.timer-display{font-size:clamp(3rem,12vw,6rem);font-weight:bold;color:var(--gold);text-shadow:0 0 30px rgba(245,197,24,.6);font-family:'Courier New',monospace;letter-spacing:4px}
-.timer-label{font-size:clamp(1rem,3vw,1.5rem);color:var(--cyan);margin-bottom:5px}
-.timer-btn{font-family:inherit;font-size:clamp(1rem,3vw,1.4rem);font-weight:bold;background:linear-gradient(135deg,var(--green),#16a34a);color:#fff;border:3px solid var(--gold);border-radius:50px;padding:12px 36px;cursor:pointer;margin-top:8px;transition:transform .15s}
-.timer-btn:active{transform:scale(.95)}
-.timer-btn.stop{background:linear-gradient(135deg,var(--red),#b91c1c)}
+/* ===== KAMEHAMEHA BUTTON ===== */
+.kamehameha-btn{
+  font-family:inherit;font-size:clamp(1rem,3vw,1.5rem);font-weight:900;
+  background:linear-gradient(135deg,var(--ki-blue),#006064);color:#fff;
+  border:3px solid var(--cyan);border-radius:50px;padding:14px 36px;
+  cursor:pointer;text-transform:uppercase;letter-spacing:3px;
+  box-shadow:0 0 30px rgba(0,188,212,.5);transition:transform .15s;
+  animation:kamePulse 2s ease-in-out infinite
+}
+@keyframes kamePulse{0%,100%{box-shadow:0 0 20px rgba(0,188,212,.4)}50%{box-shadow:0 0 40px rgba(0,188,212,.8)}}
+.kamehameha-btn:active{transform:scale(.95)}
 
-/* ===== STRENGTH TRACKER ===== */
-.tracker{background:rgba(0,0,0,.3);border:2px solid var(--gold);border-radius:16px;padding:14px;width:100%}
-.tracker-title{font-size:clamp(1rem,2.5vw,1.3rem);color:var(--gold);text-align:center;margin-bottom:10px}
-.tracker-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+/* ===== TIMER ===== */
+.timer-display{
+  font-size:clamp(3.5rem,14vw,7rem);font-weight:900;color:var(--orange);
+  text-shadow:0 0 30px rgba(255,107,0,.6),0 0 60px rgba(255,107,0,.2);
+  font-family:'Courier New',monospace;letter-spacing:4px
+}
+.timer-btn{
+  font-family:inherit;font-size:clamp(1rem,2.5vw,1.3rem);font-weight:800;
+  background:linear-gradient(135deg,var(--green),#1B5E20);color:#fff;
+  border:3px solid var(--green);border-radius:50px;padding:12px 32px;
+  cursor:pointer;text-transform:uppercase;transition:transform .15s
+}
+.timer-btn:active{transform:scale(.95)}
+.timer-btn.stop{background:linear-gradient(135deg,var(--red),#B71C1C);border-color:var(--red)}
+
+/* ===== TRACKER ===== */
+.tracker{background:rgba(0,0,0,.4);border:2px solid var(--orange);border-radius:16px;padding:14px;width:100%}
+.tracker-title{font-size:clamp(.9rem,2.2vw,1.1rem);color:var(--orange);text-align:center;margin-bottom:10px;font-weight:800;text-transform:uppercase}
+.tracker-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,107,0,.15)}
 .tracker-row:last-child{border:none}
-.tracker-name{font-size:clamp(.85rem,2vw,1rem)}
+.tracker-name{font-size:clamp(.85rem,2vw,1rem);font-weight:600}
 .tracker-btns{display:flex;gap:8px;align-items:center}
-.tracker-btns button{font-family:inherit;font-size:1.2rem;width:36px;height:36px;border-radius:50%;border:2px solid var(--gold);background:rgba(255,255,255,.1);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.tracker-btns button:active{background:var(--gold);color:var(--blue)}
-.tracker-count{font-size:1.1rem;font-weight:bold;color:var(--gold);min-width:30px;text-align:center}
+.tracker-btns button{
+  font-family:inherit;font-size:1.1rem;width:38px;height:38px;border-radius:50%;
+  border:2px solid var(--orange);background:rgba(255,107,0,.15);color:#fff;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:bold
+}
+.tracker-btns button:active{background:var(--orange);color:var(--dark)}
+.tracker-count{font-size:1.1rem;font-weight:900;color:var(--scouter-green);min-width:30px;text-align:center;font-family:'Courier New',monospace}
 
 /* ===== NAV ===== */
 .nav{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;justify-content:center}
-.nav-btn{font-family:inherit;font-size:clamp(1rem,3vw,1.4rem);font-weight:bold;background:linear-gradient(135deg,var(--gold),#e6a800);color:var(--blue);border:none;border-radius:50px;padding:14px 32px;cursor:pointer;box-shadow:0 4px 15px rgba(245,197,24,.4);transition:transform .15s}
+.nav-btn{
+  font-family:inherit;font-size:clamp(.95rem,2.5vw,1.3rem);font-weight:800;
+  background:linear-gradient(135deg,var(--orange),#E65100);color:#fff;
+  border:none;border-radius:50px;padding:14px 28px;cursor:pointer;
+  box-shadow:0 4px 15px rgba(255,107,0,.4),0 3px 0 #BF360C;
+  transition:transform .15s;text-transform:uppercase;letter-spacing:1px
+}
 .nav-btn:active{transform:scale(.95)}
-.nav-btn.back{background:linear-gradient(135deg,#475569,#334155);color:#fff}
+.nav-btn.back{background:linear-gradient(135deg,#37474F,#263238);box-shadow:0 3px 0 #1A1A2E}
 
-/* ===== MOTIVATIONAL BANNER ===== */
-.motive{background:linear-gradient(135deg,rgba(245,197,24,.15),rgba(245,197,24,.05));border:2px solid rgba(245,197,24,.3);border-radius:14px;padding:12px 18px;text-align:center;font-size:clamp(.9rem,2.2vw,1.15rem);color:#fff;width:100%;line-height:1.4}
-.motive strong{color:var(--gold)}
+/* ===== MOTIVE BOX ===== */
+.motive{
+  background:linear-gradient(135deg,rgba(255,107,0,.1),rgba(255,107,0,.03));
+  border:2px solid rgba(255,107,0,.25);border-radius:14px;padding:12px 18px;
+  text-align:center;font-size:clamp(.85rem,2vw,1.05rem);color:#CBD5E1;
+  width:100%;line-height:1.5;font-weight:500
+}
+.motive strong{color:var(--orange)}
 
-/* ===== WEEKLY CALENDAR ===== */
-.week{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
-.day-btn{width:46px;height:46px;border-radius:50%;border:3px solid rgba(245,197,24,.3);background:rgba(255,255,255,.05);color:#fff;font-family:inherit;font-size:.8rem;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.day-btn.done{background:var(--green);border-color:var(--green);color:#fff;animation:pop .3s ease}
-@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
-.day-btn.today{border-color:var(--gold);box-shadow:0 0 10px rgba(245,197,24,.5)}
+/* ===== WEEKLY CALENDAR (DRAGON BALLS) ===== */
+.week{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.day-btn{
+  width:48px;height:48px;border-radius:50%;
+  border:3px solid rgba(255,107,0,.3);background:rgba(255,107,0,.05);
+  color:#fff;font-family:inherit;font-size:.8rem;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .3s;position:relative
+}
+.day-btn.done{
+  background:radial-gradient(circle,var(--gold),var(--orange));
+  border-color:var(--gold);color:var(--dark);
+  box-shadow:0 0 15px rgba(255,215,0,.6);animation:dbPop .4s ease
+}
+@keyframes dbPop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.day-btn.today{border-color:var(--orange);box-shadow:0 0 12px rgba(255,107,0,.5)}
 
-/* ===== LEVEL BAR ===== */
-.level-bar{width:100%;height:24px;background:rgba(255,255,255,.1);border-radius:12px;overflow:hidden;border:2px solid var(--gold)}
-.level-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));border-radius:10px;transition:width .5s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:.7rem;font-weight:bold}
+/* ===== POWER LEVEL BAR ===== */
+.power-bar{width:100%;height:28px;background:rgba(0,0,0,.5);border-radius:14px;overflow:hidden;border:2px solid var(--orange);position:relative}
+.power-fill{
+  height:100%;border-radius:12px;transition:width .6s ease;
+  display:flex;align-items:center;justify-content:flex-end;padding-right:8px;
+  font-size:.75rem;font-weight:800;color:var(--dark);letter-spacing:1px
+}
+.power-fill.base{background:linear-gradient(90deg,var(--orange),var(--gold))}
+.power-fill.ssj{background:linear-gradient(90deg,var(--gold),#FFF176);box-shadow:0 0 15px var(--gold)}
+.power-fill.ssj2{background:linear-gradient(90deg,var(--gold),#FFF9C4);box-shadow:0 0 20px var(--gold)}
+.power-fill.ssj3{background:linear-gradient(90deg,var(--gold),#FFFFFF);box-shadow:0 0 30px #FFF}
+
+/* ===== KAMEHAMEHA BLAST (session complete) ===== */
+.blast-overlay{
+  position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;
+  background:radial-gradient(circle,rgba(0,188,212,.3),rgba(0,0,0,.9))
+}
+.blast-overlay.active{display:flex}
+.blast-beam{
+  width:20px;height:20px;border-radius:50%;background:var(--cyan);
+  box-shadow:0 0 40px var(--cyan),0 0 80px var(--cyan),0 0 120px rgba(0,188,212,.5);
+  animation:blastGrow 1.5s ease-out forwards
+}
+@keyframes blastGrow{
+  0%{width:20px;height:20px;opacity:1}
+  50%{width:80vw;height:80vw;opacity:1;border-radius:50%}
+  100%{width:200vw;height:200vw;opacity:0;border-radius:50%}
+}
+
+/* ===== SSJ TRANSFORM FLASH ===== */
+.ssj-flash{
+  position:fixed;inset:0;z-index:99;background:#FFD54F;opacity:0;
+  pointer-events:none;transition:opacity .1s
+}
+.ssj-flash.active{opacity:1;animation:ssjFlash .8s ease-out}
+@keyframes ssjFlash{0%{opacity:1}100%{opacity:0}}
 
 /* ===== RESPONSIVE ===== */
 @media(max-width:500px){
@@ -105,363 +253,315 @@ body{
 </head>
 <body>
 
-<div class="stars" id="stars"></div>
+<div class="ki-bg" id="kiBg"></div>
+<div class="ssj-flash" id="ssjFlash"></div>
+<div class="blast-overlay" id="blastOverlay"><div class="blast-beam"></div></div>
 
 <div id="app">
 
-<!-- ===== SCREEN 0: HOME ===== -->
+<!-- ===== HOME ===== -->
 <div class="screen active" id="s-home">
-  <div class="card">
-    <div style="font-size:clamp(3rem,10vw,5rem);animation:pulse 1.5s infinite">🥊</div>
-    <div class="card-title" style="color:var(--gold)">LUCAS BOXING</div>
-    <div class="card-sub">Age 7 • After School Program</div>
-    <div style="font-size:1.8rem;margin:4px 0">💪🔥⚡</div>
-    <div class="motive">
-      <strong>"Big and strong"</strong> isn't just about muscles.<br>
-      It's about the kid who <strong>never quits</strong>. 🦁
+  <div class="card aura">
+    <div style="font-size:clamp(3rem,10vw,5rem);animation:kamePulse 2s infinite">🐉</div>
+    <div class="card-title" style="color:var(--orange)">LUCAS BOXING</div>
+    <div class="card-sub">🐉 DRAGON BALL Z EDITION 🐉</div>
+
+    <!-- Scouter -->
+    <div class="scouter">
+      <div>
+        <div class="scouter-label">⚡ Power Level</div>
+        <div class="scouter-value scouter-scan" id="homePowerLevel">100</div>
+      </div>
+      <div style="margin-left:auto;font-size:1.8rem" id="homeForm">👊</div>
     </div>
 
-    <!-- Weekly tracker -->
+    <!-- Weekly Dragon Balls -->
     <div style="width:100%">
-      <div style="text-align:center;color:var(--gold);font-weight:bold;font-size:clamp(.9rem,2.5vw,1.2rem);margin-bottom:8px">THIS WEEK</div>
+      <div style="text-align:center;color:var(--orange);font-weight:800;font-size:clamp(.85rem,2.2vw,1.1rem);margin-bottom:8px;text-transform:uppercase">🔮 Collect All 7 Dragon Balls</div>
       <div class="week" id="weekTracker"></div>
     </div>
 
-    <!-- Level -->
+    <!-- Power Level Bar -->
     <div style="width:100%;text-align:center">
-      <div style="color:var(--cyan);font-size:clamp(.85rem,2vw,1rem);margin-bottom:4px" id="levelLabel">LEVEL 1 — WHITE BELT 🥋</div>
-      <div class="level-bar"><div class="level-fill" id="levelFill" style="width:0%"></div></div>
+      <div style="color:var(--cyan);font-size:clamp(.8rem,2vw,.95rem);margin-bottom:4px;font-weight:700" id="formLabel">BASE FORM — POWER LEVEL 100</div>
+      <div class="power-bar"><div class="power-fill base" id="powerFill" style="width:0%"></div></div>
     </div>
 
     <div class="nav">
-      <button class="nav-btn" onclick="go('s-warmup')">🔥 START TRAINING</button>
+      <button class="nav-btn" onclick="go('s-warmup')">⚡ ENTER TRAINING ⚡</button>
     </div>
     <div class="nav">
-      <button class="nav-btn back" onclick="go('s-combos')" style="font-size:clamp(.85rem,2.2vw,1.1rem)">🥊 COMBO CALLER</button>
-      <button class="nav-btn back" onclick="go('s-records')" style="font-size:clamp(.85rem,2.2vw,1.1rem)">🏆 MY RECORDS</button>
+      <button class="nav-btn back" onclick="go('s-combos')" style="font-size:clamp(.8rem,2vw,1rem)">🥊 COMBO CALLER</button>
+      <button class="nav-btn back" onclick="go('s-records')" style="font-size:clamp(.8rem,2vw,1rem)">🏆 POWER LOG</button>
     </div>
   </div>
 </div>
 
-<!-- ===== SCREEN 1: WARM UP ===== -->
+<!-- ===== WARM UP ===== -->
 <div class="screen" id="s-warmup">
   <div class="card">
-    <div class="card-title" style="color:var(--red)">🔥 WARM UP! 🔥</div>
+    <div class="card-title" style="color:var(--red)">🔥 WARM UP 🔥</div>
+    <div class="card-sub">Even Goku warms up before he fights!</div>
     <div class="time-badge">⏱️ 5 MINUTES</div>
-    <div class="motive">Warm muscles are <strong>fast</strong> muscles. Cold muscles get <strong>hurt</strong>.</div>
     <div class="ex-grid">
-      <div class="ex-item">
-        <div class="ex-icon">🪢</div>
-        <div class="ex-label">JUMP ROPE</div>
-        <div class="ex-detail">2 minutes<br>Any speed!</div>
-      </div>
-      <div class="ex-item">
-        <div class="ex-icon">🦵</div>
-        <div class="ex-label">HIGH KNEES</div>
-        <div class="ex-detail">30 seconds<br>Knees to chest!</div>
-      </div>
-      <div class="ex-item">
-        <div class="ex-icon">🥊</div>
-        <div class="ex-label">SHADOW BOX</div>
-        <div class="ex-detail">2 minutes<br>Hands UP!</div>
-      </div>
-      <div class="ex-item">
-        <div class="ex-icon">🔄</div>
-        <div class="ex-label">ARM CIRCLES</div>
-        <div class="ex-detail">30 sec each way<br>Big circles!</div>
-      </div>
+      <div class="ex-item"><div class="ex-icon">🪢</div><div class="ex-label">Jump Rope</div><div class="ex-detail">2 minutes<br>Like Goku's training!</div></div>
+      <div class="ex-item"><div class="ex-icon">🦵</div><div class="ex-label">High Knees</div><div class="ex-detail">30 seconds<br>FAST like Vegeta!</div></div>
+      <div class="ex-item"><div class="ex-icon">🥊</div><div class="ex-label">Shadow Box</div><div class="ex-detail">2 minutes<br>Imagine the enemy!</div></div>
+      <div class="ex-item"><div class="ex-icon">🔄</div><div class="ex-label">Arm Circles</div><div class="ex-detail">30 sec each way<br>Power up your ki!</div></div>
     </div>
     <div class="nav">
       <button class="nav-btn back" onclick="go('s-home')">← BACK</button>
-      <button class="nav-btn" onclick="go('s-boxing')">BOXING →</button>
+      <button class="nav-btn" onclick="go('s-boxing')">FIGHT! →</button>
     </div>
   </div>
 </div>
 
-<!-- ===== SCREEN 2: BOXING ROUNDS ===== -->
+<!-- ===== BOXING ROUNDS (HYPERBOLIC TIME CHAMBER) ===== -->
 <div class="screen" id="s-boxing">
   <div class="card">
-    <div class="card-title" style="color:var(--gold)">🥊 BOXING ROUNDS 🥊</div>
-    <div class="time-badge">⏱️ 12 MINUTES</div>
-    <div class="motive"><strong>Uncle's Rule:</strong> Hands ABOVE your head between rounds. That's how champions build shoulder stamina. 💪</div>
+    <div class="card-title" style="color:var(--gold)">⚡ HYPERBOLIC TIME CHAMBER ⚡</div>
+    <div class="card-sub">One year of training in one day!</div>
+    <div class="time-badge">⏱️ 6 ROUNDS × 2 MIN</div>
+    <div class="motive"><strong>Uncle's Rule:</strong> Hands ABOVE your head between rounds.<br>That's how <strong>Saiyans</strong> build power! 💪</div>
 
     <div class="ex-grid">
       <div class="ex-item" style="border-color:var(--red)">
-        <div class="ex-icon">🥊</div>
-        <div class="ex-label" style="color:var(--red)">ROUND 1</div>
-        <div class="ex-detail">JAB (1) only<br>2 min on bag<br>Focus: SNAP back fast</div>
+        <div class="ex-icon">👊</div>
+        <div class="ex-label" style="color:var(--red)">Round 1</div>
+        <div class="ex-detail"><span class="round-badge" style="background:var(--red);color:#fff">JAB</span><br>2 min • snap back fast!</div>
       </div>
       <div class="ex-item" style="border-color:var(--orange)">
         <div class="ex-icon">💥</div>
-        <div class="ex-label" style="color:var(--orange)">ROUND 2</div>
-        <div class="ex-detail">JAB-CROSS (1-2)<br>2 min on bag<br>Focus: HIP rotation</div>
+        <div class="ex-label" style="color:var(--orange)">Round 2</div>
+        <div class="ex-detail"><span class="round-badge" style="background:var(--orange);color:#fff">1-2</span><br>2 min • rotate hips!</div>
       </div>
       <div class="ex-item" style="border-color:var(--gold)">
         <div class="ex-icon">⚡</div>
-        <div class="ex-label" style="color:var(--gold)">ROUND 3</div>
-        <div class="ex-detail">JAB-CROSS-HOOK (1-2-3)<br>2 min on bag<br>Focus: POWER</div>
+        <div class="ex-label" style="color:var(--gold)">Round 3</div>
+        <div class="ex-detail"><span class="round-badge" style="background:var(--gold);color:#000">1-2-3</span><br>2 min • FULL POWER!</div>
       </div>
       <div class="ex-item" style="border-color:var(--cyan)">
         <div class="ex-icon">☝️</div>
-        <div class="ex-label" style="color:var(--cyan)">ROUND 4</div>
-        <div class="ex-detail">HIGH JABS<br>2 min arms UP<br>Uncle's special!</div>
+        <div class="ex-label" style="color:var(--cyan)">Round 4</div>
+        <div class="ex-detail"><span class="round-badge" style="background:var(--cyan);color:#000">HIGH JABS</span><br>2 min • arms UP!</div>
       </div>
       <div class="ex-item" style="border-color:var(--green)">
         <div class="ex-icon">🎯</div>
-        <div class="ex-label" style="color:var(--green)">ROUND 5</div>
-        <div class="ex-detail">FOCUS MITTS<br>2 min with Uncle<br>He calls combos!</div>
+        <div class="ex-label" style="color:var(--green)">Round 5</div>
+        <div class="ex-detail"><span class="round-badge" style="background:var(--green);color:#000">MITTS</span><br>2 min with Uncle!</div>
       </div>
       <div class="ex-item" style="border-color:var(--purple)">
         <div class="ex-icon">🔥</div>
-        <div class="ex-label" style="color:var(--purple)">ROUND 6</div>
-        <div class="ex-detail">FREESTYLE<br>2 min GO HARD<br>Everything you know!</div>
+        <div class="ex-label" style="color:var(--purple)">Round 6</div>
+        <div class="ex-detail"><span class="round-badge" style="background:var(--purple)">ULTRA INSTINCT</span><br>2 min GO ALL OUT!</div>
       </div>
     </div>
 
-    <div style="background:rgba(0,0,0,.3);border-radius:14px;padding:12px;width:100%;text-align:center">
-      <div style="color:var(--gold);font-weight:bold;margin-bottom:6px">⏱️ ROUND TIMER</div>
+    <!-- Round Timer -->
+    <div style="background:rgba(0,0,0,.5);border:3px solid var(--orange);border-radius:18px;padding:16px;width:100%;text-align:center">
+      <div style="color:var(--orange);font-weight:800;text-transform:uppercase;margin-bottom:4px">⏱️ Round Timer</div>
       <div class="timer-display" id="roundTimer">2:00</div>
       <div style="display:flex;gap:10px;justify-content:center;margin-top:8px">
-        <button class="timer-btn" id="roundStartBtn" onclick="startRoundTimer()">▶️ START</button>
+        <button class="timer-btn" id="roundStartBtn" onclick="startRoundTimer()">▶️ FIGHT!</button>
         <button class="timer-btn stop" onclick="resetRoundTimer()">⏹️ RESET</button>
       </div>
-      <div style="color:#aac;font-size:.85rem;margin-top:6px">30 sec rest between rounds — hands UP! ☝️</div>
+      <div style="color:#78909C;font-size:.8rem;margin-top:6px">30 sec rest between rounds — hands UP like you're charging ki! ⚡</div>
     </div>
 
     <div class="nav">
       <button class="nav-btn back" onclick="go('s-warmup')">← WARM UP</button>
-      <button class="nav-btn" onclick="go('s-strength')">STRENGTH →</button>
+      <button class="nav-btn" onclick="go('s-strength')">POWER UP →</button>
     </div>
   </div>
 </div>
 
-<!-- ===== SCREEN 3: STRENGTH (BIG & STRONG) ===== -->
+<!-- ===== STRENGTH (GRAVITY CHAMBER) ===== -->
 <div class="screen" id="s-strength">
   <div class="card">
-    <div class="card-title" style="color:var(--green)">💪 BIG & STRONG 💪</div>
+    <div class="card-title" style="color:var(--green)">💪 GRAVITY CHAMBER 💪</div>
+    <div class="card-sub">100× Earth gravity — like Vegeta!</div>
     <div class="time-badge">⏱️ 8 MINUTES</div>
-    <div class="motive"><strong>Boxers aren't just fast — they're POWERFUL.</strong><br>This is how you get big AND dangerous. 🦁</div>
+    <div class="motive"><strong>Vegeta trains in 400× gravity.</strong><br>You start at 100×. Every rep makes you <strong>STRONGER</strong>. 🔥</div>
 
     <div class="ex-grid">
-      <div class="ex-item">
-        <div class="ex-icon">💪</div>
-        <div class="ex-label">PUSH-UPS</div>
-        <div class="ex-detail">3 sets<br>As many as you can!<br>Chest to floor</div>
-      </div>
-      <div class="ex-item">
-        <div class="ex-icon">🦵</div>
-        <div class="ex-label">SQUATS</div>
-        <div class="ex-detail">3 × 15<br>Bum below knees<br>Arms forward</div>
-      </div>
-      <div class="ex-item">
-        <div class="ex-icon">🪵</div>
-        <div class="ex-label">PLANK</div>
-        <div class="ex-detail">3 × 30 sec<br>Straight as a board!<br>No bum up!</div>
-      </div>
-      <div class="ex-item">
-        <div class="ex-icon">🏋️</div>
-        <div class="ex-label">CHIN-UPS</div>
-        <div class="ex-detail">As many as you can<br>Or hang for 20 sec<br>GRIP = POWER</div>
-      </div>
-      <div class="ex-item">
-        <div class="ex-icon">🐻</div>
-        <div class="ex-label">BEAR CRAWL</div>
-        <div class="ex-detail">4 lengths<br>Knees OFF ground<br>Like an animal!</div>
-      </div>
-      <div class="ex-item">
-        <div class="ex-icon">🦘</div>
-        <div class="ex-label">JUMP SQUATS</div>
-        <div class="ex-detail">3 × 10<br>Squat then EXPLODE<br>Land soft!</div>
-      </div>
+      <div class="ex-item"><div class="ex-icon">💪</div><div class="ex-label">Push-Ups</div><div class="ex-detail">3 sets<br>Max reps!<br>Chest to floor</div></div>
+      <div class="ex-item"><div class="ex-icon">🦵</div><div class="ex-label">Squats</div><div class="ex-detail">3 × 15<br>Deep! Full power!<br>Arms forward</div></div>
+      <div class="ex-item"><div class="ex-icon">🪵</div><div class="ex-label">Plank</div><div class="ex-detail">3 × 30 sec<br>Straight like a beam!<br>DON'T drop!</div></div>
+      <div class="ex-item"><div class="ex-icon">🏋️</div><div class="ex-label">Chin-Ups</div><div class="ex-detail">Max reps!<br>Or hang 20 sec<br>Saiyan GRIP!</div></div>
+      <div class="ex-item"><div class="ex-icon">🐻</div><div class="ex-label">Bear Crawl</div><div class="ex-detail">4 lengths<br>Great Ape style!<br>Knees OFF ground</div></div>
+      <div class="ex-item"><div class="ex-icon">🦘</div><div class="ex-label">Jump Squats</div><div class="ex-detail">3 × 10<br>EXPLODE up!<br>Land soft</div></div>
     </div>
 
-    <!-- Strength tracker -->
+    <!-- Scouter Tracker -->
     <div class="tracker">
-      <div class="tracker-title">📊 TODAY'S COUNT</div>
+      <div class="tracker-title">📊 Scouter Reading — Today's Power</div>
       <div id="strengthTracker"></div>
     </div>
 
     <div class="nav">
-      <button class="nav-btn back" onclick="go('s-boxing')">← BOXING</button>
+      <button class="nav-btn back" onclick="go('s-boxing')">← CHAMBER</button>
       <button class="nav-btn" onclick="go('s-defence')">DEFENCE →</button>
     </div>
   </div>
 </div>
 
-<!-- ===== SCREEN 4: DEFENCE (THE WARRIOR SPIN) ===== -->
+<!-- ===== DEFENCE (WARRIOR SPIN) ===== -->
 <div class="screen" id="s-defence">
   <div class="card">
-    <div class="card-title" style="color:var(--cyan)">🛡️ WARRIOR DEFENCE 🛡️</div>
+    <div class="card-title" style="color:var(--cyan)">🛡️ ULTRA INSTINCT 🛡️</div>
+    <div class="card-sub">Dodge EVERYTHING. Hit BACK harder.</div>
     <div class="time-badge">⏱️ 5 MINUTES</div>
-    <div class="motive"><strong>We don't train TO hit. We train so we NEVER have to.</strong><br>But if someone attacks — extreme violence of action. ⚔️</div>
+    <div class="motive"><strong>Goku's Ultra Instinct</strong> = your body moves before your brain thinks.<br>Train the Warrior Spin until it's <strong>automatic</strong>. ⚡</div>
 
-    <div style="background:rgba(0,0,0,.4);border:3px solid var(--gold);border-radius:18px;padding:16px;width:100%;text-align:center">
-      <div style="font-size:clamp(1.3rem,4vw,2rem);color:var(--gold);font-weight:bold;margin-bottom:10px">⭐ THE WARRIOR SPIN ⭐</div>
-      <div style="font-size:clamp(.9rem,2.2vw,1.1rem);color:#fff;line-height:1.6;text-align:left;max-width:500px;margin:0 auto">
-        <div style="margin:6px 0"><span style="color:var(--red);font-weight:bold">1.</span> Someone pushes you from behind</div>
-        <div style="margin:6px 0"><span style="color:var(--orange);font-weight:bold">2.</span> <strong>STOMP</strong> your front foot (base!)</div>
-        <div style="margin:6px 0"><span style="color:var(--gold);font-weight:bold">3.</span> <strong>SPIN</strong> around to face them</div>
-        <div style="margin:6px 0"><span style="color:var(--green);font-weight:bold">4.</span> Hands UP in guard position</div>
-        <div style="margin:6px 0"><span style="color:var(--cyan);font-weight:bold">5.</span> <strong>LOUD VOICE:</strong> "STOP!" 🗣️</div>
-        <div style="margin:6px 0"><span style="color:var(--purple);font-weight:bold">6.</span> Front kick (TEEP) if they come closer</div>
+    <div style="background:rgba(0,0,0,.5);border:3px solid var(--cyan);border-radius:18px;padding:16px;width:100%;text-align:center">
+      <div style="font-size:clamp(1.2rem,3.5vw,1.8rem);color:var(--cyan);font-weight:900;margin-bottom:10px;text-transform:uppercase">⭐ The Warrior Spin ⭐</div>
+      <div style="font-size:clamp(.85rem,2vw,1rem);color:#fff;line-height:1.7;text-align:left;max-width:500px;margin:0 auto">
+        <div style="margin:6px 0"><span style="color:var(--red);font-weight:800">1.</span> Someone pushes from behind</div>
+        <div style="margin:6px 0"><span style="color:var(--orange);font-weight:800">2.</span> <strong>STOMP</strong> front foot (base!)</div>
+        <div style="margin:6px 0"><span style="color:var(--gold);font-weight:800">3.</span> <strong>SPIN</strong> to face them</div>
+        <div style="margin:6px 0"><span style="color:var(--green);font-weight:800">4.</span> Hands UP — guard position</div>
+        <div style="margin:6px 0"><span style="color:var(--cyan);font-weight:800">5.</span> <strong>"STOP!"</strong> — loud like Vegeta 🗣️</div>
+        <div style="margin:6px 0"><span style="color:var(--purple);font-weight:800">6.</span> Front kick if they come closer</div>
       </div>
-      <div style="color:var(--gold);font-style:italic;margin-top:10px;font-size:.9rem">Practice 10 times every session. Both sides.</div>
+      <div style="color:var(--orange);font-style:italic;margin-top:10px;font-size:.85rem;font-weight:600">10 reps every session. Both sides. No exceptions.</div>
     </div>
 
     <div class="ex-grid">
-      <div class="ex-item">
-        <div class="ex-icon">🦶</div>
-        <div class="ex-label">TEEP KICKS</div>
-        <div class="ex-detail">3 × 10 each leg<br>Push them AWAY<br>Longest weapon!</div>
-      </div>
-      <div class="ex-item">
-        <div class="ex-icon">🛡️</div>
-        <div class="ex-label">SLIP & ROLL</div>
-        <div class="ex-detail">2 min practice<br>Dodge left, dodge right<br>Head OFF centre line</div>
-      </div>
-      <div class="ex-item">
-        <div class="ex-icon">👟</div>
-        <div class="ex-label">FOOTWORK</div>
-        <div class="ex-detail">2 min<br>In-out, side-side<br>Never cross feet!</div>
-      </div>
+      <div class="ex-item"><div class="ex-icon">🦶</div><div class="ex-label">Teep Kicks</div><div class="ex-detail">3 × 10 each leg<br>Push them AWAY!</div></div>
+      <div class="ex-item"><div class="ex-icon">🛡️</div><div class="ex-label">Slip & Roll</div><div class="ex-detail">2 min<br>Ultra Instinct dodge!</div></div>
+      <div class="ex-item"><div class="ex-icon">👟</div><div class="ex-label">Footwork</div><div class="ex-detail">2 min<br>Never cross feet!</div></div>
     </div>
 
     <div class="nav">
-      <button class="nav-btn back" onclick="go('s-strength')">← STRENGTH</button>
-      <button class="nav-btn" onclick="go('s-cooldown')">COOL DOWN →</button>
+      <button class="nav-btn back" onclick="go('s-strength')">← GRAVITY</button>
+      <button class="nav-btn" onclick="go('s-cooldown')">FINISH →</button>
     </div>
   </div>
 </div>
 
-<!-- ===== SCREEN 5: COOL DOWN ===== -->
+<!-- ===== COOL DOWN ===== -->
 <div class="screen" id="s-cooldown">
   <div class="card">
-    <div class="card-title" style="color:var(--purple)">🌟 COOL DOWN 🌟</div>
+    <div class="card-title" style="color:var(--purple)">🌟 SENZU BEAN RECOVERY 🌟</div>
     <div class="time-badge">⏱️ 5 MINUTES</div>
-
     <div class="ex-grid">
-      <div class="ex-item">
-        <div class="ex-icon">🧘</div>
-        <div class="ex-label">STRETCH</div>
-        <div class="ex-detail">Arms, legs, back<br>Hold 20 sec each<br>Breathe slow</div>
-      </div>
-      <div class="ex-item">
-        <div class="ex-icon">🥊</div>
-        <div class="ex-label">SLOW SHADOW</div>
-        <div class="ex-detail">1 min SUPER slow<br>Perfect form<br>Like a movie</div>
-      </div>
-      <div class="ex-item">
-        <div class="ex-icon">🫁</div>
-        <div class="ex-label">BREATHE</div>
-        <div class="ex-detail">In for 4...<br>Hold for 4...<br>Out for 4...</div>
-      </div>
+      <div class="ex-item"><div class="ex-icon">🧘</div><div class="ex-label">Stretch</div><div class="ex-detail">Arms, legs, back<br>Hold 20 sec each</div></div>
+      <div class="ex-item"><div class="ex-icon">🥊</div><div class="ex-label">Slow Shadow</div><div class="ex-detail">1 min SUPER slow<br>Perfect form</div></div>
+      <div class="ex-item"><div class="ex-icon">🫁</div><div class="ex-label">Ki Breathe</div><div class="ex-detail">In for 4...<br>Hold for 4...<br>Out for 4...</div></div>
     </div>
 
-    <div class="motive">
-      <strong>🦁 WARRIOR CODE 🦁</strong><br><br>
+    <div class="motive" style="border-color:var(--gold)">
+      <strong style="color:var(--gold);font-size:clamp(1rem,3vw,1.3rem)">🐉 SAIYAN WARRIOR CODE 🐉</strong><br><br>
       I am <strong>Lucas</strong>.<br>
-      I train because I am <strong>strong</strong>.<br>
-      I protect because I am <strong>brave</strong>.<br>
-      I respect because I am a <strong>warrior</strong>.<br>
-      Nobody pushes me around. <strong>Nobody.</strong> 🥊
+      My power level has <strong>NO LIMIT</strong>.<br>
+      I protect the people I love.<br>
+      I <strong>NEVER</strong> give up.<br>
+      I am a <strong>SAIYAN WARRIOR</strong>. 🔥<br>
+      <span style="color:var(--gold)">KAKAROT!</span> 👊
     </div>
 
     <div class="nav">
       <button class="nav-btn back" onclick="go('s-defence')">← DEFENCE</button>
-      <button class="nav-btn" style="background:linear-gradient(135deg,var(--green),#16a34a);color:#fff" onclick="completeSession()">✅ SESSION DONE!</button>
+      <button class="kamehameha-btn" onclick="fireKamehameha()">🔵 KAMEHAMEHA! 🔵</button>
     </div>
   </div>
 </div>
 
-<!-- ===== SCREEN 6: COMBO CALLER ===== -->
+<!-- ===== COMBO CALLER ===== -->
 <div class="screen" id="s-combos">
   <div class="card">
     <div class="card-title" style="color:var(--red)">🥊 COMBO CALLER 🥊</div>
-    <div class="card-sub">Uncle calls it — Lucas throws it!</div>
+    <div class="card-sub">Uncle calls — Lucas DESTROYS!</div>
 
-    <div class="combo-display">
-      <div class="combo-name" id="comboName">TAP TO START</div>
-      <div class="combo-punches" id="comboPunches">🥊</div>
-      <div class="combo-words" id="comboWords">Hit the button!</div>
+    <div class="combo-display" id="comboBox">
+      <div class="combo-name" id="comboName">TAP TO FIGHT</div>
+      <div class="combo-punches" id="comboPunches">🐉</div>
+      <div class="combo-words" id="comboWords">Hit the button, warrior!</div>
     </div>
 
-    <button class="combo-btn" onclick="callCombo()">⚡ RANDOM COMBO ⚡</button>
+    <button class="combo-btn" onclick="callCombo()">⚡ RANDOM ATTACK ⚡</button>
 
-    <div style="background:rgba(0,0,0,.3);border-radius:14px;padding:14px;width:100%;margin-top:4px">
-      <div style="text-align:center;color:var(--gold);font-weight:bold;margin-bottom:8px">PUNCH CODE</div>
+    <div style="background:rgba(0,0,0,.4);border-radius:14px;padding:14px;width:100%">
+      <div style="text-align:center;color:var(--gold);font-weight:800;margin-bottom:8px;text-transform:uppercase">Punch Code</div>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-        <div style="background:var(--red);border-radius:12px;padding:8px 16px;font-weight:bold">1 = JAB</div>
-        <div style="background:var(--orange);border-radius:12px;padding:8px 16px;font-weight:bold">2 = CROSS</div>
-        <div style="background:var(--purple);border-radius:12px;padding:8px 16px;font-weight:bold">3 = HOOK</div>
-        <div style="background:var(--cyan);color:var(--blue);border-radius:12px;padding:8px 16px;font-weight:bold">4 = UPPERCUT</div>
+        <div style="background:var(--red);border-radius:10px;padding:8px 14px;font-weight:800;font-size:.9rem">1 = JAB</div>
+        <div style="background:var(--orange);border-radius:10px;padding:8px 14px;font-weight:800;font-size:.9rem">2 = CROSS</div>
+        <div style="background:var(--purple);border-radius:10px;padding:8px 14px;font-weight:800;font-size:.9rem">3 = HOOK</div>
+        <div style="background:var(--cyan);color:var(--dark);border-radius:10px;padding:8px 14px;font-weight:800;font-size:.9rem">4 = UPPERCUT</div>
       </div>
     </div>
 
-    <div class="nav">
-      <button class="nav-btn back" onclick="go('s-home')">← HOME</button>
-    </div>
+    <div class="nav"><button class="nav-btn back" onclick="go('s-home')">← HOME</button></div>
   </div>
 </div>
 
-<!-- ===== SCREEN 7: RECORDS ===== -->
+<!-- ===== RECORDS ===== -->
 <div class="screen" id="s-records">
   <div class="card">
-    <div class="card-title" style="color:var(--gold)">🏆 MY RECORDS 🏆</div>
-    <div class="card-sub">Track your progress. Get STRONGER every week.</div>
-
+    <div class="card-title" style="color:var(--gold)">🏆 POWER LOG 🏆</div>
+    <div class="card-sub">Your Saiyan journey, tracked.</div>
     <div class="tracker" id="recordsDisplay"></div>
-
-    <div style="background:rgba(0,0,0,.3);border-radius:14px;padding:14px;width:100%;text-align:center">
-      <div style="color:var(--gold);font-weight:bold;margin-bottom:6px">🔥 STREAK</div>
-      <div style="font-size:clamp(2rem,8vw,3.5rem);font-weight:bold" id="streakDisplay">0</div>
-      <div style="color:#aac;font-size:.9rem">days in a row</div>
+    <div style="display:flex;gap:12px;width:100%">
+      <div style="flex:1;background:rgba(0,0,0,.4);border:2px solid var(--orange);border-radius:14px;padding:14px;text-align:center">
+        <div style="color:var(--orange);font-weight:800;font-size:.85rem;text-transform:uppercase">🔥 Streak</div>
+        <div style="font-size:clamp(2rem,8vw,3rem);font-weight:900;color:var(--gold)" id="streakDisplay">0</div>
+        <div style="color:#78909C;font-size:.8rem">days in a row</div>
+      </div>
+      <div style="flex:1;background:rgba(0,0,0,.4);border:2px solid var(--orange);border-radius:14px;padding:14px;text-align:center">
+        <div style="color:var(--orange);font-weight:800;font-size:.85rem;text-transform:uppercase">📅 Sessions</div>
+        <div style="font-size:clamp(2rem,8vw,3rem);font-weight:900;color:var(--gold)" id="totalSessions">0</div>
+        <div style="color:#78909C;font-size:.8rem">total training</div>
+      </div>
     </div>
-
-    <div style="background:rgba(0,0,0,.3);border-radius:14px;padding:14px;width:100%;text-align:center">
-      <div style="color:var(--gold);font-weight:bold;margin-bottom:6px">📅 TOTAL SESSIONS</div>
-      <div style="font-size:clamp(2rem,8vw,3.5rem);font-weight:bold" id="totalSessions">0</div>
-    </div>
-
     <div class="nav">
       <button class="nav-btn back" onclick="go('s-home')">← HOME</button>
-      <button class="nav-btn" style="background:linear-gradient(135deg,var(--red),#b91c1c);color:#fff;font-size:clamp(.8rem,2vw,1rem)" onclick="if(confirm('Reset ALL records? This cannot be undone!')){localStorage.clear();location.reload()}">🗑️ RESET</button>
+      <button class="nav-btn" style="background:linear-gradient(135deg,var(--red),#B71C1C);font-size:clamp(.75rem,1.8vw,.9rem)" onclick="if(confirm('Reset ALL power? Shenron cannot undo this!')){localStorage.clear();location.reload()}">🗑️ RESET</button>
     </div>
   </div>
 </div>
 
-<!-- ===== SESSION COMPLETE SCREEN ===== -->
+<!-- ===== SESSION COMPLETE (KAMEHAMEHA) ===== -->
 <div class="screen" id="s-complete">
-  <div class="card" style="border-color:var(--green)">
-    <div style="font-size:clamp(4rem,15vw,7rem);animation:pulse 1s infinite">🏆</div>
-    <div class="card-title" style="color:var(--green)">SESSION COMPLETE!</div>
-    <div class="card-sub" id="completeMsg">You're getting STRONGER!</div>
-    <div style="font-size:clamp(1.5rem,5vw,2.5rem);margin:8px 0" id="completeStreak"></div>
-    <div class="motive">
-      <strong>Every single session makes you harder to beat.</strong><br>
-      Come back tomorrow. Same time. No excuses. 🦁
+  <div class="card aura" style="border-color:var(--gold)">
+    <div style="font-size:clamp(4rem,15vw,7rem)" id="completeEmoji">🐉</div>
+    <div class="card-title" style="color:var(--gold)" id="completeTitle">POWER LEVEL UP!</div>
+    <div class="card-sub" id="completeMsg">Your Saiyan power grows!</div>
+    <div class="scouter" style="justify-content:center">
+      <div style="text-align:center">
+        <div class="scouter-label">NEW POWER LEVEL</div>
+        <div class="scouter-value" id="newPowerLevel" style="font-size:clamp(2rem,8vw,3.5rem)">200</div>
+      </div>
     </div>
-    <div class="nav">
-      <button class="nav-btn" onclick="go('s-home')">🏠 HOME</button>
+    <div style="font-size:clamp(1.3rem,4vw,2rem);font-weight:900;color:var(--orange)" id="completeStreak"></div>
+    <div class="motive" style="border-color:var(--gold)">
+      <strong>Every session makes you more powerful.</strong><br>
+      Come back tomorrow. A true Saiyan <strong>NEVER stops training</strong>. 🐉
     </div>
+    <div class="nav"><button class="nav-btn" onclick="go('s-home')">🏠 HOME</button></div>
   </div>
 </div>
 
 </div><!-- /app -->
 
 <script>
-// ===== STARS =====
+// ===== KI PARTICLES =====
 (function(){
-  const c=document.getElementById('stars');
-  for(let i=0;i<80;i++){
-    const s=document.createElement('div');
-    s.className='star';
-    const size=Math.random()*3+1;
-    s.style.cssText=`width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*3}s;animation-duration:${1.5+Math.random()*2}s`;
-    c.appendChild(s);
+  const c=document.getElementById('kiBg');
+  function spawn(){
+    const p=document.createElement('div');
+    p.className='ki-particle';
+    const size=Math.random()*4+2;
+    const hue=Math.random()>.5?'var(--orange)':'var(--ki-yellow)';
+    const dur=3+Math.random()*4;
+    p.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;background:${hue};animation-duration:${dur}s`;
+    c.appendChild(p);
+    setTimeout(()=>p.remove(),dur*1000);
   }
+  setInterval(spawn,200);
+  for(let i=0;i<20;i++) setTimeout(spawn,i*100);
 })();
 
-// ===== NAVIGATION =====
+// ===== NAV =====
 function go(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -471,190 +571,203 @@ function go(id){
 }
 
 // ===== STORAGE =====
-function getData(){
-  try{return JSON.parse(localStorage.getItem('lucas7')||'{}')}catch(e){return{}}
-}
-function setData(d){localStorage.setItem('lucas7',JSON.stringify(d))}
+function getData(){try{return JSON.parse(localStorage.getItem('lucasDBZ')||'{}')}catch(e){return{}}}
+function setData(d){localStorage.setItem('lucasDBZ',JSON.stringify(d))}
 function today(){return new Date().toISOString().slice(0,10)}
 
-// ===== WEEKLY TRACKER =====
+// ===== POWER LEVEL CALC =====
+function calcPowerLevel(d){
+  const sessions=Object.keys(d.sessions||{}).length;
+  const streak=d.streak||0;
+  return 100 + (sessions * 50) + (streak * 25);
+}
+function getForm(power){
+  if(power>=9001) return {name:'ULTRA INSTINCT',emoji:'🌟',cls:'ssj3'};
+  if(power>=5000) return {name:'SUPER SAIYAN 3',emoji:'⚡',cls:'ssj3'};
+  if(power>=2500) return {name:'SUPER SAIYAN 2',emoji:'💛',cls:'ssj2'};
+  if(power>=1000) return {name:'SUPER SAIYAN',emoji:'🔥',cls:'ssj'};
+  return {name:'BASE FORM',emoji:'👊',cls:'base'};
+}
+
+// ===== HOME =====
 function updateHome(){
   const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   const d=getData();
   const sessions=d.sessions||{};
   const now=new Date();
-  const dayOfWeek=now.getDay()||7;// Mon=1
-  const monday=new Date(now);
-  monday.setDate(now.getDate()-(dayOfWeek-1));
+  const dow=now.getDay()||7;
+  const mon=new Date(now);mon.setDate(now.getDate()-(dow-1));
 
+  // Dragon Balls (weekly)
   const cont=document.getElementById('weekTracker');
   cont.innerHTML='';
+  let weekDone=0;
   for(let i=0;i<7;i++){
-    const dt=new Date(monday);
-    dt.setDate(monday.getDate()+i);
+    const dt=new Date(mon);dt.setDate(mon.getDate()+i);
     const key=dt.toISOString().slice(0,10);
     const btn=document.createElement('button');
     btn.className='day-btn';
-    if(sessions[key]) btn.classList.add('done');
+    if(sessions[key]){btn.classList.add('done');weekDone++;}
     if(key===today()) btn.classList.add('today');
-    btn.textContent=days[i];
+    btn.textContent=sessions[key]?'⭐':days[i];
     cont.appendChild(btn);
   }
 
-  // Level
-  const total=Object.keys(sessions).length;
-  const level=Math.floor(total/5)+1;
-  const belts=['WHITE BELT 🥋','YELLOW BELT 🟡','ORANGE BELT 🟠','GREEN BELT 💚','BLUE BELT 💙','PURPLE BELT 💜','BROWN BELT 🟤','BLACK BELT 🖤','WARRIOR 🦁'];
-  const beltName=belts[Math.min(level-1,belts.length-1)];
-  const progress=(total%5)/5*100;
-  document.getElementById('levelLabel').textContent=`LEVEL ${level} — ${beltName}`;
-  document.getElementById('levelFill').style.width=progress+'%';
+  // Power Level
+  const power=calcPowerLevel(d);
+  const form=getForm(power);
+  document.getElementById('homePowerLevel').textContent=power.toLocaleString();
+  document.getElementById('homeForm').textContent=form.emoji;
+  document.getElementById('formLabel').textContent=`${form.name} — POWER LEVEL ${power.toLocaleString()}`;
+
+  const nextThreshold=power<1000?1000:power<2500?2500:power<5000?5000:9001;
+  const prevThreshold=power<1000?100:power<2500?1000:power<5000?2500:5000;
+  const progress=Math.min(100,((power-prevThreshold)/(nextThreshold-prevThreshold))*100);
+  const fill=document.getElementById('powerFill');
+  fill.style.width=progress+'%';
+  fill.className='power-fill '+form.cls;
 }
 
 // ===== ROUND TIMER =====
-let roundInterval=null;
-let roundSeconds=120;
+let roundInterval=null,roundSeconds=120;
 function startRoundTimer(){
-  if(roundInterval){clearInterval(roundInterval);roundInterval=null;document.getElementById('roundStartBtn').textContent='▶️ START';return}
+  if(roundInterval){clearInterval(roundInterval);roundInterval=null;document.getElementById('roundStartBtn').textContent='▶️ FIGHT!';return}
   document.getElementById('roundStartBtn').textContent='⏸️ PAUSE';
   roundInterval=setInterval(()=>{
     roundSeconds--;
     if(roundSeconds<=0){
       clearInterval(roundInterval);roundInterval=null;
-      document.getElementById('roundTimer').textContent='DONE!';
-      document.getElementById('roundTimer').style.color='var(--green)';
-      document.getElementById('roundStartBtn').textContent='▶️ START';
-      // Buzz
+      document.getElementById('roundTimer').textContent='K.O.!';
+      document.getElementById('roundTimer').style.color='var(--gold)';
+      document.getElementById('roundStartBtn').textContent='▶️ FIGHT!';
       if(navigator.vibrate) navigator.vibrate([200,100,200,100,200]);
       return;
     }
-    const m=Math.floor(roundSeconds/60);
-    const s=roundSeconds%60;
+    const m=Math.floor(roundSeconds/60),s=roundSeconds%60;
     document.getElementById('roundTimer').textContent=`${m}:${s.toString().padStart(2,'0')}`;
-    document.getElementById('roundTimer').style.color=roundSeconds<=10?'var(--red)':'var(--gold)';
+    document.getElementById('roundTimer').style.color=roundSeconds<=10?'var(--red)':'var(--orange)';
   },1000);
 }
 function resetRoundTimer(){
-  clearInterval(roundInterval);roundInterval=null;
-  roundSeconds=120;
+  clearInterval(roundInterval);roundInterval=null;roundSeconds=120;
   document.getElementById('roundTimer').textContent='2:00';
-  document.getElementById('roundTimer').style.color='var(--gold)';
-  document.getElementById('roundStartBtn').textContent='▶️ START';
+  document.getElementById('roundTimer').style.color='var(--orange)';
+  document.getElementById('roundStartBtn').textContent='▶️ FIGHT!';
 }
 
-// ===== STRENGTH TRACKER =====
+// ===== STRENGTH =====
 const exercises=['Push-ups','Squats','Plank (sec)','Chin-ups','Bear Crawls','Jump Squats'];
 function buildStrengthTracker(){
-  const d=getData();
-  const todayData=d.strength&&d.strength[today()]||{};
+  const d=getData(),todayData=d.strength&&d.strength[today()]||{};
   const cont=document.getElementById('strengthTracker');
   cont.innerHTML='';
   exercises.forEach(ex=>{
     const count=todayData[ex]||0;
     const row=document.createElement('div');
     row.className='tracker-row';
-    row.innerHTML=`
-      <div class="tracker-name">${ex}</div>
-      <div class="tracker-btns">
-        <button onclick="adjStrength('${ex}',-1)">−</button>
-        <div class="tracker-count" id="str-${ex.replace(/[^a-zA-Z]/g,'')}">${count}</div>
-        <button onclick="adjStrength('${ex}',1)">+</button>
-      </div>`;
+    row.innerHTML=`<div class="tracker-name">${ex}</div><div class="tracker-btns"><button onclick="adjStr('${ex}',-1)">−</button><div class="tracker-count" id="str-${ex.replace(/[^a-zA-Z]/g,'')}">${count}</div><button onclick="adjStr('${ex}',1)">+</button></div>`;
     cont.appendChild(row);
   });
 }
-function adjStrength(ex,delta){
+function adjStr(ex,delta){
   const d=getData();
   if(!d.strength) d.strength={};
   if(!d.strength[today()]) d.strength[today()]={};
-  const cur=d.strength[today()][ex]||0;
-  d.strength[today()][ex]=Math.max(0,cur+delta);
+  d.strength[today()][ex]=Math.max(0,(d.strength[today()][ex]||0)+delta);
   setData(d);
   const el=document.getElementById('str-'+ex.replace(/[^a-zA-Z]/g,''));
   if(el) el.textContent=d.strength[today()][ex];
 }
 
-// ===== COMBO CALLER =====
+// ===== COMBOS =====
 const combos=[
-  {name:'THE JAB',code:'1',words:'Jab!',level:1},
+  {name:'JAB',code:'1',words:'Jab!',level:1},
   {name:'ONE-TWO',code:'1-2',words:'Jab — Cross!',level:1},
-  {name:'THE TRIPLE',code:'1-2-3',words:'Jab — Cross — Hook!',level:1},
-  {name:'DOUBLE JAB CROSS',code:'1-1-2',words:'Jab — Jab — Cross!',level:2},
-  {name:'BODY SHOT',code:'1-2-3 (body)',words:'Jab — Cross — Hook to BODY!',level:2},
-  {name:'THE DESTROYER',code:'1-2-3-2',words:'Jab — Cross — Hook — Cross!',level:3},
-  {name:'UPPERCUT FINISH',code:'1-2-4',words:'Jab — Cross — Uppercut!',level:3},
-  {name:'HURRICANE',code:'1-2-3-4',words:'Jab — Cross — Hook — Uppercut!',level:3},
-  {name:'SPIDER',code:'1-1-2-3',words:'Jab — Jab — Cross — Hook!',level:4},
-  {name:'LUCAS SPECIAL',code:'1-2-3-2-1',words:'Jab — Cross — Hook — Cross — Jab!',level:4},
-  {name:'WARRIOR FURY',code:'1-1-2-3-4-2',words:'Double Jab — Cross — Hook — Upper — Cross!',level:5},
+  {name:'TRIPLE THREAT',code:'1-2-3',words:'Jab — Cross — Hook!',level:1},
+  {name:'DOUBLE JAB',code:'1-1-2',words:'Jab — Jab — Cross!',level:2},
+  {name:'BODY SHOT',code:'1-2-3♦',words:'Jab — Cross — Hook to BODY!',level:2},
+  {name:'FINAL FLASH',code:'1-2-3-2',words:'Jab — Cross — Hook — Cross!',level:3},
+  {name:'DRAGON FIST',code:'1-2-4',words:'Jab — Cross — UPPERCUT!',level:3},
+  {name:'SPIRIT BOMB',code:'1-2-3-4',words:'Jab — Cross — Hook — Uppercut!',level:3},
+  {name:'GALICK GUN',code:'1-1-2-3',words:'Jab — Jab — Cross — Hook!',level:4},
+  {name:'KAMEHAMEHA',code:'1-2-3-2-1',words:'Jab — Cross — Hook — Cross — Jab!',level:4},
+  {name:'ULTRA INSTINCT',code:'1-1-2-3-4-2',words:'Double Jab — Cross — Hook — Upper — Cross!',level:5},
 ];
 let lastCombo=-1;
 function callCombo(){
-  let idx;
-  do{idx=Math.floor(Math.random()*combos.length)}while(idx===lastCombo&&combos.length>1);
+  let idx;do{idx=Math.floor(Math.random()*combos.length)}while(idx===lastCombo&&combos.length>1);
   lastCombo=idx;
   const c=combos[idx];
   document.getElementById('comboName').textContent=c.name;
   document.getElementById('comboPunches').textContent=c.code;
   document.getElementById('comboWords').textContent=c.words;
-  // Flash effect
   const el=document.getElementById('comboPunches');
-  el.style.transform='scale(1.3)';
-  setTimeout(()=>el.style.transform='scale(1)',200);
-  // Vibrate
+  el.style.transform='scale(1.3)';el.style.color='var(--gold)';
+  setTimeout(()=>{el.style.transform='scale(1)';el.style.color='#fff'},250);
+  // Flash the combo box
+  const box=document.getElementById('comboBox');
+  box.style.borderColor='var(--gold)';
+  setTimeout(()=>box.style.borderColor='var(--orange)',300);
   if(navigator.vibrate) navigator.vibrate(100);
 }
 
-// ===== SESSION COMPLETE =====
-function completeSession(){
+// ===== KAMEHAMEHA (SESSION COMPLETE) =====
+function fireKamehameha(){
   const d=getData();
   if(!d.sessions) d.sessions={};
   d.sessions[today()]=true;
 
-  // Streak calc
-  let streak=0;
-  const dt=new Date();
-  while(true){
-    const key=dt.toISOString().slice(0,10);
-    if(d.sessions[key]){streak++;dt.setDate(dt.getDate()-1)}
-    else break;
-  }
+  // Streak
+  let streak=0;const dt=new Date();
+  while(true){const key=dt.toISOString().slice(0,10);if(d.sessions[key]){streak++;dt.setDate(dt.getDate()-1)}else break}
   d.streak=streak;
   setData(d);
 
-  const msgs=['WARRIOR! 🦁','UNSTOPPABLE! ⚡','CHAMPION! 🏆','BEAST MODE! 🔥','LEGEND! ⭐'];
-  document.getElementById('completeMsg').textContent=msgs[Math.floor(Math.random()*msgs.length)];
-  document.getElementById('completeStreak').textContent=`🔥 ${streak} day streak!`;
-  go('s-complete');
+  // SSJ flash if new form
+  const oldPower=calcPowerLevel({...d,sessions:{...d.sessions,[today()]:undefined}});
+  const newPower=calcPowerLevel(d);
+  const oldForm=getForm(oldPower),newForm=getForm(newPower);
+  if(newForm.name!==oldForm.name){
+    document.getElementById('ssjFlash').classList.add('active');
+    setTimeout(()=>document.getElementById('ssjFlash').classList.remove('active'),800);
+  }
+
+  // Kamehameha blast
+  const overlay=document.getElementById('blastOverlay');
+  overlay.classList.add('active');
+  if(navigator.vibrate) navigator.vibrate([100,50,100,50,300]);
+  setTimeout(()=>{
+    overlay.classList.remove('active');
+    // Reset beam
+    overlay.innerHTML='<div class="blast-beam"></div>';
+
+    // Show complete screen
+    const power=calcPowerLevel(d);
+    const form=getForm(power);
+    document.getElementById('completeEmoji').textContent=power>=9001?'🌟':form.emoji==='🔥'?'🔥':'🐉';
+    document.getElementById('completeTitle').textContent=power>=9001?'IT\'S OVER 9000!!!':'POWER LEVEL UP!';
+    document.getElementById('newPowerLevel').textContent=power.toLocaleString();
+    document.getElementById('completeStreak').textContent=`🔥 ${streak} day streak!`;
+
+    const msgs=['SAIYAN WARRIOR! 🐉','KAKAROT! 👊','UNSTOPPABLE! ⚡','FULL POWER! 🔥','LEGENDARY! ⭐'];
+    document.getElementById('completeMsg').textContent=msgs[Math.floor(Math.random()*msgs.length)];
+    go('s-complete');
+  },1800);
 }
 
 // ===== RECORDS =====
 function buildRecords(){
-  const d=getData();
-  const cont=document.getElementById('recordsDisplay');
-  cont.innerHTML='<div class="tracker-title">💪 PERSONAL BESTS</div>';
-
-  // Find PBs
-  const pbs={};
-  exercises.forEach(ex=>pbs[ex]=0);
-  if(d.strength){
-    Object.values(d.strength).forEach(day=>{
-      exercises.forEach(ex=>{
-        if(day[ex]&&day[ex]>pbs[ex]) pbs[ex]=day[ex];
-      });
-    });
-  }
+  const d=getData(),cont=document.getElementById('recordsDisplay');
+  cont.innerHTML='<div class="tracker-title">💪 Personal Bests</div>';
+  const pbs={};exercises.forEach(ex=>pbs[ex]=0);
+  if(d.strength) Object.values(d.strength).forEach(day=>exercises.forEach(ex=>{if(day[ex]&&day[ex]>pbs[ex])pbs[ex]=day[ex]}));
   exercises.forEach(ex=>{
-    const row=document.createElement('div');
-    row.className='tracker-row';
-    row.innerHTML=`<div class="tracker-name">${ex}</div><div style="color:var(--gold);font-weight:bold;font-size:1.2rem">${pbs[ex]}</div>`;
+    const row=document.createElement('div');row.className='tracker-row';
+    row.innerHTML=`<div class="tracker-name">${ex}</div><div style="color:var(--scouter-green);font-weight:900;font-size:1.2rem;font-family:'Courier New',monospace">${pbs[ex]}</div>`;
     cont.appendChild(row);
   });
-
-  // Streak + total
-  const sessions=d.sessions||{};
   document.getElementById('streakDisplay').textContent=d.streak||0;
-  document.getElementById('totalSessions').textContent=Object.keys(sessions).length;
+  document.getElementById('totalSessions').textContent=Object.keys(d.sessions||{}).length;
 }
 
 // ===== INIT =====
