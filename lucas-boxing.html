@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>LUCAS BOXING 🥊 AGE 7</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --blue:#0a1a4a;--gold:#f5c518;--red:#e63946;--green:#22c55e;
+  --cyan:#00e5ff;--orange:#ff8c00;--purple:#a855f7;
+}
+body{
+  font-family:'Comic Sans MS','Chalkboard SE',cursive;
+  background:var(--blue);color:#fff;min-height:100vh;
+  overflow:hidden;user-select:none;-webkit-user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* ===== STARFIELD ===== */
+.stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle 2s infinite alternate}
+@keyframes twinkle{0%{opacity:.2;transform:scale(1)}100%{opacity:1;transform:scale(1.4)}}
+
+/* ===== APP CONTAINER ===== */
+#app{position:relative;z-index:1;width:100vw;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+
+/* ===== SCREENS ===== */
+.screen{position:absolute;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;opacity:0;transform:scale(.92);transition:opacity .4s,transform .4s;pointer-events:none}
+.screen.active{opacity:1;transform:scale(1);pointer-events:all}
+
+/* ===== CARDS ===== */
+.card{background:linear-gradient(145deg,#1a2e7a,#0d1f5c);border:4px solid var(--gold);border-radius:28px;padding:20px 24px;width:min(95vw,780px);max-height:92vh;overflow-y:auto;box-shadow:0 0 40px rgba(245,197,24,.4),0 10px 40px rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;gap:12px;scrollbar-width:none}
+.card::-webkit-scrollbar{display:none}
+
+.card-title{font-size:clamp(1.5rem,5vw,2.8rem);font-weight:bold;text-align:center;line-height:1.1;text-shadow:2px 2px 0 rgba(0,0,0,.5)}
+.card-sub{font-size:clamp(.95rem,2.5vw,1.3rem);text-align:center;color:#cde;font-style:italic}
+
+/* ===== TIME BADGE ===== */
+.time-badge{background:linear-gradient(135deg,var(--red),#c1121f);border:3px solid var(--gold);border-radius:20px;padding:10px 28px;font-size:clamp(1.2rem,3.5vw,1.8rem);font-weight:bold;text-shadow:2px 2px 0 rgba(0,0,0,.4);box-shadow:0 4px 15px rgba(230,57,70,.5);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+
+/* ===== EXERCISE GRID ===== */
+.ex-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;width:100%}
+.ex-item{background:rgba(255,255,255,.08);border:2px solid rgba(245,197,24,.3);border-radius:18px;padding:14px 10px;min-width:130px;flex:1;max-width:180px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:transform .2s,border-color .2s}
+.ex-item:active{transform:scale(.95);border-color:var(--gold)}
+.ex-icon{font-size:2.8rem;line-height:1}
+.ex-label{font-size:clamp(.85rem,2.2vw,1.1rem);font-weight:bold;text-align:center;color:var(--gold)}
+.ex-detail{font-size:clamp(.7rem,1.8vw,.9rem);text-align:center;color:#aac}
+
+/* ===== COMBO DISPLAY ===== */
+.combo-display{background:rgba(0,0,0,.4);border:3px solid var(--gold);border-radius:20px;padding:20px;width:100%;text-align:center}
+.combo-name{font-size:clamp(1.3rem,4vw,2rem);color:var(--gold);font-weight:bold;margin-bottom:8px}
+.combo-punches{font-size:clamp(2rem,8vw,4rem);letter-spacing:8px;text-shadow:0 0 20px rgba(245,197,24,.6);margin:10px 0;min-height:60px}
+.combo-words{font-size:clamp(1rem,3vw,1.4rem);color:var(--cyan)}
+.combo-btn{font-family:inherit;font-size:clamp(1.2rem,3.5vw,1.8rem);font-weight:bold;background:linear-gradient(135deg,var(--red),#b91c1c);color:#fff;border:3px solid var(--gold);border-radius:50px;padding:14px 40px;cursor:pointer;margin-top:12px;box-shadow:0 4px 15px rgba(230,57,70,.5);transition:transform .15s}
+.combo-btn:active{transform:scale(.95)}
+
+/* ===== TIMER ===== */
+.timer-display{font-size:clamp(3rem,12vw,6rem);font-weight:bold;color:var(--gold);text-shadow:0 0 30px rgba(245,197,24,.6);font-family:'Courier New',monospace;letter-spacing:4px}
+.timer-label{font-size:clamp(1rem,3vw,1.5rem);color:var(--cyan);margin-bottom:5px}
+.timer-btn{font-family:inherit;font-size:clamp(1rem,3vw,1.4rem);font-weight:bold;background:linear-gradient(135deg,var(--green),#16a34a);color:#fff;border:3px solid var(--gold);border-radius:50px;padding:12px 36px;cursor:pointer;margin-top:8px;transition:transform .15s}
+.timer-btn:active{transform:scale(.95)}
+.timer-btn.stop{background:linear-gradient(135deg,var(--red),#b91c1c)}
+
+/* ===== STRENGTH TRACKER ===== */
+.tracker{background:rgba(0,0,0,.3);border:2px solid var(--gold);border-radius:16px;padding:14px;width:100%}
+.tracker-title{font-size:clamp(1rem,2.5vw,1.3rem);color:var(--gold);text-align:center;margin-bottom:10px}
+.tracker-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.1)}
+.tracker-row:last-child{border:none}
+.tracker-name{font-size:clamp(.85rem,2vw,1rem)}
+.tracker-btns{display:flex;gap:8px;align-items:center}
+.tracker-btns button{font-family:inherit;font-size:1.2rem;width:36px;height:36px;border-radius:50%;border:2px solid var(--gold);background:rgba(255,255,255,.1);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.tracker-btns button:active{background:var(--gold);color:var(--blue)}
+.tracker-count{font-size:1.1rem;font-weight:bold;color:var(--gold);min-width:30px;text-align:center}
+
+/* ===== NAV ===== */
+.nav{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;justify-content:center}
+.nav-btn{font-family:inherit;font-size:clamp(1rem,3vw,1.4rem);font-weight:bold;background:linear-gradient(135deg,var(--gold),#e6a800);color:var(--blue);border:none;border-radius:50px;padding:14px 32px;cursor:pointer;box-shadow:0 4px 15px rgba(245,197,24,.4);transition:transform .15s}
+.nav-btn:active{transform:scale(.95)}
+.nav-btn.back{background:linear-gradient(135deg,#475569,#334155);color:#fff}
+
+/* ===== MOTIVATIONAL BANNER ===== */
+.motive{background:linear-gradient(135deg,rgba(245,197,24,.15),rgba(245,197,24,.05));border:2px solid rgba(245,197,24,.3);border-radius:14px;padding:12px 18px;text-align:center;font-size:clamp(.9rem,2.2vw,1.15rem);color:#fff;width:100%;line-height:1.4}
+.motive strong{color:var(--gold)}
+
+/* ===== WEEKLY CALENDAR ===== */
+.week{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.day-btn{width:46px;height:46px;border-radius:50%;border:3px solid rgba(245,197,24,.3);background:rgba(255,255,255,.05);color:#fff;font-family:inherit;font-size:.8rem;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.day-btn.done{background:var(--green);border-color:var(--green);color:#fff;animation:pop .3s ease}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.day-btn.today{border-color:var(--gold);box-shadow:0 0 10px rgba(245,197,24,.5)}
+
+/* ===== LEVEL BAR ===== */
+.level-bar{width:100%;height:24px;background:rgba(255,255,255,.1);border-radius:12px;overflow:hidden;border:2px solid var(--gold)}
+.level-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--cyan));border-radius:10px;transition:width .5s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:.7rem;font-weight:bold}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:500px){
+  .card{padding:14px 12px;gap:10px}
+  .ex-item{min-width:100px;padding:10px 8px}
+  .ex-icon{font-size:2.2rem}
+}
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div id="app">
+
+<!-- ===== SCREEN 0: HOME ===== -->
+<div class="screen active" id="s-home">
+  <div class="card">
+    <div style="font-size:clamp(3rem,10vw,5rem);animation:pulse 1.5s infinite">🥊</div>
+    <div class="card-title" style="color:var(--gold)">LUCAS BOXING</div>
+    <div class="card-sub">Age 7 • After School Program</div>
+    <div style="font-size:1.8rem;margin:4px 0">💪🔥⚡</div>
+    <div class="motive">
+      <strong>"Big and strong"</strong> isn't just about muscles.<br>
+      It's about the kid who <strong>never quits</strong>. 🦁
+    </div>
+
+    <!-- Weekly tracker -->
+    <div style="width:100%">
+      <div style="text-align:center;color:var(--gold);font-weight:bold;font-size:clamp(.9rem,2.5vw,1.2rem);margin-bottom:8px">THIS WEEK</div>
+      <div class="week" id="weekTracker"></div>
+    </div>
+
+    <!-- Level -->
+    <div style="width:100%;text-align:center">
+      <div style="color:var(--cyan);font-size:clamp(.85rem,2vw,1rem);margin-bottom:4px" id="levelLabel">LEVEL 1 — WHITE BELT 🥋</div>
+      <div class="level-bar"><div class="level-fill" id="levelFill" style="width:0%"></div></div>
+    </div>
+
+    <div class="nav">
+      <button class="nav-btn" onclick="go('s-warmup')">🔥 START TRAINING</button>
+    </div>
+    <div class="nav">
+      <button class="nav-btn back" onclick="go('s-combos')" style="font-size:clamp(.85rem,2.2vw,1.1rem)">🥊 COMBO CALLER</button>
+      <button class="nav-btn back" onclick="go('s-records')" style="font-size:clamp(.85rem,2.2vw,1.1rem)">🏆 MY RECORDS</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 1: WARM UP ===== -->
+<div class="screen" id="s-warmup">
+  <div class="card">
+    <div class="card-title" style="color:var(--red)">🔥 WARM UP! 🔥</div>
+    <div class="time-badge">⏱️ 5 MINUTES</div>
+    <div class="motive">Warm muscles are <strong>fast</strong> muscles. Cold muscles get <strong>hurt</strong>.</div>
+    <div class="ex-grid">
+      <div class="ex-item">
+        <div class="ex-icon">🪢</div>
+        <div class="ex-label">JUMP ROPE</div>
+        <div class="ex-detail">2 minutes<br>Any speed!</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-icon">🦵</div>
+        <div class="ex-label">HIGH KNEES</div>
+        <div class="ex-detail">30 seconds<br>Knees to chest!</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-icon">🥊</div>
+        <div class="ex-label">SHADOW BOX</div>
+        <div class="ex-detail">2 minutes<br>Hands UP!</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-icon">🔄</div>
+        <div class="ex-label">ARM CIRCLES</div>
+        <div class="ex-detail">30 sec each way<br>Big circles!</div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="nav-btn back" onclick="go('s-home')">← BACK</button>
+      <button class="nav-btn" onclick="go('s-boxing')">BOXING →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 2: BOXING ROUNDS ===== -->
+<div class="screen" id="s-boxing">
+  <div class="card">
+    <div class="card-title" style="color:var(--gold)">🥊 BOXING ROUNDS 🥊</div>
+    <div class="time-badge">⏱️ 12 MINUTES</div>
+    <div class="motive"><strong>Uncle's Rule:</strong> Hands ABOVE your head between rounds. That's how champions build shoulder stamina. 💪</div>
+
+    <div class="ex-grid">
+      <div class="ex-item" style="border-color:var(--red)">
+        <div class="ex-icon">🥊</div>
+        <div class="ex-label" style="color:var(--red)">ROUND 1</div>
+        <div class="ex-detail">JAB (1) only<br>2 min on bag<br>Focus: SNAP back fast</div>
+      </div>
+      <div class="ex-item" style="border-color:var(--orange)">
+        <div class="ex-icon">💥</div>
+        <div class="ex-label" style="color:var(--orange)">ROUND 2</div>
+        <div class="ex-detail">JAB-CROSS (1-2)<br>2 min on bag<br>Focus: HIP rotation</div>
+      </div>
+      <div class="ex-item" style="border-color:var(--gold)">
+        <div class="ex-icon">⚡</div>
+        <div class="ex-label" style="color:var(--gold)">ROUND 3</div>
+        <div class="ex-detail">JAB-CROSS-HOOK (1-2-3)<br>2 min on bag<br>Focus: POWER</div>
+      </div>
+      <div class="ex-item" style="border-color:var(--cyan)">
+        <div class="ex-icon">☝️</div>
+        <div class="ex-label" style="color:var(--cyan)">ROUND 4</div>
+        <div class="ex-detail">HIGH JABS<br>2 min arms UP<br>Uncle's special!</div>
+      </div>
+      <div class="ex-item" style="border-color:var(--green)">
+        <div class="ex-icon">🎯</div>
+        <div class="ex-label" style="color:var(--green)">ROUND 5</div>
+        <div class="ex-detail">FOCUS MITTS<br>2 min with Uncle<br>He calls combos!</div>
+      </div>
+      <div class="ex-item" style="border-color:var(--purple)">
+        <div class="ex-icon">🔥</div>
+        <div class="ex-label" style="color:var(--purple)">ROUND 6</div>
+        <div class="ex-detail">FREESTYLE<br>2 min GO HARD<br>Everything you know!</div>
+      </div>
+    </div>
+
+    <div style="background:rgba(0,0,0,.3);border-radius:14px;padding:12px;width:100%;text-align:center">
+      <div style="color:var(--gold);font-weight:bold;margin-bottom:6px">⏱️ ROUND TIMER</div>
+      <div class="timer-display" id="roundTimer">2:00</div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:8px">
+        <button class="timer-btn" id="roundStartBtn" onclick="startRoundTimer()">▶️ START</button>
+        <button class="timer-btn stop" onclick="resetRoundTimer()">⏹️ RESET</button>
+      </div>
+      <div style="color:#aac;font-size:.85rem;margin-top:6px">30 sec rest between rounds — hands UP! ☝️</div>
+    </div>
+
+    <div class="nav">
+      <button class="nav-btn back" onclick="go('s-warmup')">← WARM UP</button>
+      <button class="nav-btn" onclick="go('s-strength')">STRENGTH →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 3: STRENGTH (BIG & STRONG) ===== -->
+<div class="screen" id="s-strength">
+  <div class="card">
+    <div class="card-title" style="color:var(--green)">💪 BIG & STRONG 💪</div>
+    <div class="time-badge">⏱️ 8 MINUTES</div>
+    <div class="motive"><strong>Boxers aren't just fast — they're POWERFUL.</strong><br>This is how you get big AND dangerous. 🦁</div>
+
+    <div class="ex-grid">
+      <div class="ex-item">
+        <div class="ex-icon">💪</div>
+        <div class="ex-label">PUSH-UPS</div>
+        <div class="ex-detail">3 sets<br>As many as you can!<br>Chest to floor</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-icon">🦵</div>
+        <div class="ex-label">SQUATS</div>
+        <div class="ex-detail">3 × 15<br>Bum below knees<br>Arms forward</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-icon">🪵</div>
+        <div class="ex-label">PLANK</div>
+        <div class="ex-detail">3 × 30 sec<br>Straight as a board!<br>No bum up!</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-icon">🏋️</div>
+        <div class="ex-label">CHIN-UPS</div>
+        <div class="ex-detail">As many as you can<br>Or hang for 20 sec<br>GRIP = POWER</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-icon">🐻</div>
+        <div class="ex-label">BEAR CRAWL</div>
+        <div class="ex-detail">4 lengths<br>Knees OFF ground<br>Like an animal!</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-icon">🦘</div>
+        <div class="ex-label">JUMP SQUATS</div>
+        <div class="ex-detail">3 × 10<br>Squat then EXPLODE<br>Land soft!</div>
+      </div>
+    </div>
+
+    <!-- Strength tracker -->
+    <div class="tracker">
+      <div class="tracker-title">📊 TODAY'S COUNT</div>
+      <div id="strengthTracker"></div>
+    </div>
+
+    <div class="nav">
+      <button class="nav-btn back" onclick="go('s-boxing')">← BOXING</button>
+      <button class="nav-btn" onclick="go('s-defence')">DEFENCE →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 4: DEFENCE (THE WARRIOR SPIN) ===== -->
+<div class="screen" id="s-defence">
+  <div class="card">
+    <div class="card-title" style="color:var(--cyan)">🛡️ WARRIOR DEFENCE 🛡️</div>
+    <div class="time-badge">⏱️ 5 MINUTES</div>
+    <div class="motive"><strong>We don't train TO hit. We train so we NEVER have to.</strong><br>But if someone attacks — extreme violence of action. ⚔️</div>
+
+    <div style="background:rgba(0,0,0,.4);border:3px solid var(--gold);border-radius:18px;padding:16px;width:100%;text-align:center">
+      <div style="font-size:clamp(1.3rem,4vw,2rem);color:var(--gold);font-weight:bold;margin-bottom:10px">⭐ THE WARRIOR SPIN ⭐</div>
+      <div style="font-size:clamp(.9rem,2.2vw,1.1rem);color:#fff;line-height:1.6;text-align:left;max-width:500px;margin:0 auto">
+        <div style="margin:6px 0"><span style="color:var(--red);font-weight:bold">1.</span> Someone pushes you from behind</div>
+        <div style="margin:6px 0"><span style="color:var(--orange);font-weight:bold">2.</span> <strong>STOMP</strong> your front foot (base!)</div>
+        <div style="margin:6px 0"><span style="color:var(--gold);font-weight:bold">3.</span> <strong>SPIN</strong> around to face them</div>
+        <div style="margin:6px 0"><span style="color:var(--green);font-weight:bold">4.</span> Hands UP in guard position</div>
+        <div style="margin:6px 0"><span style="color:var(--cyan);font-weight:bold">5.</span> <strong>LOUD VOICE:</strong> "STOP!" 🗣️</div>
+        <div style="margin:6px 0"><span style="color:var(--purple);font-weight:bold">6.</span> Front kick (TEEP) if they come closer</div>
+      </div>
+      <div style="color:var(--gold);font-style:italic;margin-top:10px;font-size:.9rem">Practice 10 times every session. Both sides.</div>
+    </div>
+
+    <div class="ex-grid">
+      <div class="ex-item">
+        <div class="ex-icon">🦶</div>
+        <div class="ex-label">TEEP KICKS</div>
+        <div class="ex-detail">3 × 10 each leg<br>Push them AWAY<br>Longest weapon!</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-icon">🛡️</div>
+        <div class="ex-label">SLIP & ROLL</div>
+        <div class="ex-detail">2 min practice<br>Dodge left, dodge right<br>Head OFF centre line</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-icon">👟</div>
+        <div class="ex-label">FOOTWORK</div>
+        <div class="ex-detail">2 min<br>In-out, side-side<br>Never cross feet!</div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="nav-btn back" onclick="go('s-strength')">← STRENGTH</button>
+      <button class="nav-btn" onclick="go('s-cooldown')">COOL DOWN →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 5: COOL DOWN ===== -->
+<div class="screen" id="s-cooldown">
+  <div class="card">
+    <div class="card-title" style="color:var(--purple)">🌟 COOL DOWN 🌟</div>
+    <div class="time-badge">⏱️ 5 MINUTES</div>
+
+    <div class="ex-grid">
+      <div class="ex-item">
+        <div class="ex-icon">🧘</div>
+        <div class="ex-label">STRETCH</div>
+        <div class="ex-detail">Arms, legs, back<br>Hold 20 sec each<br>Breathe slow</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-icon">🥊</div>
+        <div class="ex-label">SLOW SHADOW</div>
+        <div class="ex-detail">1 min SUPER slow<br>Perfect form<br>Like a movie</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-icon">🫁</div>
+        <div class="ex-label">BREATHE</div>
+        <div class="ex-detail">In for 4...<br>Hold for 4...<br>Out for 4...</div>
+      </div>
+    </div>
+
+    <div class="motive">
+      <strong>🦁 WARRIOR CODE 🦁</strong><br><br>
+      I am <strong>Lucas</strong>.<br>
+      I train because I am <strong>strong</strong>.<br>
+      I protect because I am <strong>brave</strong>.<br>
+      I respect because I am a <strong>warrior</strong>.<br>
+      Nobody pushes me around. <strong>Nobody.</strong> 🥊
+    </div>
+
+    <div class="nav">
+      <button class="nav-btn back" onclick="go('s-defence')">← DEFENCE</button>
+      <button class="nav-btn" style="background:linear-gradient(135deg,var(--green),#16a34a);color:#fff" onclick="completeSession()">✅ SESSION DONE!</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 6: COMBO CALLER ===== -->
+<div class="screen" id="s-combos">
+  <div class="card">
+    <div class="card-title" style="color:var(--red)">🥊 COMBO CALLER 🥊</div>
+    <div class="card-sub">Uncle calls it — Lucas throws it!</div>
+
+    <div class="combo-display">
+      <div class="combo-name" id="comboName">TAP TO START</div>
+      <div class="combo-punches" id="comboPunches">🥊</div>
+      <div class="combo-words" id="comboWords">Hit the button!</div>
+    </div>
+
+    <button class="combo-btn" onclick="callCombo()">⚡ RANDOM COMBO ⚡</button>
+
+    <div style="background:rgba(0,0,0,.3);border-radius:14px;padding:14px;width:100%;margin-top:4px">
+      <div style="text-align:center;color:var(--gold);font-weight:bold;margin-bottom:8px">PUNCH CODE</div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <div style="background:var(--red);border-radius:12px;padding:8px 16px;font-weight:bold">1 = JAB</div>
+        <div style="background:var(--orange);border-radius:12px;padding:8px 16px;font-weight:bold">2 = CROSS</div>
+        <div style="background:var(--purple);border-radius:12px;padding:8px 16px;font-weight:bold">3 = HOOK</div>
+        <div style="background:var(--cyan);color:var(--blue);border-radius:12px;padding:8px 16px;font-weight:bold">4 = UPPERCUT</div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="nav-btn back" onclick="go('s-home')">← HOME</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 7: RECORDS ===== -->
+<div class="screen" id="s-records">
+  <div class="card">
+    <div class="card-title" style="color:var(--gold)">🏆 MY RECORDS 🏆</div>
+    <div class="card-sub">Track your progress. Get STRONGER every week.</div>
+
+    <div class="tracker" id="recordsDisplay"></div>
+
+    <div style="background:rgba(0,0,0,.3);border-radius:14px;padding:14px;width:100%;text-align:center">
+      <div style="color:var(--gold);font-weight:bold;margin-bottom:6px">🔥 STREAK</div>
+      <div style="font-size:clamp(2rem,8vw,3.5rem);font-weight:bold" id="streakDisplay">0</div>
+      <div style="color:#aac;font-size:.9rem">days in a row</div>
+    </div>
+
+    <div style="background:rgba(0,0,0,.3);border-radius:14px;padding:14px;width:100%;text-align:center">
+      <div style="color:var(--gold);font-weight:bold;margin-bottom:6px">📅 TOTAL SESSIONS</div>
+      <div style="font-size:clamp(2rem,8vw,3.5rem);font-weight:bold" id="totalSessions">0</div>
+    </div>
+
+    <div class="nav">
+      <button class="nav-btn back" onclick="go('s-home')">← HOME</button>
+      <button class="nav-btn" style="background:linear-gradient(135deg,var(--red),#b91c1c);color:#fff;font-size:clamp(.8rem,2vw,1rem)" onclick="if(confirm('Reset ALL records? This cannot be undone!')){localStorage.clear();location.reload()}">🗑️ RESET</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SESSION COMPLETE SCREEN ===== -->
+<div class="screen" id="s-complete">
+  <div class="card" style="border-color:var(--green)">
+    <div style="font-size:clamp(4rem,15vw,7rem);animation:pulse 1s infinite">🏆</div>
+    <div class="card-title" style="color:var(--green)">SESSION COMPLETE!</div>
+    <div class="card-sub" id="completeMsg">You're getting STRONGER!</div>
+    <div style="font-size:clamp(1.5rem,5vw,2.5rem);margin:8px 0" id="completeStreak"></div>
+    <div class="motive">
+      <strong>Every single session makes you harder to beat.</strong><br>
+      Come back tomorrow. Same time. No excuses. 🦁
+    </div>
+    <div class="nav">
+      <button class="nav-btn" onclick="go('s-home')">🏠 HOME</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// ===== STARS =====
+(function(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<80;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const size=Math.random()*3+1;
+    s.style.cssText=`width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${Math.random()*3}s;animation-duration:${1.5+Math.random()*2}s`;
+    c.appendChild(s);
+  }
+})();
+
+// ===== NAVIGATION =====
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='s-home') updateHome();
+  if(id==='s-strength') buildStrengthTracker();
+  if(id==='s-records') buildRecords();
+}
+
+// ===== STORAGE =====
+function getData(){
+  try{return JSON.parse(localStorage.getItem('lucas7')||'{}')}catch(e){return{}}
+}
+function setData(d){localStorage.setItem('lucas7',JSON.stringify(d))}
+function today(){return new Date().toISOString().slice(0,10)}
+
+// ===== WEEKLY TRACKER =====
+function updateHome(){
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const d=getData();
+  const sessions=d.sessions||{};
+  const now=new Date();
+  const dayOfWeek=now.getDay()||7;// Mon=1
+  const monday=new Date(now);
+  monday.setDate(now.getDate()-(dayOfWeek-1));
+
+  const cont=document.getElementById('weekTracker');
+  cont.innerHTML='';
+  for(let i=0;i<7;i++){
+    const dt=new Date(monday);
+    dt.setDate(monday.getDate()+i);
+    const key=dt.toISOString().slice(0,10);
+    const btn=document.createElement('button');
+    btn.className='day-btn';
+    if(sessions[key]) btn.classList.add('done');
+    if(key===today()) btn.classList.add('today');
+    btn.textContent=days[i];
+    cont.appendChild(btn);
+  }
+
+  // Level
+  const total=Object.keys(sessions).length;
+  const level=Math.floor(total/5)+1;
+  const belts=['WHITE BELT 🥋','YELLOW BELT 🟡','ORANGE BELT 🟠','GREEN BELT 💚','BLUE BELT 💙','PURPLE BELT 💜','BROWN BELT 🟤','BLACK BELT 🖤','WARRIOR 🦁'];
+  const beltName=belts[Math.min(level-1,belts.length-1)];
+  const progress=(total%5)/5*100;
+  document.getElementById('levelLabel').textContent=`LEVEL ${level} — ${beltName}`;
+  document.getElementById('levelFill').style.width=progress+'%';
+}
+
+// ===== ROUND TIMER =====
+let roundInterval=null;
+let roundSeconds=120;
+function startRoundTimer(){
+  if(roundInterval){clearInterval(roundInterval);roundInterval=null;document.getElementById('roundStartBtn').textContent='▶️ START';return}
+  document.getElementById('roundStartBtn').textContent='⏸️ PAUSE';
+  roundInterval=setInterval(()=>{
+    roundSeconds--;
+    if(roundSeconds<=0){
+      clearInterval(roundInterval);roundInterval=null;
+      document.getElementById('roundTimer').textContent='DONE!';
+      document.getElementById('roundTimer').style.color='var(--green)';
+      document.getElementById('roundStartBtn').textContent='▶️ START';
+      // Buzz
+      if(navigator.vibrate) navigator.vibrate([200,100,200,100,200]);
+      return;
+    }
+    const m=Math.floor(roundSeconds/60);
+    const s=roundSeconds%60;
+    document.getElementById('roundTimer').textContent=`${m}:${s.toString().padStart(2,'0')}`;
+    document.getElementById('roundTimer').style.color=roundSeconds<=10?'var(--red)':'var(--gold)';
+  },1000);
+}
+function resetRoundTimer(){
+  clearInterval(roundInterval);roundInterval=null;
+  roundSeconds=120;
+  document.getElementById('roundTimer').textContent='2:00';
+  document.getElementById('roundTimer').style.color='var(--gold)';
+  document.getElementById('roundStartBtn').textContent='▶️ START';
+}
+
+// ===== STRENGTH TRACKER =====
+const exercises=['Push-ups','Squats','Plank (sec)','Chin-ups','Bear Crawls','Jump Squats'];
+function buildStrengthTracker(){
+  const d=getData();
+  const todayData=d.strength&&d.strength[today()]||{};
+  const cont=document.getElementById('strengthTracker');
+  cont.innerHTML='';
+  exercises.forEach(ex=>{
+    const count=todayData[ex]||0;
+    const row=document.createElement('div');
+    row.className='tracker-row';
+    row.innerHTML=`
+      <div class="tracker-name">${ex}</div>
+      <div class="tracker-btns">
+        <button onclick="adjStrength('${ex}',-1)">−</button>
+        <div class="tracker-count" id="str-${ex.replace(/[^a-zA-Z]/g,'')}">${count}</div>
+        <button onclick="adjStrength('${ex}',1)">+</button>
+      </div>`;
+    cont.appendChild(row);
+  });
+}
+function adjStrength(ex,delta){
+  const d=getData();
+  if(!d.strength) d.strength={};
+  if(!d.strength[today()]) d.strength[today()]={};
+  const cur=d.strength[today()][ex]||0;
+  d.strength[today()][ex]=Math.max(0,cur+delta);
+  setData(d);
+  const el=document.getElementById('str-'+ex.replace(/[^a-zA-Z]/g,''));
+  if(el) el.textContent=d.strength[today()][ex];
+}
+
+// ===== COMBO CALLER =====
+const combos=[
+  {name:'THE JAB',code:'1',words:'Jab!',level:1},
+  {name:'ONE-TWO',code:'1-2',words:'Jab — Cross!',level:1},
+  {name:'THE TRIPLE',code:'1-2-3',words:'Jab — Cross — Hook!',level:1},
+  {name:'DOUBLE JAB CROSS',code:'1-1-2',words:'Jab — Jab — Cross!',level:2},
+  {name:'BODY SHOT',code:'1-2-3 (body)',words:'Jab — Cross — Hook to BODY!',level:2},
+  {name:'THE DESTROYER',code:'1-2-3-2',words:'Jab — Cross — Hook — Cross!',level:3},
+  {name:'UPPERCUT FINISH',code:'1-2-4',words:'Jab — Cross — Uppercut!',level:3},
+  {name:'HURRICANE',code:'1-2-3-4',words:'Jab — Cross — Hook — Uppercut!',level:3},
+  {name:'SPIDER',code:'1-1-2-3',words:'Jab — Jab — Cross — Hook!',level:4},
+  {name:'LUCAS SPECIAL',code:'1-2-3-2-1',words:'Jab — Cross — Hook — Cross — Jab!',level:4},
+  {name:'WARRIOR FURY',code:'1-1-2-3-4-2',words:'Double Jab — Cross — Hook — Upper — Cross!',level:5},
+];
+let lastCombo=-1;
+function callCombo(){
+  let idx;
+  do{idx=Math.floor(Math.random()*combos.length)}while(idx===lastCombo&&combos.length>1);
+  lastCombo=idx;
+  const c=combos[idx];
+  document.getElementById('comboName').textContent=c.name;
+  document.getElementById('comboPunches').textContent=c.code;
+  document.getElementById('comboWords').textContent=c.words;
+  // Flash effect
+  const el=document.getElementById('comboPunches');
+  el.style.transform='scale(1.3)';
+  setTimeout(()=>el.style.transform='scale(1)',200);
+  // Vibrate
+  if(navigator.vibrate) navigator.vibrate(100);
+}
+
+// ===== SESSION COMPLETE =====
+function completeSession(){
+  const d=getData();
+  if(!d.sessions) d.sessions={};
+  d.sessions[today()]=true;
+
+  // Streak calc
+  let streak=0;
+  const dt=new Date();
+  while(true){
+    const key=dt.toISOString().slice(0,10);
+    if(d.sessions[key]){streak++;dt.setDate(dt.getDate()-1)}
+    else break;
+  }
+  d.streak=streak;
+  setData(d);
+
+  const msgs=['WARRIOR! 🦁','UNSTOPPABLE! ⚡','CHAMPION! 🏆','BEAST MODE! 🔥','LEGEND! ⭐'];
+  document.getElementById('completeMsg').textContent=msgs[Math.floor(Math.random()*msgs.length)];
+  document.getElementById('completeStreak').textContent=`🔥 ${streak} day streak!`;
+  go('s-complete');
+}
+
+// ===== RECORDS =====
+function buildRecords(){
+  const d=getData();
+  const cont=document.getElementById('recordsDisplay');
+  cont.innerHTML='<div class="tracker-title">💪 PERSONAL BESTS</div>';
+
+  // Find PBs
+  const pbs={};
+  exercises.forEach(ex=>pbs[ex]=0);
+  if(d.strength){
+    Object.values(d.strength).forEach(day=>{
+      exercises.forEach(ex=>{
+        if(day[ex]&&day[ex]>pbs[ex]) pbs[ex]=day[ex];
+      });
+    });
+  }
+  exercises.forEach(ex=>{
+    const row=document.createElement('div');
+    row.className='tracker-row';
+    row.innerHTML=`<div class="tracker-name">${ex}</div><div style="color:var(--gold);font-weight:bold;font-size:1.2rem">${pbs[ex]}</div>`;
+    cont.appendChild(row);
+  });
+
+  // Streak + total
+  const sessions=d.sessions||{};
+  document.getElementById('streakDisplay').textContent=d.streak||0;
+  document.getElementById('totalSessions').textContent=Object.keys(sessions).length;
+}
+
+// ===== INIT =====
+updateHome();
+</script>
+</body>
+</html>
